@@ -631,8 +631,9 @@ input:focus-visible {
 
 .vehicle-card {
   display: grid;
-  gap: 14px;
-  padding: 16px 18px;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 .click-card {
@@ -654,6 +655,7 @@ input:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   align-items: start;
+  padding: 16px 18px 0;
 }
 
 .vehicle-model {
@@ -668,6 +670,7 @@ input:focus-visible {
   gap: 9px;
   color: var(--text-blue);
   font-size: 14px;
+  padding: 14px 18px 16px;
 }
 
 .vehicle-stat {
@@ -679,6 +682,26 @@ input:focus-visible {
 .vehicle-stat .card-icon,
 .vehicle-stat .tab-icon {
   color: var(--blue);
+}
+
+.vehicle-card-action {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(13, 69, 232, 0.08);
+  background: #fbfcff;
+  color: #8ca0e6;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.vehicle-card-action .icon {
+  width: 18px;
+  height: 18px;
+  color: #9aaaf0;
 }
 
 .back-row {

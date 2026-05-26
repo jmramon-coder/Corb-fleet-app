@@ -561,9 +561,9 @@ function vehicleCard(vehicle) {
         <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
         <span class="vehicle-stat">${icons.wrench}${openServices.length} maintenance schedules</span>
       </div>
-      <button class="secondary-detail-btn wide" type="button" data-open-vehicle="${vehicle.id}">
-        <span>View details</span>${icons.arrowRight}
-      </button>
+      <div class="vehicle-card-action" aria-hidden="true">
+        <span>View truck details</span>${icons.arrowRight}
+      </div>
     </article>
   `;
 }
