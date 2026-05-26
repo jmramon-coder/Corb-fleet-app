@@ -767,6 +767,10 @@ input:focus-visible {
   min-width: 0;
 }
 
+.compact-head {
+  align-items: center;
+}
+
 .service-card-title,
 .vehicle-card-title {
   margin: 0;
@@ -909,6 +913,17 @@ input:focus-visible {
   gap: 8px;
   margin-left: 33px;
   padding: 0;
+}
+
+.completion-card .service-card-body {
+  gap: 12px;
+}
+
+.completion-note {
+  margin: 0 0 0 33px;
+  color: var(--muted-blue);
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .vehicle-card {
@@ -1222,6 +1237,48 @@ input:focus-visible {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+}
+
+.completion-form-card {
+  margin-top: 12px;
+}
+
+.completion-form {
+  display: grid;
+  gap: 12px;
+}
+
+.completion-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted-blue);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.completion-form input,
+.completion-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card) 86%, var(--app-bg));
+  color: var(--text-blue);
+  padding: 11px 12px;
+  font-size: 14px;
+}
+
+.completion-form textarea {
+  resize: vertical;
+}
+
+.completion-form input[type="file"] {
+  color: var(--muted-blue);
+}
+
+.completion-form small {
+  color: var(--profile-muted);
+  font-size: 12px;
+  line-height: 1.25;
 }
 
 .app-tabs {

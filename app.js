@@ -141,7 +141,26 @@ const translations = {
     every30Days: "Every 30 days",
     every60Days: "Every 60 days",
     every12Months: "Every 12 months",
-    truckNumber: "Truck #{number}"
+    truckNumber: "Truck #{number}",
+    timeAndKmBased: "Time + KM based",
+    kmBased: "KM based",
+    nextDueKm: "Next due KM",
+    currentKm: "Current KM",
+    remainingKm: "{count} km left",
+    kmOverdue: "{count} km overdue",
+    completionDetails: "Completion details",
+    mechanicNote: "Mechanic note",
+    mechanicNotePlaceholder: "Add work performed, issues found, or follow-up notes",
+    partsNumbers: "Parts numbers",
+    partsNumbersPlaceholder: "Filters, oil, brake parts, insurance or reference numbers",
+    photosDocuments: "Photos & documents",
+    photosDocumentsHint: "Photos, invoices, insurance files, inspection sheets",
+    lastCompletion: "Last completion",
+    noCompletionYet: "No completion yet",
+    completedBy: "Completed by",
+    mechanicAccessCode: "Mechanic access code",
+    scheduleRule: "Schedule rule",
+    serviceSchedule: "Service schedule"
   },
   fr: {
     fleetManager: "Gestion de flotte",
@@ -227,7 +246,26 @@ const translations = {
     every30Days: "Tous les 30 jours",
     every60Days: "Tous les 60 jours",
     every12Months: "Tous les 12 mois",
-    truckNumber: "Camion no {number}"
+    truckNumber: "Camion no {number}",
+    timeAndKmBased: "Selon le temps + KM",
+    kmBased: "Selon les KM",
+    nextDueKm: "Prochaine échéance KM",
+    currentKm: "KM actuel",
+    remainingKm: "{count} km restants",
+    kmOverdue: "{count} km en retard",
+    completionDetails: "Détails de complétion",
+    mechanicNote: "Note du mécanicien",
+    mechanicNotePlaceholder: "Ajoutez le travail effectué, les problèmes trouvés ou les suivis",
+    partsNumbers: "Numéros de pièces",
+    partsNumbersPlaceholder: "Filtres, huile, freins, assurance ou numéros de référence",
+    photosDocuments: "Photos et documents",
+    photosDocumentsHint: "Photos, factures, assurances, fiches d'inspection",
+    lastCompletion: "Dernière complétion",
+    noCompletionYet: "Aucune complétion",
+    completedBy: "Complété par",
+    mechanicAccessCode: "Code d'accès mécanicien",
+    scheduleRule: "Règle de planification",
+    serviceSchedule: "Horaire de service"
   }
 };
 
@@ -291,6 +329,7 @@ function defaultState() {
   return {
     route: "services",
     previousRoute: "services",
+    activeFleetId: "fleet-1",
     activeServiceId: null,
     activeVehicleId: null,
     serviceFilter: "all",
@@ -306,9 +345,27 @@ function defaultState() {
       role: "Mechanic",
       joinedAt: "2025-10-10"
     },
+    fleets: [
+      {
+        id: "fleet-1",
+        name: "CORB Fleet",
+        ownerUserId: "user-1",
+        mechanicAccessCode: "2468"
+      }
+    ],
+    mechanicAccessCodes: [
+      {
+        id: "access-1",
+        fleetId: "fleet-1",
+        code: "2468",
+        role: "mechanic",
+        active: true
+      }
+    ],
     vehicles: [
       {
         id: "vehicle-1",
+        fleetId: "fleet-1",
         title: "Truck #1",
         unitNumber: "M12",
         brandModel: "Mercedes - B40",
@@ -323,6 +380,7 @@ function defaultState() {
       },
       {
         id: "vehicle-2",
+        fleetId: "fleet-1",
         title: "Truck #2",
         unitNumber: "M13",
         brandModel: "Mercedes - B40",
@@ -337,6 +395,7 @@ function defaultState() {
       },
       {
         id: "vehicle-3",
+        fleetId: "fleet-1",
         title: "Truck #3",
         unitNumber: "M14",
         brandModel: "Mercedes - B40",
@@ -350,14 +409,21 @@ function defaultState() {
         createdAt: new Date(Date.now() - 172800000).toISOString()
       }
     ],
-    services: [
+    serviceSchedules: [
       {
         id: "service-1",
+        fleetId: "fleet-1",
         vehicleId: "vehicle-1",
         title: "Changement d’huile",
-        recurrenceType: "time",
+        scheduleType: "hybrid",
+        recurrenceType: "hybrid",
         recurrenceLabel: "Every 30 days",
+        intervalDays: 30,
+        intervalKm: 10000,
         dueDate: addDays(1),
+        dueKm: 109920,
+        warningDays: 7,
+        warningKm: 1000,
         lastPerformedDate: "2025-10-29",
         lastPerformedKm: 99920,
         status: "scheduled",
@@ -366,11 +432,18 @@ function defaultState() {
       },
       {
         id: "service-2",
+        fleetId: "fleet-1",
         vehicleId: "vehicle-1",
         title: "Brake inspection",
+        scheduleType: "time",
         recurrenceType: "time",
         recurrenceLabel: "Every 60 days",
+        intervalDays: 60,
+        intervalKm: null,
         dueDate: addDays(18),
+        dueKm: null,
+        warningDays: 14,
+        warningKm: null,
         lastPerformedDate: "2025-10-10",
         lastPerformedKm: 98200,
         status: "scheduled",
@@ -379,11 +452,18 @@ function defaultState() {
       },
       {
         id: "service-3",
+        fleetId: "fleet-1",
         vehicleId: "vehicle-2",
         title: "Changement d’huile",
-        recurrenceType: "time",
+        scheduleType: "hybrid",
+        recurrenceType: "hybrid",
         recurrenceLabel: "Every 30 days",
+        intervalDays: 30,
+        intervalKm: 10000,
         dueDate: addDays(-2),
+        dueKm: 1261100,
+        warningDays: 7,
+        warningKm: 1000,
         lastPerformedDate: "2025-10-29",
         lastPerformedKm: 1251100,
         status: "scheduled",
@@ -392,16 +472,67 @@ function defaultState() {
       },
       {
         id: "service-4",
+        fleetId: "fleet-1",
         vehicleId: "vehicle-2",
         title: "Annual inspection",
+        scheduleType: "time",
         recurrenceType: "time",
         recurrenceLabel: "Every 12 months",
+        intervalDays: 365,
+        intervalKm: null,
         dueDate: addDays(30),
+        dueKm: null,
+        warningDays: 30,
+        warningKm: null,
         lastPerformedDate: "2025-05-11",
         lastPerformedKm: 1211000,
         status: "scheduled",
         completedAt: null,
         completionNotes: ""
+      }
+    ],
+    serviceCompletions: [
+      {
+        id: "completion-1",
+        fleetId: "fleet-1",
+        scheduleId: "service-1",
+        vehicleId: "vehicle-1",
+        title: "Changement d’huile",
+        completedAt: "2025-10-29T14:30:00.000Z",
+        completedDate: "2025-10-29",
+        completedKm: 99920,
+        completedBy: "Anthony.Corbin",
+        mechanicNote: "Oil and filter changed. No leak found.",
+        partsNumbers: "F42141",
+        attachmentNames: ["oil-filter-photo.jpg"]
+      },
+      {
+        id: "completion-2",
+        fleetId: "fleet-1",
+        scheduleId: "service-2",
+        vehicleId: "vehicle-1",
+        title: "Brake inspection",
+        completedAt: "2025-10-10T10:15:00.000Z",
+        completedDate: "2025-10-10",
+        completedKm: 98200,
+        completedBy: "Anthony.Corbin",
+        mechanicNote: "Pads inspected and cleared for service.",
+        partsNumbers: "",
+        attachmentNames: ["brake-check.jpg"]
+      },
+      {
+        id: "completion-3",
+        fleetId: "fleet-1",
+        scheduleId: "service-3",
+        vehicleId: "vehicle-2",
+        title: "Changement d’huile",
+        completedAt: "2025-10-29T13:00:00.000Z",
+        completedDate: "2025-10-29",
+        completedKm: 1251100,
+        completedBy: "Anthony.Corbin",
+        mechanicNote: "Oil service completed.",
+        partsNumbers: "F42141",
+        attachmentNames: []
       }
     ]
   };
@@ -411,7 +542,13 @@ function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     try {
-      return normalizeState({ ...defaultState(), ...JSON.parse(saved) });
+      const parsed = JSON.parse(saved);
+      return normalizeState({
+        ...defaultState(),
+        ...parsed,
+        serviceSchedules: parsed.serviceSchedules || parsed.services,
+        serviceCompletions: parsed.serviceCompletions
+      });
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -434,6 +571,25 @@ function normalizeState(next) {
   if (next.language !== "fr" && next.language !== "en") next.language = "en";
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
+  if (!next.activeFleetId) next.activeFleetId = "fleet-1";
+  if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
+  if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
+  if (Array.isArray(next.services) && !Array.isArray(next.serviceSchedules)) {
+    next.serviceSchedules = next.services.map(normalizeSchedule);
+  }
+  if (!Array.isArray(next.serviceSchedules)) next.serviceSchedules = [];
+  next.serviceSchedules = next.serviceSchedules.map(normalizeSchedule);
+  if (!Array.isArray(next.serviceCompletions)) {
+    next.serviceCompletions = next.serviceSchedules
+      .filter((schedule) => schedule.lastPerformedDate)
+      .map(completionFromScheduleSnapshot);
+  }
+  next.serviceCompletions = next.serviceCompletions.map(normalizeCompletion);
+  next.vehicles = (Array.isArray(next.vehicles) ? next.vehicles : []).map((vehicle) => ({
+    ...vehicle,
+    fleetId: vehicle.fleetId || next.activeFleetId
+  }));
+  delete next.services;
   return next;
 }
 
@@ -444,6 +600,7 @@ function migrateOldState(old) {
 
   next.vehicles = vehicles.map((vehicle, index) => ({
     id: vehicle.id || uid("vehicle"),
+    fleetId: "fleet-1",
     title: vehicle.unit || `Truck #${index + 1}`,
     unitNumber: vehicle.unit || `M${index + 1}`,
     brandModel: vehicle.brand || "Mercedes - B40",
@@ -457,7 +614,7 @@ function migrateOldState(old) {
     createdAt: vehicle.createdAt || new Date().toISOString()
   }));
 
-  next.services = services.map((service) => ({
+  next.serviceSchedules = services.map((service) => normalizeSchedule({
     id: service.id || uid("service"),
     vehicleId: service.vehicleId,
     title: service.type || "Changement d’huile",
@@ -470,8 +627,70 @@ function migrateOldState(old) {
     completedAt: service.completedAt || null,
     completionNotes: service.completionNotes || ""
   }));
+  next.serviceCompletions = next.serviceSchedules
+    .filter((schedule) => schedule.lastPerformedDate)
+    .map(completionFromScheduleSnapshot);
 
   return next;
+}
+
+function normalizeSchedule(schedule) {
+  const recurrenceLabel = schedule.recurrenceLabel || "Every 30 days";
+  const intervalDays = Number(schedule.intervalDays || (recurrenceLabel === "Every 60 days" ? 60 : recurrenceLabel === "Every 12 months" ? 365 : 30));
+  const intervalKm = schedule.intervalKm === null || schedule.intervalKm === undefined
+    ? (schedule.scheduleType === "km" || schedule.scheduleType === "hybrid" ? 10000 : null)
+    : Number(schedule.intervalKm);
+
+  return {
+    ...schedule,
+    id: schedule.id || uid("service"),
+    fleetId: schedule.fleetId || "fleet-1",
+    scheduleType: schedule.scheduleType || schedule.recurrenceType || (intervalKm ? "hybrid" : "time"),
+    recurrenceType: schedule.recurrenceType || schedule.scheduleType || (intervalKm ? "hybrid" : "time"),
+    recurrenceLabel,
+    intervalDays,
+    intervalKm,
+    dueDate: schedule.dueDate || todayIso,
+    dueKm: schedule.dueKm === undefined ? (intervalKm ? Number(schedule.lastPerformedKm || 0) + intervalKm : null) : schedule.dueKm,
+    warningDays: Number(schedule.warningDays ?? 7),
+    warningKm: schedule.warningKm === null || schedule.warningKm === undefined ? (intervalKm ? 1000 : null) : Number(schedule.warningKm),
+    status: schedule.status === "completed" ? "scheduled" : (schedule.status || "scheduled"),
+    lastPerformedDate: schedule.lastPerformedDate || "",
+    lastPerformedKm: Number(schedule.lastPerformedKm || 0),
+    completedAt: null,
+    completionNotes: schedule.completionNotes || ""
+  };
+}
+
+function normalizeCompletion(completion) {
+  return {
+    ...completion,
+    id: completion.id || uid("completion"),
+    fleetId: completion.fleetId || "fleet-1",
+    completedDate: completion.completedDate || (completion.completedAt ? isoDate(new Date(completion.completedAt)) : todayIso),
+    completedKm: Number(completion.completedKm || 0),
+    completedBy: completion.completedBy || "Anthony.Corbin",
+    mechanicNote: completion.mechanicNote || completion.completionNotes || "",
+    partsNumbers: completion.partsNumbers || "",
+    attachmentNames: Array.isArray(completion.attachmentNames) ? completion.attachmentNames : []
+  };
+}
+
+function completionFromScheduleSnapshot(schedule) {
+  return normalizeCompletion({
+    id: `completion-${schedule.id}`,
+    fleetId: schedule.fleetId || "fleet-1",
+    scheduleId: schedule.id,
+    vehicleId: schedule.vehicleId,
+    title: schedule.title,
+    completedAt: schedule.completedAt || `${schedule.lastPerformedDate || todayIso}T12:00:00.000Z`,
+    completedDate: schedule.lastPerformedDate || todayIso,
+    completedKm: Number(schedule.lastPerformedKm || 0),
+    completedBy: "Anthony.Corbin",
+    mechanicNote: schedule.completionNotes || "",
+    partsNumbers: "",
+    attachmentNames: []
+  });
 }
 
 function saveState() {
@@ -483,21 +702,38 @@ function vehicleById(id) {
 }
 
 function serviceById(id) {
-  return state.services.find((service) => service.id === id);
+  return state.serviceSchedules.find((service) => service.id === id);
 }
 
 function serviceStatus(service) {
-  if (service.status === "completed") return "ok";
-  return service.dueDate < todayIso ? "overdue" : "upcoming";
+  const vehicle = vehicleById(service.vehicleId);
+  const kmRemaining = service.dueKm ? Number(service.dueKm) - Number(vehicle?.kilometers || 0) : null;
+  if (service.dueDate && service.dueDate < todayIso) return "overdue";
+  if (kmRemaining !== null && kmRemaining <= 0) return "overdue";
+  if (service.dueDate && daysUntil(service.dueDate) <= Number(service.warningDays ?? 7)) return "upcoming";
+  if (kmRemaining !== null && kmRemaining <= Number(service.warningKm ?? 1000)) return "upcoming";
+  return "ok";
 }
 
 function servicesForVehicle(vehicleId) {
-  return state.services.filter((service) => service.vehicleId === vehicleId);
+  return state.serviceSchedules.filter((service) => service.vehicleId === vehicleId);
+}
+
+function completionsForVehicle(vehicleId) {
+  return state.serviceCompletions
+    .filter((completion) => completion.vehicleId === vehicleId)
+    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+}
+
+function completionsForSchedule(scheduleId) {
+  return state.serviceCompletions
+    .filter((completion) => completion.scheduleId === scheduleId)
+    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
 }
 
 function visibleServices() {
   const query = state.serviceSearch.trim().toLowerCase();
-  return state.services.filter((service) => {
+  return state.serviceSchedules.filter((service) => {
     const vehicle = vehicleById(service.vehicleId);
     const status = serviceStatus(service);
     const matchesFilter = state.serviceFilter === "all" || state.serviceFilter === status;
@@ -507,7 +743,7 @@ function visibleServices() {
 }
 
 function statusCounts() {
-  return state.services.reduce(
+  return state.serviceSchedules.reduce(
     (counts, service) => {
       counts[serviceStatus(service)] += 1;
       return counts;
@@ -527,6 +763,25 @@ function relativeDue(value) {
   if (days < 0) return t(Math.abs(days) === 1 ? "dayLate" : "daysLate", { count: Math.abs(days) });
   if (days === 0) return t("today");
   return t(days === 1 ? "day" : "days", { count: days });
+}
+
+function kmUntil(service) {
+  if (!service.dueKm) return null;
+  const vehicle = vehicleById(service.vehicleId);
+  return Number(service.dueKm) - Number(vehicle?.kilometers || 0);
+}
+
+function relativeKm(service) {
+  const km = kmUntil(service);
+  if (km === null) return t("notRecorded");
+  if (km < 0) return t("kmOverdue", { count: Math.abs(km).toLocaleString(dateLocale()) });
+  return t("remainingKm", { count: km.toLocaleString(dateLocale()) });
+}
+
+function addDaysToIso(value, days) {
+  const date = new Date(`${value}T00:00:00`);
+  date.setDate(date.getDate() + Number(days || 0));
+  return isoDate(date);
 }
 
 function displayVehicleTitle(vehicle) {
@@ -681,7 +936,7 @@ function emptyVehicleCard() {
 
 function renderDashboard() {
   const hasVehicles = state.vehicles.length > 0;
-  const firstUpcoming = state.services.find((service) => serviceStatus(service) === "upcoming");
+  const firstUpcoming = state.serviceSchedules.find((service) => serviceStatus(service) === "upcoming");
 
   return `
     <div class="screen">
@@ -733,7 +988,7 @@ function renderServices() {
 function filterRow() {
   const counts = statusCounts();
   const filters = [
-    ["all", t("all"), "", state.services.length],
+    ["all", t("all"), "", state.serviceSchedules.length],
     ["overdue", t("overdue"), "overdue", counts.overdue],
     ["upcoming", t("upcoming"), "upcoming", counts.upcoming],
     ["ok", t("ok"), "ok", counts.ok]
@@ -753,10 +1008,9 @@ function filterRow() {
 
 function serviceCard(service) {
   const vehicle = vehicleById(service.vehicleId);
-  const disabled = serviceStatus(service) === "ok";
   const status = serviceStatus(service);
   const dueDays = daysUntil(service.dueDate);
-  const dueChipLabel = status === "ok" ? t("done") : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(service.dueDate) });
+  const dueChipLabel = status === "ok" ? t("ok") : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(service.dueDate) });
   return `
     <article class="service-card click-card" data-open-service="${service.id}">
       <div class="service-card-body">
@@ -782,7 +1036,39 @@ function serviceCard(service) {
             <strong class="date-value">${icons.calendar}${formatDate(service.lastPerformedDate)}</strong>
           </div>
         </div>
-        ${disabled ? "" : `<div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button></div>`}
+        <div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button></div>
+      </div>
+    </article>
+  `;
+}
+
+function completionCard(completion) {
+  const vehicle = vehicleById(completion.vehicleId);
+  return `
+    <article class="service-card completion-card">
+      <div class="service-card-body">
+        <div class="service-head compact-head">
+          <span>${icons.history}</span>
+          <div>
+            <h2 class="service-card-title">${escapeHtml(displayServiceTitle(completion))}</h2>
+            <div class="vehicle-link static-link">
+              ${icons.truck}
+              ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}
+            </div>
+          </div>
+          <span class="due-chip ok">${escapeHtml(t("done"))}</span>
+        </div>
+        <div class="service-dates">
+          <div class="date-block">
+            <span>${escapeHtml(t("lastPerformed"))}</span>
+            <strong class="date-value">${icons.calendar}${formatDate(completion.completedDate)}</strong>
+          </div>
+          <div class="date-block">
+            <span>${escapeHtml(t("atMileage"))}</span>
+            <strong class="date-value">${icons.gauge}${formatKm(completion.completedKm)}</strong>
+          </div>
+        </div>
+        ${completion.mechanicNote ? `<p class="completion-note">${escapeHtml(completion.mechanicNote)}</p>` : ""}
       </div>
     </article>
   `;
@@ -810,7 +1096,7 @@ function renderVehicles() {
 }
 
 function vehicleCard(vehicle) {
-  const openServices = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) !== "ok");
+  const scheduledServices = servicesForVehicle(vehicle.id);
   return `
     <article class="vehicle-card click-card" data-open-vehicle="${vehicle.id}">
       <div class="vehicle-card-body">
@@ -824,7 +1110,7 @@ function vehicleCard(vehicle) {
         </div>
         <div class="vehicle-stats">
           <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
-          <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: openServices.length }))}</span>
+          <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: scheduledServices.length }))}</span>
         </div>
       </div>
     </article>
@@ -858,9 +1144,12 @@ function renderAddVehicle() {
 }
 
 function renderServiceDetails() {
-  const service = serviceById(state.activeServiceId) || state.services[0];
+  const service = serviceById(state.activeServiceId) || state.serviceSchedules[0];
   if (!service) return renderServices();
   const vehicle = vehicleById(service.vehicleId);
+  const status = serviceStatus(service);
+  const latestCompletion = completionsForSchedule(service.id)[0];
+  const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
 
   return `
     <div class="screen with-actions">
@@ -870,25 +1159,37 @@ function renderServiceDetails() {
         <div class="back-title">${escapeHtml(displayServiceTitle(service))}<span>${icons.truck} ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span></div>
       </div>
       <div class="detail-chip-grid">
-        <div class="detail-chip">${icons.calendar} ${escapeHtml(t("timeBased"))}<strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
+        <div class="detail-chip">${icons.calendar} ${escapeHtml(scheduleLabel)}<strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
         <div class="detail-chip">${icons.calendar} ${escapeHtml(t("nextDue"))}<strong>${shortDate(service.dueDate)}</strong></div>
+        <div class="detail-chip">${icons.gauge} ${escapeHtml(t("nextDueKm"))}<strong>${service.dueKm ? formatKm(service.dueKm) : t("notRecorded")}</strong></div>
+        <div class="detail-chip">${icons.gauge} ${escapeHtml(t("currentKm"))}<strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
       </div>
-      <div class="status-panel">${icons.calendar}<div>${escapeHtml(serviceStatus(service) === "ok" ? t("ok") : serviceStatus(service) === "overdue" ? t("overdue") : t("upcoming"))}<strong>${escapeHtml(relativeDue(service.dueDate))}</strong></div></div>
+      <div class="status-panel">${icons.calendar}<div>${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}<strong>${escapeHtml(service.dueKm ? `${relativeDue(service.dueDate)} / ${relativeKm(service)}` : relativeDue(service.dueDate))}</strong></div></div>
       <article class="detail-card">
-        <h3>${icons.history} ${escapeHtml(t("maintenanceHistory"))}</h3>
+        <h3>${icons.history} ${escapeHtml(t("lastCompletion"))}</h3>
         <div class="history-grid">
           <div>
             <span class="detail-label">${escapeHtml(t("lastPerformed"))}</span>
-            <strong class="date-value">${icons.calendar}${shortDate(service.lastPerformedDate)}</strong>
+            <strong class="date-value">${icons.calendar}${latestCompletion ? shortDate(latestCompletion.completedDate) : t("noCompletionYet")}</strong>
           </div>
           <div>
             <span class="detail-label">${escapeHtml(t("atMileage"))}</span>
-            <strong class="date-value">${icons.gauge}${formatKm(service.lastPerformedKm)}</strong>
+            <strong class="date-value">${icons.gauge}${latestCompletion ? formatKm(latestCompletion.completedKm) : t("notRecorded")}</strong>
           </div>
         </div>
+        ${latestCompletion?.mechanicNote ? `<p class="completion-note">${escapeHtml(latestCompletion.mechanicNote)}</p>` : ""}
+      </article>
+      <article class="detail-card completion-form-card">
+        <h3>${icons.wrench} ${escapeHtml(t("completionDetails"))}</h3>
+        <form class="completion-form" data-completion-form="${service.id}">
+          <label>${escapeHtml(t("currentKm"))}<input name="completedKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(vehicle?.kilometers || service.lastPerformedKm || 0)}" /></label>
+          <label>${escapeHtml(t("mechanicNote"))}<textarea name="mechanicNote" rows="3" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea></label>
+          <label>${escapeHtml(t("partsNumbers"))}<input name="partsNumbers" autocomplete="off" placeholder="${escapeAttr(t("partsNumbersPlaceholder"))}" /></label>
+          <label>${escapeHtml(t("photosDocuments"))}<input name="attachments" type="file" multiple /><small>${escapeHtml(t("photosDocumentsHint"))}</small></label>
+        </form>
       </article>
       <div class="action-bar">
-        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button>
+        <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
@@ -950,13 +1251,13 @@ function truckTabs() {
 
 function truckTabContent(vehicle) {
   if (state.truckTab === "schedule") {
-    const scheduled = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) !== "ok");
+    const scheduled = servicesForVehicle(vehicle.id);
     return `<div class="list-stack">${scheduled.length ? scheduled.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noScheduledServices"))}</div>`}</div>`;
   }
 
   if (state.truckTab === "history") {
-    const history = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) === "ok");
-    return `<div class="list-stack">${history.length ? history.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}</div>`;
+    const history = completionsForVehicle(vehicle.id);
+    return `<div class="list-stack">${history.length ? history.map(completionCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}</div>`;
   }
 
   return `
@@ -1049,15 +1350,51 @@ function renderSettingsPanel() {
   `;
 }
 
-function completeService(serviceId) {
+function completeService(serviceId, details = {}) {
   const service = serviceById(serviceId);
   if (!service) return;
   const vehicle = vehicleById(service.vehicleId);
-  service.status = "completed";
-  service.completedAt = new Date().toISOString();
+  const completedKm = Number(details.completedKm || vehicle?.kilometers || service.lastPerformedKm || 0);
+  const mechanicNote = details.mechanicNote || t("completionNotes");
+  const attachmentNames = Array.isArray(details.attachmentNames) ? details.attachmentNames : [];
+  const completedAt = new Date().toISOString();
+
+  state.serviceCompletions.unshift(normalizeCompletion({
+    id: uid("completion"),
+    fleetId: service.fleetId || state.activeFleetId,
+    scheduleId: service.id,
+    vehicleId: service.vehicleId,
+    title: service.title,
+    completedAt,
+    completedDate: todayIso,
+    completedKm,
+    completedBy: state.user.displayName,
+    mechanicNote,
+    partsNumbers: details.partsNumbers || "",
+    attachmentNames
+  }));
+
+  service.status = "scheduled";
+  service.completedAt = null;
   service.lastPerformedDate = todayIso;
-  service.lastPerformedKm = vehicle?.kilometers || service.lastPerformedKm || 0;
-  service.completionNotes = t("completionNotes");
+  service.lastPerformedKm = completedKm;
+  service.completionNotes = mechanicNote;
+  if (service.intervalDays) service.dueDate = addDaysToIso(todayIso, service.intervalDays);
+  if (service.intervalKm) service.dueKm = completedKm + Number(service.intervalKm);
+  if (vehicle && completedKm > Number(vehicle.kilometers || 0)) vehicle.kilometers = completedKm;
+}
+
+function completionFormValues(serviceId) {
+  const form = app.querySelector(`[data-completion-form="${CSS.escape(serviceId)}"]`);
+  if (!form) return {};
+  const data = new FormData(form);
+  const files = form.elements.attachments?.files ? Array.from(form.elements.attachments.files) : [];
+  return {
+    completedKm: Number(data.get("completedKm") || 0),
+    mechanicNote: String(data.get("mechanicNote") || "").trim(),
+    partsNumbers: String(data.get("partsNumbers") || "").trim(),
+    attachmentNames: files.map((file) => file.name)
+  };
 }
 
 function addVehicleFromForm(form) {
@@ -1194,6 +1531,7 @@ app.addEventListener("click", (event) => {
   const serviceId = event.target.closest("[data-open-service]")?.dataset.openService;
   const vehicleId = event.target.closest("[data-open-vehicle]")?.dataset.openVehicle;
   const completeId = event.target.closest("[data-complete-service]")?.dataset.completeService;
+  const submitCompletionId = event.target.closest("[data-submit-completion]")?.dataset.submitCompletion;
   const filter = event.target.closest("[data-filter]")?.dataset.filter;
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
@@ -1201,6 +1539,11 @@ app.addEventListener("click", (event) => {
   const toggleTheme = event.target.closest("[data-toggle-theme]");
   const language = event.target.closest("[data-language]")?.dataset.language;
 
+  if (submitCompletionId) {
+    completeService(submitCompletionId, completionFormValues(submitCompletionId));
+    render();
+    return;
+  }
   if (completeId) {
     completeService(completeId);
     render();
@@ -1240,7 +1583,8 @@ app.addEventListener("click", (event) => {
   }
   if (deleteVehicleId && confirm(t("deleteVehicleConfirm"))) {
     state.vehicles = state.vehicles.filter((vehicle) => vehicle.id !== deleteVehicleId);
-    state.services = state.services.filter((service) => service.vehicleId !== deleteVehicleId);
+    state.serviceSchedules = state.serviceSchedules.filter((service) => service.vehicleId !== deleteVehicleId);
+    state.serviceCompletions = state.serviceCompletions.filter((completion) => completion.vehicleId !== deleteVehicleId);
     navigate("vehicles");
   }
 });
