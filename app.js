@@ -758,7 +758,7 @@ function serviceCard(service) {
   const dueDays = daysUntil(service.dueDate);
   const dueChipLabel = status === "ok" ? t("done") : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(service.dueDate) });
   return `
-    <article class="service-card click-card card-with-rail" data-open-service="${service.id}">
+    <article class="service-card click-card" data-open-service="${service.id}">
       <div class="service-card-body">
         <div class="service-head">
           <span>${icons.wrench}</span>
@@ -770,6 +770,7 @@ function serviceCard(service) {
             </button>
           </div>
           <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
+          <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
         </div>
         <div class="service-dates">
           <div class="date-block">
@@ -783,7 +784,6 @@ function serviceCard(service) {
         </div>
         ${disabled ? "" : `<div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button></div>`}
       </div>
-      <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
     </article>
   `;
 }
@@ -812,20 +812,21 @@ function renderVehicles() {
 function vehicleCard(vehicle) {
   const openServices = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) !== "ok");
   return `
-    <article class="vehicle-card click-card card-with-rail" data-open-vehicle="${vehicle.id}">
+    <article class="vehicle-card click-card" data-open-vehicle="${vehicle.id}">
       <div class="vehicle-card-body">
         <div class="vehicle-top">
+          <span class="vehicle-head-icon">${icons.truck}</span>
           <div>
             <h2 class="vehicle-card-title">${escapeHtml(displayVehicleTitle(vehicle))}</h2>
             <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
           </div>
+          <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
         </div>
         <div class="vehicle-stats">
           <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
           <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: openServices.length }))}</span>
         </div>
       </div>
-      <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
     </article>
   `;
 }
