@@ -544,13 +544,11 @@ function serviceCard(service) {
             ${escapeHtml(vehicle?.title || "Unknown vehicle")}
           </button>
         </div>
+        <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
       </div>
       <div class="service-dates">
         <div class="date-block">
-          <div class="date-label-row">
-            <span>Next due</span>
-            <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
-          </div>
+          <span>Next due</span>
           <strong class="date-value">${icons.calendar}${formatDate(service.dueDate)}</strong>
         </div>
         <div class="date-block">
