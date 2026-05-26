@@ -102,6 +102,7 @@ function defaultState() {
     serviceSearch: "",
     profileTab: "account",
     truckTab: "details",
+    theme: "light",
     user: {
       firstName: "Anthony",
       displayName: "Anthony.Corbin",
@@ -214,7 +215,7 @@ function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     try {
-      return { ...defaultState(), ...JSON.parse(saved) };
+      return normalizeState({ ...defaultState(), ...JSON.parse(saved) });
     } catch {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -230,6 +231,11 @@ function loadState() {
   }
 
   return defaultState();
+}
+
+function normalizeState(next) {
+  if (next.theme !== "dark" && next.theme !== "light") next.theme = "light";
+  return next;
 }
 
 function migrateOldState(old) {
@@ -347,6 +353,8 @@ function applyInitialUrlRoute() {
   if (allowedRoutes.has(route)) state.route = route;
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
+  if (params.get("profileTab")) state.profileTab = params.get("profileTab");
+  if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
 }
 
 function header({ close = false } = {}) {
@@ -725,9 +733,8 @@ function renderProfile() {
 }
 
 function profileContent() {
-  if (state.profileTab !== "account") {
-    return `<div class="ghost-note">${state.profileTab === "fleet" ? "Fleet preferences" : "Settings"} will live here.</div>`;
-  }
+  if (state.profileTab === "fleet") return `<div class="ghost-note">Fleet preferences will live here.</div>`;
+  if (state.profileTab === "settings") return renderSettingsPanel();
 
   return `
     <article class="profile-card">
@@ -748,6 +755,25 @@ function profileContent() {
       <h2 class="security-title">${icons.lock} Security</h2>
       <button class="outline-btn wide" type="button">Change password</button>
       <button class="danger-btn wide" type="button">Logout ${icons.logout}</button>
+    </article>
+  `;
+}
+
+function renderSettingsPanel() {
+  const darkMode = state.theme === "dark";
+  return `
+    <article class="profile-card settings-card">
+      <div>
+        <h2 class="security-title">${icons.gauge} Appearance</h2>
+        <p class="settings-copy">Choose the visual mode that feels best for your workspace.</p>
+      </div>
+      <button class="setting-row" type="button" data-toggle-theme aria-pressed="${darkMode}">
+        <span>
+          <strong>Dark mode</strong>
+          <small>${darkMode ? "On" : "Off"}</small>
+        </span>
+        <span class="switch ${darkMode ? "on" : ""}" aria-hidden="true"><span></span></span>
+      </button>
     </article>
   `;
 }
@@ -786,7 +812,7 @@ function addVehicleFromForm(form) {
 function render() {
   saveState();
   app.innerHTML = `
-    <div class="app-shell">
+    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
       ${routeMarkup()}
     </div>
   `;
@@ -824,6 +850,7 @@ app.addEventListener("click", (event) => {
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
+  const toggleTheme = event.target.closest("[data-toggle-theme]");
 
   if (route) navigate(route);
   if (serviceId) navigate("serviceDetails", { activeServiceId: serviceId });
@@ -842,6 +869,10 @@ app.addEventListener("click", (event) => {
   }
   if (truckTab) {
     state.truckTab = truckTab;
+    render();
+  }
+  if (toggleTheme) {
+    state.theme = state.theme === "dark" ? "light" : "dark";
     render();
   }
   if (deleteVehicleId && confirm("Delete this vehicle and its services?")) {

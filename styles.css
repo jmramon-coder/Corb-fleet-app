@@ -68,6 +68,30 @@ input:focus-visible {
   background: var(--app-bg);
 }
 
+.theme-dark {
+  --app-bg: #0c1220;
+  --card: #121b2d;
+  --blue: #6f8fff;
+  --blue-2: #8aa5ff;
+  --blue-soft: rgba(111, 143, 255, 0.16);
+  --blue-softer: rgba(111, 143, 255, 0.1);
+  --text-blue: #dce6ff;
+  --muted-blue: #8fa4dc;
+  --border-blue: rgba(143, 164, 220, 0.28);
+  --line: rgba(143, 164, 220, 0.18);
+  --ink: #f6f8ff;
+  --red: #ff6b72;
+  --orange: #ffad3d;
+  --green: #35d867;
+  --shadow-strong: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.theme-dark,
+.theme-dark input,
+.theme-dark button {
+  color-scheme: dark;
+}
+
 .screen {
   min-height: 100svh;
   overflow-x: hidden;
@@ -118,6 +142,10 @@ input:focus-visible {
   color: var(--text-blue);
   font-size: 12px;
   font-weight: 500;
+}
+
+.theme-dark .brand-mark {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .icon-btn {
@@ -206,6 +234,26 @@ input:focus-visible {
   padding: 4px 12px 12px;
   text-align: center;
   box-shadow: var(--shadow);
+}
+
+.theme-dark .metric-card,
+.theme-dark .service-card,
+.theme-dark .vehicle-card,
+.theme-dark .profile-card,
+.theme-dark .detail-card,
+.theme-dark .technical-card,
+.theme-dark .empty-card,
+.theme-dark .search-box,
+.theme-dark .detail-chip,
+.theme-dark .truck-overview-header .segmented-tabs,
+.theme-dark .bottom-nav {
+  background: var(--card);
+  border-color: var(--line);
+}
+
+.theme-dark .metric-value,
+.theme-dark .empty-icon {
+  color: rgba(143, 164, 220, 0.5);
 }
 
 .metric-rule {
@@ -383,6 +431,16 @@ input:focus-visible {
   box-shadow: 0 12px 30px rgba(36, 81, 230, 0.11);
 }
 
+.theme-dark .nav-scrim {
+  background:
+    linear-gradient(
+      to top,
+      rgba(111, 143, 255, 0.18) 0%,
+      rgba(12, 18, 32, 0.94) 62%,
+      rgba(12, 18, 32, 0) 100%
+    );
+}
+
 .nav-tab {
   display: grid;
   min-height: 60px;
@@ -423,6 +481,10 @@ input:focus-visible {
   font-size: 16px;
 }
 
+.theme-dark .search-box input::placeholder {
+  color: rgba(143, 164, 220, 0.72);
+}
+
 .filter-row {
   display: flex;
   gap: 6px;
@@ -445,6 +507,10 @@ input:focus-visible {
   color: var(--blue);
   font-size: 13px;
   font-weight: 750;
+}
+
+.theme-dark .filter-pill {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .filter-pill.active {
@@ -589,8 +655,8 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 10px;
-  border-top: 1px solid #edf0f7;
-  border-bottom: 1px solid #edf0f7;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   padding: 16px 18px 14px;
 }
 
@@ -690,12 +756,16 @@ input:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid rgba(13, 69, 232, 0.08);
-  background: #fbfcff;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card) 82%, var(--app-bg));
   color: #8ca0e6;
   padding: 0 18px;
   font-size: 13px;
   font-weight: 700;
+}
+
+.theme-dark .vehicle-card-action {
+  color: rgba(220, 230, 255, 0.58);
 }
 
 .vehicle-card-action .icon {
@@ -824,6 +894,11 @@ input:focus-visible {
   border-top: 1px solid var(--border-blue);
   background: var(--app-bg);
   padding: 10px 22px 14px;
+}
+
+.theme-dark .action-bar {
+  background: var(--app-bg);
+  border-color: var(--line);
 }
 
 .detail-chip-grid {
@@ -1029,6 +1104,73 @@ input:focus-visible {
 
 .security-title {
   margin-bottom: 24px;
+}
+
+.settings-card {
+  display: grid;
+  gap: 18px;
+}
+
+.settings-copy {
+  margin: -14px 0 0;
+  color: var(--muted-blue);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.setting-row {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card) 85%, var(--app-bg));
+  color: var(--text-blue);
+  padding: 0 14px;
+  text-align: left;
+}
+
+.setting-row strong,
+.setting-row small {
+  display: block;
+}
+
+.setting-row small {
+  margin-top: 3px;
+  color: var(--muted-blue);
+  font-size: 12px;
+}
+
+.switch {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  flex: 0 0 46px;
+  border-radius: 999px;
+  background: rgba(143, 164, 220, 0.28);
+  transition: background 160ms ease;
+}
+
+.switch span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(22, 53, 135, 0.18);
+  transition: transform 160ms ease;
+}
+
+.switch.on {
+  background: var(--blue);
+}
+
+.switch.on span {
+  transform: translateX(18px);
 }
 
 .ghost-note {
