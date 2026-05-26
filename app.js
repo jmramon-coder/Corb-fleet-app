@@ -363,6 +363,7 @@ function applyInitialUrlRoute() {
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
+  if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
 }
 
@@ -704,7 +705,7 @@ function renderTruckDetails() {
         </div>
         ${truckTabs()}
       </section>
-      <div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>
+      ${state.truckTab === "schedule" ? `<div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>` : ""}
       ${truckTabContent(vehicle)}
       <div class="action-bar single-action">
         <button class="primary-btn wide" type="button" data-route="services">Service ${icons.wrench}</button>
