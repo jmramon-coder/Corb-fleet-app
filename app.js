@@ -12,6 +12,7 @@ const lucidePaths = {
   calendar: `<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>`,
   wrench: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.6 7.6l-6.7 6.7a2.1 2.1 0 0 1-3-3l6.7-6.7a6 6 0 0 1 7.6-7.6z"/>`,
   arrowRight: `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
+  chevronRight: `<path d="m9 18 6-6-6-6"/>`,
   arrowLeft: `<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>`,
   plus: `<path d="M5 12h14"/><path d="M12 5v14"/>`,
   check: `<path d="M20 6 9 17l-5-5"/>`,
@@ -38,6 +39,7 @@ const icons = {
   calendar: icon("calendar", "icon"),
   wrench: icon("wrench", "card-icon"),
   arrowRight: icon("arrowRight", "icon"),
+  chevronRight: icon("chevronRight", "icon"),
   back: icon("arrowLeft", "icon"),
   plus: icon("plus", "icon"),
   check: icon("check", "icon"),
@@ -535,34 +537,32 @@ function serviceCard(service) {
   const dueDays = daysUntil(service.dueDate);
   const dueChipLabel = status === "ok" ? "Done" : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? "Due today" : `Due in ${relativeDue(service.dueDate)}`;
   return `
-    <article class="service-card">
-      <div class="service-head">
-        <span>${icons.wrench}</span>
-        <div>
-          <h2 class="service-card-title">${escapeHtml(service.title)}</h2>
-          <button class="vehicle-link" type="button" data-open-vehicle="${service.vehicleId}">
-            ${icons.truck}
-            ${escapeHtml(vehicle?.title || "Unknown vehicle")}
-          </button>
+    <article class="service-card click-card card-with-rail" data-open-service="${service.id}">
+      <div class="service-card-body">
+        <div class="service-head">
+          <span>${icons.wrench}</span>
+          <div>
+            <h2 class="service-card-title">${escapeHtml(service.title)}</h2>
+            <button class="vehicle-link" type="button" data-open-vehicle="${service.vehicleId}">
+              ${icons.truck}
+              ${escapeHtml(vehicle?.title || "Unknown vehicle")}
+            </button>
+          </div>
+          <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
         </div>
-        <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
-      </div>
-      <div class="service-dates">
-        <div class="date-block">
-          <span>Next due</span>
-          <strong class="date-value">${icons.calendar}${formatDate(service.dueDate)}</strong>
+        <div class="service-dates">
+          <div class="date-block">
+            <span>Next due</span>
+            <strong class="date-value">${icons.calendar}${formatDate(service.dueDate)}</strong>
+          </div>
+          <div class="date-block">
+            <span>Last performed</span>
+            <strong class="date-value">${icons.calendar}${formatDate(service.lastPerformedDate)}</strong>
+          </div>
         </div>
-        <div class="date-block">
-          <span>Last performed</span>
-          <strong class="date-value">${icons.calendar}${formatDate(service.lastPerformedDate)}</strong>
-        </div>
+        ${disabled ? "" : `<div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">Mark as completed ${icons.check}</button></div>`}
       </div>
-      <div class="service-actions">
-        <button class="primary-btn wide" type="button" data-open-service="${service.id}">
-          View details <span class="button-icon-box">${icons.arrowRight}</span>
-        </button>
-        ${disabled ? "" : `<button class="success-btn wide" type="button" data-complete-service="${service.id}">Mark as completed ${icons.check}</button>`}
-      </div>
+      <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
     </article>
   `;
 }
@@ -591,21 +591,21 @@ function renderVehicles() {
 function vehicleCard(vehicle) {
   const openServices = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) !== "ok");
   return `
-    <article class="vehicle-card click-card" data-open-vehicle="${vehicle.id}">
-      <div class="vehicle-top">
-        <div>
-          <h2 class="vehicle-card-title">${escapeHtml(vehicle.title)}</h2>
-          <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
+    <article class="vehicle-card click-card card-with-rail" data-open-vehicle="${vehicle.id}">
+      <div class="vehicle-card-body">
+        <div class="vehicle-top">
+          <div>
+            <h2 class="vehicle-card-title">${escapeHtml(vehicle.title)}</h2>
+            <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
+          </div>
+          <span class="calendar-badge soft">${icons.calendar}<span>${openServices.length}</span></span>
         </div>
-        <span class="calendar-badge soft">${icons.calendar}<span>${openServices.length}</span></span>
+        <div class="vehicle-stats">
+          <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
+          <span class="vehicle-stat">${icons.wrench}${openServices.length} maintenance schedules</span>
+        </div>
       </div>
-      <div class="vehicle-stats">
-        <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
-        <span class="vehicle-stat">${icons.wrench}${openServices.length} maintenance schedules</span>
-      </div>
-      <div class="vehicle-card-action" aria-hidden="true">
-        <span>View truck details</span>${icons.arrowRight}
-      </div>
+      <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
     </article>
   `;
 }
@@ -968,12 +968,22 @@ app.addEventListener("click", (event) => {
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const toggleTheme = event.target.closest("[data-toggle-theme]");
 
-  if (route) navigate(route);
-  if (serviceId) navigate("serviceDetails", { activeServiceId: serviceId });
-  if (vehicleId) navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "details" });
   if (completeId) {
     completeService(completeId);
     render();
+    return;
+  }
+  if (vehicleId) {
+    navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "details" });
+    return;
+  }
+  if (serviceId) {
+    navigate("serviceDetails", { activeServiceId: serviceId });
+    return;
+  }
+  if (route) {
+    navigate(route);
+    return;
   }
   if (filter) {
     state.serviceFilter = filter;
