@@ -530,6 +530,9 @@ function filterRow() {
 function serviceCard(service) {
   const vehicle = vehicleById(service.vehicleId);
   const disabled = serviceStatus(service) === "ok";
+  const status = serviceStatus(service);
+  const dueDays = daysUntil(service.dueDate);
+  const dueChipLabel = status === "ok" ? "Done" : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? "Due today" : `Due in ${relativeDue(service.dueDate)}`;
   return `
     <article class="service-card">
       <div class="service-head">
@@ -541,11 +544,13 @@ function serviceCard(service) {
             ${escapeHtml(vehicle?.title || "Unknown vehicle")}
           </button>
         </div>
-        <span class="calendar-badge">${icons.calendar}<span>${Math.max(1, Math.abs(daysUntil(service.dueDate)))}</span></span>
       </div>
       <div class="service-dates">
         <div class="date-block">
-          <span>Next due</span>
+          <div class="date-label-row">
+            <span>Next due</span>
+            <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
+          </div>
           <strong class="date-value">${icons.calendar}${formatDate(service.dueDate)}</strong>
         </div>
         <div class="date-block">

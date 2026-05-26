@@ -687,7 +687,7 @@ input:focus-visible {
 
 .service-head {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr) auto;
+  grid-template-columns: 24px minmax(0, 1fr);
   gap: 9px;
   align-items: center;
   padding: 16px 18px 14px;
@@ -784,12 +784,53 @@ input:focus-visible {
   min-width: 0;
 }
 
+.date-label-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .date-block span,
 .detail-label {
   display: block;
   color: var(--muted-blue);
   font-size: 13px;
   line-height: 1.2;
+}
+
+.due-chip {
+  display: inline-flex;
+  min-height: 20px;
+  align-items: center;
+  border: 1px solid var(--divider);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 78%, var(--app-bg));
+  color: var(--profile-muted);
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.due-chip.upcoming {
+  border-color: rgba(255, 159, 31, 0.24);
+  background: rgba(255, 159, 31, 0.08);
+  color: color-mix(in srgb, var(--orange) 80%, var(--profile-muted));
+}
+
+.due-chip.overdue {
+  border-color: rgba(255, 65, 72, 0.24);
+  background: rgba(255, 65, 72, 0.08);
+  color: var(--red);
+}
+
+.due-chip.ok {
+  border-color: rgba(23, 195, 70, 0.22);
+  background: rgba(23, 195, 70, 0.08);
+  color: var(--green);
 }
 
 .date-value {
