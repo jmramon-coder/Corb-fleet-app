@@ -431,6 +431,7 @@ input:focus-visible {
   bottom: 0;
   z-index: 18;
   height: 66px;
+  border-top: 1px solid var(--border-blue);
   pointer-events: none;
   opacity: 1;
   background:
@@ -493,6 +494,7 @@ input:focus-visible {
 }
 
 .theme-dark .nav-scrim {
+  border-top-color: var(--line);
   background:
     linear-gradient(
       to top,
