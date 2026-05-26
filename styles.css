@@ -16,8 +16,11 @@
   --green-2: #5ed67a;
   --line: #e6ebfa;
   --ink: #0a37c6;
-  --shadow: 0 16px 35px rgba(22, 53, 135, 0.045);
-  --shadow-strong: 0 18px 44px rgba(22, 53, 135, 0.08);
+  --shadow: none;
+  --shadow-strong: 0 8px 22px rgba(22, 53, 135, 0.06);
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 * {
@@ -66,11 +69,11 @@ input:focus-visible {
 .screen {
   min-height: 100svh;
   overflow-x: hidden;
-  padding: 18px 18px 112px;
+  padding: 16px 18px 104px;
 }
 
 .screen.with-actions {
-  padding-bottom: 116px;
+  padding-bottom: 100px;
 }
 
 .brand-header {
@@ -78,8 +81,8 @@ input:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 40px;
-  margin-bottom: 48px;
+  min-height: 34px;
+  margin-bottom: 34px;
 }
 
 .brand {
@@ -89,9 +92,9 @@ input:focus-visible {
 }
 
 .brand-mark {
-  width: 29px;
-  height: 29px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
   background: var(--blue);
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.12);
 }
@@ -115,12 +118,14 @@ input:focus-visible {
 }
 
 .icon-btn {
-  display: inline-grid;
-  width: 28px;
-  height: 28px;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
   place-items: center;
-  border: 2px solid var(--blue);
-  border-radius: 8px;
+  border: 0;
+  border-radius: 10px;
   background: transparent;
   color: var(--blue);
 }
@@ -129,9 +134,9 @@ input:focus-visible {
 .tab-icon,
 .card-icon {
   display: block;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 20px;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
@@ -142,35 +147,35 @@ input:focus-visible {
 }
 
 .tab-icon {
-  width: 23px;
-  height: 23px;
-  flex-basis: 23px;
-}
-
-.card-icon {
   width: 22px;
   height: 22px;
   flex-basis: 22px;
 }
 
+.card-icon {
+  width: 19px;
+  height: 19px;
+  flex-basis: 19px;
+}
+
 .icon-btn .icon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .screen-heading {
-  margin: 0 0 32px;
+  margin: 0 0 20px;
   padding-left: 23px;
 }
 
 .screen-heading.tight {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .screen-title {
   margin: 0;
   color: var(--text-blue);
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 500;
   line-height: 1.14;
   letter-spacing: 0;
@@ -179,30 +184,31 @@ input:focus-visible {
 .screen-subtitle {
   margin: 2px 0 0;
   color: var(--muted-blue);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.25;
 }
 
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin: 0 12px 20px;
+  gap: 12px;
+  margin: 0 12px 16px;
 }
 
 .metric-card {
-  min-height: 116px;
-  border-radius: 14px;
+  min-height: 86px;
+  border: 1px solid rgba(191, 208, 255, 0.16);
+  border-radius: var(--radius-md);
   background: var(--card);
-  padding: 5px 14px 14px;
+  padding: 4px 12px 12px;
   text-align: center;
   box-shadow: var(--shadow);
 }
 
 .metric-rule {
-  width: 70px;
-  height: 5px;
-  margin: 0 auto 15px;
+  width: 58px;
+  height: 4px;
+  margin: 0 auto 10px;
   border-radius: 99px;
 }
 
@@ -218,27 +224,27 @@ input:focus-visible {
   display: block;
   min-height: 34px;
   color: var(--text-blue);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.1;
 }
 
 .metric-value {
   display: block;
-  margin-top: 16px;
+  margin-top: 5px;
   color: #cbd6f7;
-  font-size: 31px;
+  font-size: 27px;
   font-weight: 800;
   line-height: 1;
 }
 
 .empty-card {
   display: grid;
-  min-height: 358px;
+  min-height: 300px;
   place-items: center;
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   background: var(--card);
   margin: 0 10px;
-  padding: 30px 25px;
+  padding: 24px 22px;
   text-align: center;
 }
 
@@ -261,9 +267,9 @@ input:focus-visible {
 
 .empty-copy {
   max-width: 278px;
-  margin: 0 0 43px;
+  margin: 0 0 32px;
   color: #7895f6;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.08;
 }
 
@@ -273,12 +279,12 @@ input:focus-visible {
 .danger-btn,
 .secondary-detail-btn {
   display: inline-flex;
-  min-height: 40px;
+  min-height: 36px;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  border-radius: 12px;
-  padding: 0 17px;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 0 14px;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -306,14 +312,14 @@ input:focus-visible {
 }
 
 .outline-btn {
-  border: 2px solid var(--blue);
+  border: 1.5px solid var(--blue);
   background: transparent;
   color: var(--blue);
   font-weight: 700;
 }
 
 .secondary-detail-btn {
-  border: 2px solid var(--blue);
+  border: 1.5px solid rgba(36, 81, 230, 0.78);
   background: #fff;
   color: var(--blue);
   font-weight: 750;
@@ -324,13 +330,14 @@ input:focus-visible {
 }
 
 .button-icon-box {
-  display: inline-grid;
-  width: 27px;
-  height: 27px;
-  place-items: center;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  margin-right: -11px;
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  margin-right: 0;
 }
 
 .button-icon-box .icon {
@@ -344,14 +351,14 @@ input:focus-visible {
   right: 0;
   bottom: 0;
   z-index: 18;
-  height: 158px;
+  height: 136px;
   pointer-events: none;
   background:
     linear-gradient(
       to top,
-      rgba(36, 81, 230, 0.18) 0%,
-      rgba(36, 81, 230, 0.08) 36%,
-      rgba(245, 245, 245, 0.92) 64%,
+      rgba(36, 81, 230, 0.14) 0%,
+      rgba(36, 81, 230, 0.06) 34%,
+      rgba(245, 245, 245, 0.88) 62%,
       rgba(245, 245, 245, 0) 100%
     );
 }
@@ -359,29 +366,30 @@ input:focus-visible {
 .bottom-nav {
   position: fixed;
   left: 50%;
-  bottom: 38px;
+  bottom: 30px;
   z-index: 20;
   display: grid;
-  width: min(304px, calc(100vw - 96px));
-  min-width: 286px;
+  width: min(300px, calc(100vw - 88px));
+  min-width: 282px;
   grid-template-columns: repeat(3, 1fr);
   transform: translateX(-50%);
-  border-radius: 14px;
+  border: 1px solid rgba(191, 208, 255, 0.22);
+  border-radius: 16px;
   background: var(--card);
   padding: 5px;
-  box-shadow: 0 18px 45px rgba(36, 81, 230, 0.13);
+  box-shadow: 0 12px 30px rgba(36, 81, 230, 0.11);
 }
 
 .nav-tab {
   display: grid;
-  min-height: 64px;
+  min-height: 60px;
   place-items: center;
   align-content: center;
   gap: 3px;
-  border-radius: 10px;
+  border-radius: 12px;
   background: transparent;
   color: var(--text-blue);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .nav-tab.active {
@@ -389,15 +397,15 @@ input:focus-visible {
 }
 
 .search-wrap {
-  margin: 0 3px 12px;
+  margin: 0 3px 10px;
 }
 
 .search-box {
   display: flex;
-  min-height: 46px;
+  min-height: 42px;
   align-items: center;
   gap: 10px;
-  border-radius: 13px;
+  border-radius: 12px;
   background: var(--card);
   padding: 0 18px;
   color: var(--text-blue);
@@ -414,8 +422,8 @@ input:focus-visible {
 
 .filter-row {
   display: flex;
-  gap: 7px;
-  margin: 0 3px 32px;
+  gap: 6px;
+  margin: 0 3px 18px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -425,12 +433,12 @@ input:focus-visible {
 }
 
 .filter-pill {
-  min-height: 29px;
+  min-height: 28px;
   flex: 0 0 auto;
   border: 1.5px solid currentColor;
-  border-radius: 11px;
+  border-radius: 10px;
   background: transparent;
-  padding: 0 14px;
+  padding: 0 12px;
   color: var(--blue);
   font-size: 14px;
   font-weight: 800;
@@ -440,7 +448,7 @@ input:focus-visible {
   border-color: var(--blue);
   background: var(--blue);
   color: #fff;
-  box-shadow: 0 8px 14px rgba(36, 81, 230, 0.18);
+  box-shadow: none;
 }
 
 .filter-pill.overdue {
@@ -457,7 +465,7 @@ input:focus-visible {
 
 .list-stack {
   display: grid;
-  gap: 16px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -466,9 +474,9 @@ input:focus-visible {
 .profile-card,
 .detail-card,
 .technical-card {
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   background: var(--card);
-  border: 1px solid rgba(191, 208, 255, 0.18);
+  border: 1px solid rgba(191, 208, 255, 0.2);
   box-shadow: var(--shadow);
 }
 
@@ -479,10 +487,10 @@ input:focus-visible {
 
 .service-head {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 9px;
   align-items: center;
-  padding: 24px 24px 18px;
+  padding: 16px 18px 14px;
 }
 
 .service-head > div {
@@ -493,7 +501,7 @@ input:focus-visible {
 .vehicle-card-title {
   margin: 0;
   color: var(--text-blue);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1.1;
 }
@@ -502,9 +510,9 @@ input:focus-visible {
 .muted-row {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   color: var(--muted-blue);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.15;
 }
 
@@ -520,26 +528,27 @@ input:focus-visible {
 
 .calendar-badge {
   display: inline-flex;
-  min-width: 58px;
-  min-height: 41px;
+  min-width: 48px;
+  min-height: 34px;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  border-radius: 10px;
+  gap: 5px;
+  border-radius: 9px;
   background: var(--orange);
   color: #fff;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
 }
 
 .calendar-badge .icon {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .calendar-badge.soft {
-  min-width: 56px;
-  background: var(--blue-softer);
+  min-width: 38px;
+  min-height: 28px;
+  background: transparent;
   color: var(--blue);
 }
 
@@ -549,7 +558,7 @@ input:focus-visible {
   gap: 10px;
   border-top: 1px solid #edf0f7;
   border-bottom: 1px solid #edf0f7;
-  padding: 25px 24px 18px;
+  padding: 16px 18px 14px;
 }
 
 .date-block {
@@ -560,7 +569,7 @@ input:focus-visible {
 .detail-label {
   display: block;
   color: var(--muted-blue);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.2;
 }
 
@@ -569,9 +578,9 @@ input:focus-visible {
   align-items: flex-start;
   gap: 6px;
   min-width: 0;
-  margin-top: 9px;
+  margin-top: 7px;
   color: var(--text-blue);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   line-height: 1.04;
   overflow-wrap: anywhere;
@@ -583,14 +592,14 @@ input:focus-visible {
 
 .service-actions {
   display: grid;
-  gap: 10px;
-  padding: 24px 24px 13px;
+  gap: 8px;
+  padding: 14px 18px 14px;
 }
 
 .vehicle-card {
   display: grid;
-  gap: 22px;
-  padding: 18px 24px 18px;
+  gap: 14px;
+  padding: 16px 18px;
 }
 
 .click-card {
@@ -615,23 +624,23 @@ input:focus-visible {
 }
 
 .vehicle-model {
-  margin-top: 2px;
+  margin-top: 1px;
   color: var(--text-blue);
-  font-size: 17px;
+  font-size: 15px;
   line-height: 1.08;
 }
 
 .vehicle-stats {
   display: grid;
-  gap: 14px;
+  gap: 9px;
   color: var(--text-blue);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .vehicle-stat {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .vehicle-stat .card-icon,
@@ -642,14 +651,14 @@ input:focus-visible {
 .back-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   min-height: 30px;
-  margin: -26px 4px 16px;
+  margin: -20px 0 12px;
 }
 
 .back-title {
   color: var(--text-blue);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.15;
 }
@@ -661,29 +670,29 @@ input:focus-visible {
 }
 
 .truck-overview-header {
-  border: 1px solid rgba(191, 208, 255, 0.5);
-  border-radius: 18px;
-  background: linear-gradient(180deg, #fff 0%, #f8faff 100%);
-  margin: -28px 0 16px;
-  padding: 14px 12px 12px;
+  border: 1px solid rgba(191, 208, 255, 0.34);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  margin: -20px 0 12px;
+  padding: 10px;
   box-shadow: var(--shadow);
 }
 
 .truck-back-row {
-  margin: 0 0 14px;
+  margin: 0 0 10px;
 }
 
 .truck-overview-header .back-title {
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .truck-overview-header .back-title span {
   color: var(--muted-blue);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .form-title {
-  margin: 47px 12px 34px;
+  margin: 34px 12px 24px;
   color: var(--text-blue);
   font-size: 17px;
   font-weight: 800;
@@ -691,7 +700,7 @@ input:focus-visible {
 
 .mobile-form {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   padding: 0 14px;
 }
 
@@ -704,7 +713,7 @@ input:focus-visible {
 
 .mobile-form input {
   width: 100%;
-  min-height: 54px;
+  min-height: 48px;
   border: 0;
   border-radius: 11px;
   background: #fff;
@@ -720,26 +729,26 @@ input:focus-visible {
   bottom: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 116px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 108px;
+  gap: 10px;
   border-top: 1px solid var(--border-blue);
   background: var(--app-bg);
-  padding: 12px 24px 16px;
+  padding: 10px 22px 14px;
 }
 
 .detail-chip-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 9px;
-  margin: 26px 3px 13px;
+  gap: 8px;
+  margin: 18px 0 10px;
 }
 
 .detail-chip {
-  min-height: 69px;
+  min-height: 58px;
   border: 1px solid var(--border-blue);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   background: #fff;
-  padding: 16px 14px;
+  padding: 12px;
   color: var(--text-blue);
   font-size: 14px;
 }
@@ -751,13 +760,13 @@ input:focus-visible {
 
 .status-panel {
   display: flex;
-  min-height: 67px;
+  min-height: 56px;
   align-items: center;
-  border-radius: 13px;
+  border-radius: var(--radius-md);
   background: var(--orange);
   color: #fff;
-  margin: 0 3px 25px;
-  padding: 0 14px;
+  margin: 0 0 14px;
+  padding: 0 12px;
   font-size: 16px;
 }
 
@@ -768,7 +777,7 @@ input:focus-visible {
 }
 
 .detail-card {
-  padding: 17px 24px 19px;
+  padding: 16px 18px;
 }
 
 .detail-card h3,
@@ -777,30 +786,30 @@ input:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 40px;
+  margin: 0 0 24px;
   color: var(--text-blue);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
 }
 
 .history-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  gap: 18px;
 }
 
 .segmented-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
   border-bottom: 1px solid var(--border-blue);
-  margin: -12px -18px 18px;
-  padding: 0 20px 10px;
+  margin: -8px -18px 14px;
+  padding: 0 20px 8px;
 }
 
 .segment-tab {
-  min-height: 34px;
-  border-radius: 12px;
+  min-height: 32px;
+  border-radius: 10px;
   background: transparent;
   color: var(--text-blue);
   font-size: 13px;
@@ -812,28 +821,28 @@ input:focus-visible {
 }
 
 .truck-overview-header .segmented-tabs {
-  border: 1px solid rgba(191, 208, 255, 0.7);
-  border-radius: 14px;
+  border: 1px solid rgba(191, 208, 255, 0.45);
+  border-radius: 12px;
   background: #fff;
   margin: 0;
-  padding: 4px;
+  padding: 3px;
 }
 
 .truck-overview-header .segment-tab {
-  min-height: 38px;
+  min-height: 34px;
 }
 
 .truck-overview-header .segment-tab.active {
   background: var(--blue);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(36, 81, 230, 0.18);
+  box-shadow: none;
 }
 
 .truck-metrics-shell {
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   background: #fff;
-  margin-bottom: 12px;
-  padding: 16px 14px;
+  margin-bottom: 10px;
+  padding: 12px;
   border: 1px solid rgba(191, 208, 255, 0.18);
 }
 
@@ -842,15 +851,15 @@ input:focus-visible {
 }
 
 .technical-card {
-  padding: 16px 24px 26px;
+  padding: 16px 18px 18px;
 }
 
 .technical-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .technical-head h3 {
@@ -860,14 +869,14 @@ input:focus-visible {
 .edit-btn {
   display: inline-flex;
   min-height: 32px;
-  min-width: 102px;
+  min-width: 82px;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 11px;
+  border-radius: 10px;
   background: var(--blue);
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .edit-btn .icon {
@@ -877,7 +886,7 @@ input:focus-visible {
 
 .technical-list {
   display: grid;
-  gap: 24px;
+  gap: 18px;
 }
 
 .technical-list strong {
@@ -887,33 +896,33 @@ input:focus-visible {
 }
 
 .delete-row {
-  margin-top: 17px;
+  margin-top: 12px;
 }
 
 .profile-title {
-  margin: -34px 3px 27px;
+  margin: -24px 3px 18px;
   color: var(--text-blue);
   font-size: 26px;
   font-weight: 400;
 }
 
 .profile-tabs {
-  margin: 0 -18px 26px;
+  margin: 0 -18px 18px;
   padding: 0 20px 7px;
   border-bottom: 1px solid var(--line);
 }
 
 .profile-card {
-  margin-bottom: 15px;
-  padding: 19px 24px;
+  margin-bottom: 12px;
+  padding: 16px 18px;
 }
 
 .account-row {
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr) 32px;
-  gap: 10px;
+  gap: 9px;
   align-items: center;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
 }
 
 .avatar {
