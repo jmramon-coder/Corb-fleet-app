@@ -696,6 +696,12 @@ input:focus-visible {
   min-width: 0;
 }
 
+.service-card-body {
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
 .card-chevron-rail {
   display: flex;
   min-height: 100%;
@@ -716,8 +722,8 @@ input:focus-visible {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr) auto;
   gap: 9px;
-  align-items: center;
-  padding: 16px 18px 14px;
+  align-items: start;
+  padding: 0;
 }
 
 .service-head > span:first-child {
@@ -801,10 +807,8 @@ input:focus-visible {
 .service-dates {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px;
-  border-top: 1px solid var(--divider);
-  border-bottom: 1px solid var(--divider);
-  padding: 16px 18px 14px;
+  gap: 12px;
+  padding: 0;
 }
 
 .date-block {
@@ -874,7 +878,7 @@ input:focus-visible {
 .service-actions {
   display: grid;
   gap: 8px;
-  padding: 14px 18px 14px;
+  padding: 0;
 }
 
 .vehicle-card {
@@ -1577,9 +1581,6 @@ input:focus-visible {
     display: none;
   }
 
-  .service-head,
-  .service-dates,
-  .service-actions,
   .technical-card,
   .detail-card {
     padding-left: 18px;
