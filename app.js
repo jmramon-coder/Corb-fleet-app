@@ -54,6 +54,10 @@ const icons = {
 
 const app = document.querySelector("#app");
 let state = loadState();
+let chromeHidden = false;
+let lastScrollY = window.scrollY;
+let scrollTicking = false;
+let touchStartY = 0;
 applyInitialUrlRoute();
 
 function isoDate(date) {
@@ -334,6 +338,9 @@ function navigate(route, options = {}) {
   state.previousRoute = state.route;
   state.route = route;
   Object.assign(state, options);
+  setChromeHidden(false);
+  lastScrollY = 0;
+  window.scrollTo(0, 0);
   render();
 }
 
@@ -812,6 +819,7 @@ function addVehicleFromForm(form) {
 function render() {
   saveState();
   document.documentElement.dataset.theme = state.theme;
+  document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
   app.innerHTML = `
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
       ${routeMarkup()}
@@ -841,6 +849,79 @@ function escapeHtml(value) {
 function escapeAttr(value) {
   return escapeHtml(value).replaceAll("\n", " ");
 }
+
+function setChromeHidden(hidden) {
+  if (chromeHidden === hidden) return;
+  chromeHidden = hidden;
+  document.documentElement.classList.toggle("chrome-hidden", hidden);
+}
+
+function updateChromeForScroll() {
+  const currentY = Math.max(0, window.scrollY);
+  const delta = currentY - lastScrollY;
+
+  if (currentY <= 12) {
+    setChromeHidden(false);
+  } else if (delta > 8) {
+    setChromeHidden(true);
+  } else if (delta < -20) {
+    setChromeHidden(false);
+  }
+
+  lastScrollY = currentY;
+  scrollTicking = false;
+}
+
+window.addEventListener(
+  "scroll",
+  () => {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(updateChromeForScroll);
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  "wheel",
+  (event) => {
+    if (window.scrollY <= 12) {
+      setChromeHidden(false);
+    } else if (event.deltaY > 8) {
+      setChromeHidden(true);
+    } else if (event.deltaY < -8) {
+      setChromeHidden(false);
+    }
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  "touchstart",
+  (event) => {
+    touchStartY = event.touches[0]?.clientY || 0;
+  },
+  { passive: true }
+);
+
+window.addEventListener(
+  "touchmove",
+  (event) => {
+    const currentTouchY = event.touches[0]?.clientY || touchStartY;
+    const touchDelta = touchStartY - currentTouchY;
+
+    if (window.scrollY <= 12) {
+      setChromeHidden(false);
+    } else if (touchDelta > 8) {
+      setChromeHidden(true);
+    } else if (touchDelta < -8) {
+      setChromeHidden(false);
+    }
+
+    touchStartY = currentTouchY;
+  },
+  { passive: true }
+);
 
 app.addEventListener("click", (event) => {
   const route = event.target.closest("[data-route]")?.dataset.route;

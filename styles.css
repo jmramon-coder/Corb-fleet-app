@@ -117,8 +117,26 @@ input:focus-visible {
   justify-content: space-between;
   gap: 16px;
   min-height: 34px;
+  max-height: 40px;
   margin-bottom: 34px;
   padding: 0;
+  overflow: hidden;
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    max-height 180ms ease,
+    margin-bottom 180ms ease,
+    transform 180ms ease,
+    opacity 140ms ease;
+}
+
+.chrome-hidden .brand-header {
+  max-height: 0;
+  min-height: 0;
+  margin-bottom: 8px;
+  transform: translateY(-18px);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .brand {
@@ -414,6 +432,7 @@ input:focus-visible {
   z-index: 18;
   height: 66px;
   pointer-events: none;
+  opacity: 1;
   background:
     linear-gradient(
       to top,
@@ -421,6 +440,7 @@ input:focus-visible {
       rgba(245, 245, 245, 0.18) 48%,
       rgba(245, 245, 245, 0) 100%
     );
+  transition: opacity 180ms ease;
 }
 
 .bottom-nav {
@@ -445,6 +465,19 @@ input:focus-visible {
     0 -4px 14px rgba(36, 81, 230, 0.08),
     0 12px 30px rgba(36, 81, 230, 0.11);
   backdrop-filter: blur(14px);
+  transition:
+    transform 220ms ease,
+    opacity 180ms ease;
+}
+
+.chrome-hidden .nav-scrim {
+  opacity: 0;
+}
+
+.chrome-hidden .bottom-nav {
+  transform: translate(-50%, calc(100% + 30px));
+  opacity: 0;
+  pointer-events: none;
 }
 
 .bottom-nav::before {
