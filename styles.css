@@ -34,7 +34,7 @@ html {
 }
 
 html[data-theme="dark"] {
-  background: #050505;
+  background: #0b0b0c;
 }
 
 body {
@@ -49,7 +49,7 @@ body {
 
 html[data-theme="dark"] body,
 html[data-theme="dark"] #app {
-  background: #050505;
+  background: #0b0b0c;
 }
 
 button,
@@ -78,8 +78,8 @@ input:focus-visible {
 }
 
 .theme-dark {
-  --app-bg: #050505;
-  --card: #101010;
+  --app-bg: #0b0b0c;
+  --card: #161616;
   --blue: #4d7cff;
   --blue-2: #7da0ff;
   --blue-soft: rgba(77, 124, 255, 0.17);
@@ -412,7 +412,7 @@ input:focus-visible {
   right: 0;
   bottom: 0;
   z-index: 18;
-  height: 136px;
+  height: 178px;
   pointer-events: none;
   background:
     linear-gradient(
@@ -445,9 +445,11 @@ input:focus-visible {
   background:
     linear-gradient(
       to top,
-      rgba(77, 124, 255, 0.15) 0%,
-      rgba(5, 5, 5, 0.94) 62%,
-      rgba(5, 5, 5, 0) 100%
+      #0b0b0c 0%,
+      #0b0b0c 68%,
+      rgba(11, 11, 12, 0.82) 82%,
+      rgba(11, 11, 12, 0.42) 92%,
+      rgba(11, 11, 12, 0) 100%
     );
 }
 
