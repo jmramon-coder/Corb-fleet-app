@@ -412,7 +412,7 @@ input:focus-visible {
   right: 0;
   bottom: 0;
   z-index: 18;
-  height: 82px;
+  height: 66px;
   pointer-events: none;
   background:
     linear-gradient(
@@ -441,8 +441,8 @@ input:focus-visible {
   background: var(--card);
   padding: 5px;
   box-shadow:
-    0 0 0 24px var(--app-bg),
-    0 -8px 22px rgba(36, 81, 230, 0.08),
+    0 0 0 12px var(--app-bg),
+    0 -4px 14px rgba(36, 81, 230, 0.08),
     0 12px 30px rgba(36, 81, 230, 0.11);
   backdrop-filter: blur(14px);
 }
@@ -450,11 +450,11 @@ input:focus-visible {
 .bottom-nav::before {
   content: "";
   position: absolute;
-  inset: -18px -46px -22px;
+  inset: -9px -34px -18px;
   z-index: -1;
   border-radius: 30px;
   background: var(--app-bg);
-  box-shadow: 0 0 30px rgba(245, 245, 245, 0.72);
+  box-shadow: 0 0 18px rgba(245, 245, 245, 0.68);
   pointer-events: none;
 }
 
@@ -473,14 +473,14 @@ input:focus-visible {
   background: rgba(22, 22, 22, 0.92);
   border-top-color: rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 0 0 24px var(--app-bg),
-    0 -8px 22px rgba(255, 255, 255, 0.04),
+    0 0 0 12px var(--app-bg),
+    0 -4px 14px rgba(255, 255, 255, 0.04),
     0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 .theme-dark .bottom-nav::before {
   background: var(--app-bg);
-  box-shadow: 0 0 30px rgba(11, 11, 12, 0.9);
+  box-shadow: 0 0 18px rgba(11, 11, 12, 0.9);
 }
 
 .nav-tab {
