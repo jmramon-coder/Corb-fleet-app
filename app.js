@@ -81,6 +81,23 @@ const translations = {
     noVehicleYet: "No vehicle yet",
     emptyVehicleCopy: "Add your first vehicle to start tracking maintenance schedules and service history",
     addVehicle: "Add vehicle",
+    addService: "Add service",
+    create: "Create",
+    createNew: "Create new",
+    createVehicle: "Create vehicle",
+    createService: "Create service",
+    serviceTitle: "Service title",
+    selectTruck: "Select truck",
+    scheduleType: "Schedule type",
+    intervalDays: "Interval days",
+    intervalKm: "Interval KM",
+    dueDate: "Due date",
+    dueKm: "Due KM",
+    kilometers: "Kilometers",
+    year: "Year",
+    engineSerial: "Engine serial",
+    filters: "Filters",
+    noVehicleForService: "Create a vehicle before adding a service.",
     unknownVehicle: "Unknown vehicle",
     nextDue: "Next due",
     lastPerformed: "Last performed",
@@ -111,6 +128,13 @@ const translations = {
     fleet: "Fleet",
     settings: "Settings",
     fleetPreferences: "Fleet preferences will live here.",
+    activeFleet: "Active fleet",
+    fleetName: "Fleet name",
+    createFleet: "Create fleet",
+    saveFleet: "Save fleet",
+    switchFleet: "Switch fleet",
+    vehiclesCount: "{count} vehicles",
+    servicesCount: "{count} services",
     editProfile: "Edit profile",
     joined: "Joined",
     role: "Role",
@@ -197,6 +221,23 @@ const translations = {
     noVehicleYet: "Aucun véhicule",
     emptyVehicleCopy: "Ajoutez votre premier véhicule pour suivre les entretiens et l'historique des services",
     addVehicle: "Ajouter un véhicule",
+    addService: "Ajouter un service",
+    create: "Créer",
+    createNew: "Créer",
+    createVehicle: "Créer un véhicule",
+    createService: "Créer un service",
+    serviceTitle: "Titre du service",
+    selectTruck: "Choisir un camion",
+    scheduleType: "Type d'horaire",
+    intervalDays: "Intervalle en jours",
+    intervalKm: "Intervalle en KM",
+    dueDate: "Date d'échéance",
+    dueKm: "KM d'échéance",
+    kilometers: "Kilométrage",
+    year: "Année",
+    engineSerial: "Série moteur",
+    filters: "Filtres",
+    noVehicleForService: "Créez un véhicule avant d'ajouter un service.",
     unknownVehicle: "Véhicule inconnu",
     nextDue: "Prochaine échéance",
     lastPerformed: "Dernier service",
@@ -227,6 +268,13 @@ const translations = {
     fleet: "Flotte",
     settings: "Réglages",
     fleetPreferences: "Les préférences de flotte seront ici.",
+    activeFleet: "Flotte active",
+    fleetName: "Nom de la flotte",
+    createFleet: "Créer une flotte",
+    saveFleet: "Enregistrer",
+    switchFleet: "Changer de flotte",
+    vehiclesCount: "{count} véhicules",
+    servicesCount: "{count} services",
     editProfile: "Modifier le profil",
     joined: "Inscrit",
     role: "Rôle",
@@ -354,6 +402,7 @@ function defaultState() {
     activeFleetId: "fleet-1",
     activeServiceId: null,
     activeVehicleId: null,
+    createMenuOpen: false,
     completionModalServiceId: null,
     serviceFilter: "all",
     serviceSearch: "",
@@ -596,6 +645,8 @@ function normalizeState(next) {
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
+  if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || "fleet-1";
+  next.createMenuOpen = false;
   next.completionModalServiceId = null;
   if (!["identification", "schedule", "story"].includes(next.serviceTab)) next.serviceTab = "identification";
   if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
@@ -728,6 +779,14 @@ function vehicleById(id) {
   return state.vehicles.find((vehicle) => vehicle.id === id);
 }
 
+function activeFleet() {
+  return state.fleets.find((fleet) => fleet.id === state.activeFleetId) || state.fleets[0];
+}
+
+function vehiclesForActiveFleet() {
+  return state.vehicles.filter((vehicle) => vehicle.fleetId === state.activeFleetId);
+}
+
 function serviceById(id) {
   return state.serviceSchedules.find((service) => service.id === id);
 }
@@ -763,14 +822,15 @@ function visibleServices() {
   return state.serviceSchedules.filter((service) => {
     const vehicle = vehicleById(service.vehicleId);
     const status = serviceStatus(service);
+    const matchesFleet = service.fleetId === state.activeFleetId;
     const matchesFilter = state.serviceFilter === "all" || state.serviceFilter === status;
     const haystack = `${service.title} ${displayServiceTitle(service)} ${vehicle?.title || ""} ${vehicle ? displayVehicleTitle(vehicle) : ""} ${vehicle?.brandModel || ""}`.toLowerCase();
-    return matchesFilter && (!query || haystack.includes(query));
+    return matchesFleet && matchesFilter && (!query || haystack.includes(query));
   });
 }
 
 function statusCounts() {
-  return state.serviceSchedules.reduce(
+  return state.serviceSchedules.filter((service) => service.fleetId === state.activeFleetId).reduce(
     (counts, service) => {
       counts[serviceStatus(service)] += 1;
       return counts;
@@ -843,6 +903,7 @@ function displayRole(value) {
 function navigate(route, options = {}) {
   state.previousRoute = state.route;
   state.route = route;
+  state.createMenuOpen = false;
   Object.assign(state, options);
   setChromeHidden(false);
   lastScrollY = 0;
@@ -858,6 +919,7 @@ function applyInitialUrlRoute() {
     "vehicles",
     "profile",
     "addVehicle",
+    "addService",
     "serviceDetails",
     "truckDetails"
   ]);
@@ -872,6 +934,7 @@ function applyInitialUrlRoute() {
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
   if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
   if (params.get("completionModal")) state.completionModalServiceId = params.get("completionModal");
+  if (params.get("createMenu") === "1") state.createMenuOpen = true;
 }
 
 function header({ close = false } = {}) {
@@ -897,6 +960,9 @@ function bottomNav(active) {
       ${navButton("services", t("services"), icons.services, active)}
       ${navButton("vehicles", t("vehicles"), icons.truck, active)}
     </nav>
+    <button class="create-fab" type="button" data-toggle-create-menu aria-label="${escapeAttr(t("createNew"))}">
+      ${icons.plus}
+    </button>
   `;
 }
 
@@ -906,6 +972,30 @@ function navButton(route, label, icon, active) {
       ${icon}
       <span>${label}</span>
     </button>
+  `;
+}
+
+function createActionMenu() {
+  if (!state.createMenuOpen) return "";
+  return `
+    <div class="create-menu-backdrop" data-close-create-menu role="presentation">
+      <section class="create-menu" role="dialog" aria-modal="true" aria-label="${escapeAttr(t("createNew"))}">
+        <div class="create-menu-head">
+          <h2>${escapeHtml(t("createNew"))}</h2>
+          <button class="icon-btn" type="button" data-close-create-menu-trigger aria-label="${escapeAttr(t("close"))}">${icons.x}</button>
+        </div>
+        <button class="create-option" type="button" data-route="addVehicle">
+          <span>${icons.truck}</span>
+          <strong>${escapeHtml(t("createVehicle"))}</strong>
+          ${icons.chevronRight}
+        </button>
+        <button class="create-option" type="button" data-route="addService">
+          <span>${icons.wrench}</span>
+          <strong>${escapeHtml(t("createService"))}</strong>
+          ${icons.chevronRight}
+        </button>
+      </section>
+    </div>
   `;
 }
 
@@ -964,8 +1054,9 @@ function emptyVehicleCard() {
 }
 
 function renderDashboard() {
-  const hasVehicles = state.vehicles.length > 0;
-  const firstUpcoming = state.serviceSchedules.find((service) => serviceStatus(service) === "upcoming");
+  const vehicles = vehiclesForActiveFleet();
+  const hasVehicles = vehicles.length > 0;
+  const firstUpcoming = state.serviceSchedules.find((service) => service.fleetId === state.activeFleetId && serviceStatus(service) === "upcoming");
 
   return `
     <div class="screen">
@@ -977,7 +1068,7 @@ function renderDashboard() {
         ${metricCards()}
         ${
           hasVehicles
-            ? `<div class="list-stack">${firstUpcoming ? serviceCard(firstUpcoming) : vehicleCard(state.vehicles[0])}</div>`
+            ? `<div class="list-stack">${firstUpcoming ? serviceCard(firstUpcoming) : vehicleCard(vehicles[0])}</div>`
             : emptyVehicleCard()
         }
       </section>
@@ -1017,7 +1108,7 @@ function renderServices() {
 function filterRow() {
   const counts = statusCounts();
   const filters = [
-    ["all", t("all"), "", state.serviceSchedules.length],
+    ["all", t("all"), "", state.serviceSchedules.filter((service) => service.fleetId === state.activeFleetId).length],
     ["overdue", t("overdue"), "overdue", counts.overdue],
     ["upcoming", t("upcoming"), "upcoming", counts.upcoming],
     ["ok", t("ok"), "ok", counts.ok]
@@ -1151,7 +1242,7 @@ function completionCard(completion, { showVehicle = true } = {}) {
 }
 
 function renderVehicles() {
-  const vehicles = [...state.vehicles].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const vehicles = [...vehiclesForActiveFleet()].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return `
     <div class="screen">
       ${header()}
@@ -1210,10 +1301,56 @@ function renderAddVehicle() {
         <label>${escapeHtml(t("title"))} <input name="title" autocomplete="off" required /></label>
         <label>${escapeHtml(t("unitNumber"))} <input name="unitNumber" autocomplete="off" required /></label>
         <label>${escapeHtml(t("brandModel"))} <input name="brandModel" autocomplete="off" required /></label>
+        <label>${escapeHtml(t("year"))} <input name="year" inputmode="numeric" autocomplete="off" /></label>
+        <label>${escapeHtml(t("kilometers"))} <input name="kilometers" type="number" inputmode="numeric" min="0" value="0" /></label>
+        <label>${escapeHtml(t("engineBrandModel"))} <input name="engineBrandModel" autocomplete="off" /></label>
+        <label>${escapeHtml(t("engineSerial"))} <input name="engineSerialNumber" autocomplete="off" /></label>
+        <label>${escapeHtml(t("filters"))} <input name="filterPartNumbers" autocomplete="off" /></label>
       </form>
       <div class="action-bar">
         <button class="success-btn wide" type="submit" form="unused" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="vehicles">${escapeHtml(t("back"))}</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderAddService() {
+  const vehicles = vehiclesForActiveFleet();
+  const firstVehicle = vehicles[0];
+  const defaultKm = firstVehicle ? Number(firstVehicle.kilometers || 0) + 10000 : 10000;
+  return `
+    <div class="screen with-actions">
+      ${header()}
+      <div class="back-row">
+        <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
+        <div class="back-title">${escapeHtml(t("addService"))}</div>
+      </div>
+      <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
+      ${vehicles.length ? `
+        <form class="mobile-form" data-add-service-form>
+          <label>${escapeHtml(t("selectTruck"))}
+            <select name="vehicleId" required>
+              ${vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}">${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")}
+            </select>
+          </label>
+          <label>${escapeHtml(t("serviceTitle"))} <input name="title" autocomplete="off" value="${escapeAttr(t("oilChange"))}" required /></label>
+          <label>${escapeHtml(t("scheduleType"))}
+            <select name="scheduleType">
+              <option value="hybrid">${escapeHtml(t("timeAndKmBased"))}</option>
+              <option value="time">${escapeHtml(t("timeBased"))}</option>
+              <option value="km">${escapeHtml(t("kmBased"))}</option>
+            </select>
+          </label>
+          <label>${escapeHtml(t("intervalDays"))} <input name="intervalDays" type="number" inputmode="numeric" min="0" value="30" /></label>
+          <label>${escapeHtml(t("intervalKm"))} <input name="intervalKm" type="number" inputmode="numeric" min="0" value="10000" /></label>
+          <label>${escapeHtml(t("dueDate"))} <input name="dueDate" type="date" value="${escapeAttr(addDays(30))}" required /></label>
+          <label>${escapeHtml(t("dueKm"))} <input name="dueKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(defaultKm)}" /></label>
+        </form>
+      ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
+      <div class="action-bar">
+        <button class="success-btn wide" type="submit" form="unused" data-submit-add-service ${vehicles.length ? "" : "disabled"}>${escapeHtml(t("addService"))} ${icons.check}</button>
+        <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
@@ -1368,7 +1505,7 @@ function renderProfile() {
 }
 
 function profileContent() {
-  if (state.profileTab === "fleet") return `<div class="ghost-note">${escapeHtml(t("fleetPreferences"))}</div>`;
+  if (state.profileTab === "fleet") return renderFleetPanel();
   if (state.profileTab === "settings") return renderSettingsPanel();
 
   return `
@@ -1391,6 +1528,44 @@ function profileContent() {
       <button class="outline-btn wide" type="button">${escapeHtml(t("changePassword"))}</button>
       <button class="danger-btn wide" type="button">${escapeHtml(t("logout"))} ${icons.logout}</button>
     </article>
+  `;
+}
+
+function renderFleetPanel() {
+  const fleets = state.fleets;
+  return `
+    <div class="fleet-panel">
+      ${fleets.map((fleet) => {
+        const vehicleCount = state.vehicles.filter((vehicle) => vehicle.fleetId === fleet.id).length;
+        const serviceCount = state.serviceSchedules.filter((service) => service.fleetId === fleet.id).length;
+        const active = fleet.id === state.activeFleetId;
+        return `
+          <article class="profile-card fleet-card ${active ? "active" : ""}">
+            <div class="fleet-card-head">
+              <div>
+                <span class="detail-label">${active ? escapeHtml(t("activeFleet")) : escapeHtml(t("fleet"))}</span>
+                <strong>${escapeHtml(fleet.name)}</strong>
+              </div>
+              ${active ? "" : `<button class="outline-btn small-btn" type="button" data-switch-fleet="${fleet.id}">${escapeHtml(t("switchFleet"))}</button>`}
+            </div>
+            <div class="fleet-meta">
+              <span>${escapeHtml(t("vehiclesCount", { count: vehicleCount }))}</span>
+              <span>${escapeHtml(t("servicesCount", { count: serviceCount }))}</span>
+            </div>
+            <form class="fleet-name-form" data-fleet-name-form="${fleet.id}">
+              <label>${escapeHtml(t("fleetName"))}<input name="name" value="${escapeAttr(fleet.name)}" required /></label>
+              <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("saveFleet"))}</button>
+            </form>
+          </article>
+        `;
+      }).join("")}
+      <article class="profile-card fleet-card">
+        <form class="fleet-name-form" data-create-fleet-form>
+          <label>${escapeHtml(t("fleetName"))}<input name="name" placeholder="${escapeAttr(t("fleetName"))}" required /></label>
+          <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("createFleet"))} ${icons.plus}</button>
+        </form>
+      </article>
+    </div>
   `;
 }
 
@@ -1505,19 +1680,83 @@ function addVehicleFromForm(form) {
   const nextNumber = state.vehicles.length + 1;
   state.vehicles.unshift({
     id: uid("vehicle"),
+    fleetId: state.activeFleetId,
     title: data.title,
     unitNumber: data.unitNumber,
     brandModel: data.brandModel,
-    year: "",
-    kilometers: 0,
+    year: data.year || "",
+    kilometers: Number(data.kilometers || 0),
     technical: {
-      engineBrandModel: "TX-500",
-      engineSerialNumber: "",
-      filterPartNumbers: ""
+      engineBrandModel: data.engineBrandModel || "",
+      engineSerialNumber: data.engineSerialNumber || "",
+      filterPartNumbers: data.filterPartNumbers || ""
     },
     createdAt: new Date(Date.now() + nextNumber).toISOString()
   });
   navigate("vehicles");
+}
+
+function addServiceFromForm(form) {
+  const data = Object.fromEntries(new FormData(form).entries());
+  const vehicle = vehicleById(data.vehicleId);
+  if (!vehicle) return;
+  const scheduleType = data.scheduleType || "hybrid";
+  const intervalDays = Number(data.intervalDays || 0);
+  const intervalKm = Number(data.intervalKm || 0);
+  const dueKm = Number(data.dueKm || 0);
+  const service = normalizeSchedule({
+    id: uid("service"),
+    fleetId: vehicle.fleetId || state.activeFleetId,
+    vehicleId: vehicle.id,
+    title: data.title || t("oilChange"),
+    scheduleType,
+    recurrenceType: scheduleType,
+    recurrenceLabel: intervalDays ? `Every ${intervalDays} days` : "",
+    intervalDays: scheduleType === "km" ? 0 : intervalDays,
+    intervalKm: scheduleType === "time" ? null : intervalKm,
+    dueDate: data.dueDate || todayIso,
+    dueKm: scheduleType === "time" ? null : dueKm,
+    warningDays: 7,
+    warningKm: scheduleType === "time" ? null : 1000,
+    lastPerformedDate: "",
+    lastPerformedKm: Number(vehicle.kilometers || 0),
+    status: "scheduled",
+    completedAt: null,
+    completionNotes: ""
+  });
+  state.serviceSchedules.unshift(service);
+  navigate("serviceDetails", { activeServiceId: service.id, serviceTab: "identification" });
+}
+
+function updateFleetName(form) {
+  const fleetId = form.dataset.fleetNameForm;
+  const fleet = state.fleets.find((item) => item.id === fleetId);
+  if (!fleet) return;
+  const data = new FormData(form);
+  fleet.name = String(data.get("name") || fleet.name).trim() || fleet.name;
+  render();
+}
+
+function createFleetFromForm(form) {
+  const data = new FormData(form);
+  const name = String(data.get("name") || "").trim();
+  if (!name) return;
+  const fleet = {
+    id: uid("fleet"),
+    name,
+    ownerUserId: "user-1",
+    mechanicAccessCode: String(Math.floor(1000 + Math.random() * 9000))
+  };
+  state.fleets.unshift(fleet);
+  state.mechanicAccessCodes.unshift({
+    id: uid("access"),
+    fleetId: fleet.id,
+    code: fleet.mechanicAccessCode,
+    role: "mechanic",
+    active: true
+  });
+  state.activeFleetId = fleet.id;
+  render();
 }
 
 function render() {
@@ -1530,6 +1769,7 @@ function render() {
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
       ${routeMarkup()}
       ${completionModal()}
+      ${createActionMenu()}
     </div>
   `;
 }
@@ -1539,6 +1779,7 @@ function routeMarkup() {
   if (state.route === "vehicles") return renderVehicles();
   if (state.route === "profile") return renderProfile();
   if (state.route === "addVehicle") return renderAddVehicle();
+  if (state.route === "addService") return renderAddService();
   if (state.route === "serviceDetails") return renderServiceDetails();
   if (state.route === "truckDetails") return renderTruckDetails();
   return renderServices();
@@ -1641,6 +1882,10 @@ app.addEventListener("click", (event) => {
   const serviceTab = event.target.closest("[data-service-tab]")?.dataset.serviceTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
+  const switchFleetId = event.target.closest("[data-switch-fleet]")?.dataset.switchFleet;
+  const toggleCreateMenu = event.target.closest("[data-toggle-create-menu]");
+  const closeCreateMenuTrigger = event.target.closest("[data-close-create-menu-trigger]");
+  const closeCreateMenuBackdrop = event.target.matches("[data-close-create-menu]");
   const toggleTheme = event.target.closest("[data-toggle-theme]");
   const language = event.target.closest("[data-language]")?.dataset.language;
   const closeModalTrigger = event.target.closest("[data-close-modal-trigger]");
@@ -1662,6 +1907,16 @@ app.addEventListener("click", (event) => {
     render();
     return;
   }
+  if (toggleCreateMenu) {
+    state.createMenuOpen = !state.createMenuOpen;
+    render();
+    return;
+  }
+  if (closeCreateMenuTrigger || closeCreateMenuBackdrop) {
+    state.createMenuOpen = false;
+    render();
+    return;
+  }
   if (vehicleId) {
     navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "details" });
     return;
@@ -1671,7 +1926,13 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (route) {
+    state.createMenuOpen = false;
     navigate(route);
+    return;
+  }
+  if (switchFleetId) {
+    state.activeFleetId = switchFleetId;
+    render();
     return;
   }
   if (filter) {
@@ -1718,12 +1979,28 @@ app.addEventListener("click", (event) => {
     const form = app.querySelector("[data-add-vehicle-form]");
     if (form.reportValidity()) addVehicleFromForm(form);
   }
+  if (event.target.closest("[data-submit-add-service]")) {
+    const form = app.querySelector("[data-add-service-form]");
+    if (form?.reportValidity()) addServiceFromForm(form);
+  }
 });
 
 app.addEventListener("submit", (event) => {
   if (event.target.matches("[data-add-vehicle-form]")) {
     event.preventDefault();
     addVehicleFromForm(event.target);
+  }
+  if (event.target.matches("[data-add-service-form]")) {
+    event.preventDefault();
+    addServiceFromForm(event.target);
+  }
+  if (event.target.matches("[data-fleet-name-form]")) {
+    event.preventDefault();
+    updateFleetName(event.target);
+  }
+  if (event.target.matches("[data-create-fleet-form]")) {
+    event.preventDefault();
+    createFleetFromForm(event.target);
   }
 });
 
