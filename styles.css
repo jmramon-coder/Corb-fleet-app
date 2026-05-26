@@ -1040,6 +1040,10 @@ input:focus-visible {
   padding-left: var(--brand-text-offset);
 }
 
+.service-title-row {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .detail-back-btn {
   display: inline-flex;
   min-width: 0;
@@ -1090,6 +1094,18 @@ input:focus-visible {
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.service-overview-header .truck-heading p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.service-overview-header .truck-heading p .tab-icon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
 }
 
 .truck-header-actions {

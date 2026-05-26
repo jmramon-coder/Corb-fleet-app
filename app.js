@@ -161,6 +161,8 @@ const translations = {
     mechanicAccessCode: "Mechanic access code",
     scheduleRule: "Schedule rule",
     serviceSchedule: "Service schedule",
+    identification: "Identification",
+    story: "Story",
     serviceIdentification: "Service identification",
     upcomingService: "Upcoming service",
     completedServices: "Completed services",
@@ -272,6 +274,8 @@ const translations = {
     mechanicAccessCode: "Code d'accès mécanicien",
     scheduleRule: "Règle de planification",
     serviceSchedule: "Horaire de service",
+    identification: "Identification",
+    story: "Historique",
     serviceIdentification: "Identification du service",
     upcomingService: "Service à venir",
     completedServices: "Services complétés",
@@ -348,6 +352,7 @@ function defaultState() {
     serviceFilter: "all",
     serviceSearch: "",
     profileTab: "account",
+    serviceTab: "identification",
     truckTab: "details",
     theme: "light",
     language: "en",
@@ -586,6 +591,8 @@ function normalizeState(next) {
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
   next.completionModalServiceId = null;
+  if (!["identification", "schedule", "story"].includes(next.serviceTab)) next.serviceTab = "identification";
+  if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
   if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
   if (Array.isArray(next.services) && !Array.isArray(next.serviceSchedules)) {
@@ -854,6 +861,7 @@ function applyInitialUrlRoute() {
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
+  if (["identification", "schedule", "story"].includes(params.get("serviceTab"))) state.serviceTab = params.get("serviceTab");
   if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
   if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
@@ -1218,19 +1226,45 @@ function renderServiceDetails() {
   return `
     <div class="screen with-actions">
       ${header()}
-      <div class="back-row">
-        <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
-        <div class="back-title">${escapeHtml(displayServiceTitle(service))}<span>${icons.truck} ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span></div>
-      </div>
-      ${serviceIdentityCard(service, vehicle)}
-      ${upcomingServiceCard(service, vehicle)}
-      ${serviceCompletionHistory(service)}
+      <section class="truck-overview-header service-overview-header">
+        <button class="detail-back-btn" type="button" data-route="services" aria-label="${escapeAttr(t("services"))}">
+          ${icons.back}
+          <span>${escapeHtml(t("services"))}</span>
+        </button>
+        <div class="truck-title-row service-title-row">
+          <div class="truck-heading">
+            <h1>${escapeHtml(displayServiceTitle(service))}</h1>
+            <p>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
+          </div>
+        </div>
+        ${serviceTabs()}
+      </section>
+      ${serviceTabContent(service, vehicle)}
       <div class="action-bar">
         <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
+}
+
+function serviceTabs() {
+  return appTabs({
+    items: [
+      { key: "identification", label: t("identification") },
+      { key: "schedule", label: t("schedule") },
+      { key: "story", label: t("story") }
+    ],
+    active: state.serviceTab,
+    dataAttribute: "data-service-tab",
+    className: "truck-tabs full-bleed-tabs"
+  });
+}
+
+function serviceTabContent(service, vehicle) {
+  if (state.serviceTab === "schedule") return upcomingServiceCard(service, vehicle);
+  if (state.serviceTab === "story") return serviceCompletionHistory(service);
+  return serviceIdentityCard(service, vehicle);
 }
 
 function renderTruckDetails() {
@@ -1603,6 +1637,7 @@ app.addEventListener("click", (event) => {
   const submitCompletionId = event.target.closest("[data-submit-completion]")?.dataset.submitCompletion;
   const filter = event.target.closest("[data-filter]")?.dataset.filter;
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
+  const serviceTab = event.target.closest("[data-service-tab]")?.dataset.serviceTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const toggleTheme = event.target.closest("[data-toggle-theme]");
@@ -1631,7 +1666,7 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (serviceId) {
-    navigate("serviceDetails", { activeServiceId: serviceId });
+    navigate("serviceDetails", { activeServiceId: serviceId, serviceTab: "identification" });
     return;
   }
   if (route) {
@@ -1644,6 +1679,10 @@ app.addEventListener("click", (event) => {
   }
   if (profileTab) {
     state.profileTab = profileTab;
+    render();
+  }
+  if (serviceTab) {
+    state.serviceTab = serviceTab;
     render();
   }
   if (truckTab) {
