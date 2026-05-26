@@ -1016,58 +1016,69 @@ input:focus-visible {
   gap: 18px;
 }
 
-.segmented-tabs {
+.app-tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   border-bottom: 1px solid var(--divider);
-  margin: -8px 0 14px;
+  margin: 0 0 16px;
   padding: 0;
 }
 
-.segment-tab {
+.full-bleed-tabs {
+  margin-right: calc(var(--page-gutter) * -1);
+  margin-left: calc(var(--page-gutter) * -1);
+  padding-right: var(--page-gutter);
+  padding-left: var(--page-gutter);
+}
+
+.app-tab {
   position: relative;
-  min-height: 38px;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
   border-radius: 0;
   background: transparent;
   color: var(--muted-blue);
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 760;
+  line-height: 1;
+  text-align: center;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
 }
 
-.segment-tab.active {
-  background: transparent;
+.app-tab span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-tab.active {
   color: var(--text-blue);
 }
 
-.segment-tab.active::after {
+.app-tab.active::after {
   content: "";
   position: absolute;
-  left: 18px;
-  right: 18px;
+  right: max(16px, 20%);
   bottom: -1px;
+  left: max(16px, 20%);
   height: 2px;
   border-radius: 999px;
   background: var(--blue);
 }
 
-.truck-overview-header .segmented-tabs {
-  border: 0;
-  border-bottom: 1px solid var(--divider);
-  border-radius: 0;
-  background: transparent;
-  margin: 2px 0 0;
-  padding: 0;
+.app-tab:active {
+  background: var(--blue-softer);
 }
 
-.truck-overview-header .segment-tab {
-  min-height: 38px;
-}
-
-.truck-overview-header .segment-tab.active {
-  background: transparent;
-  color: var(--text-blue);
-  box-shadow: none;
+.truck-tabs {
+  margin: 2px 0 12px;
 }
 
 .truck-metrics-shell {
@@ -1117,20 +1128,7 @@ input:focus-visible {
 }
 
 .profile-tabs {
-  margin: 0 calc(var(--page-gutter) * -1) 18px;
-  padding: 0 var(--page-gutter);
-  border-bottom: 1px solid var(--divider);
-}
-
-.profile-tabs .segment-tab {
-  min-height: 42px;
-  font-size: 13px;
-  font-weight: 760;
-}
-
-.profile-tabs .segment-tab.active::after {
-  left: 18px;
-  right: 18px;
+  margin-bottom: 18px;
 }
 
 .profile-card {

@@ -400,6 +400,24 @@ function navButton(route, label, icon, active) {
   `;
 }
 
+function appTabs({ items, active, dataAttribute, className = "" }) {
+  return `
+    <div class="app-tabs ${className}" role="tablist">
+      ${items.map(({ key, label }) => `
+        <button
+          class="app-tab ${active === key ? "active" : ""}"
+          type="button"
+          role="tab"
+          aria-selected="${active === key}"
+          ${dataAttribute}="${key}"
+        >
+          <span>${escapeHtml(label)}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
 function metricCards(counts = statusCounts()) {
   return `
     <div class="metric-grid">
@@ -685,15 +703,16 @@ function renderTruckDetails() {
 }
 
 function truckTabs() {
-  return `
-    <div class="segmented-tabs">
-      ${["details", "schedule", "history"].map((tab) => `
-        <button class="segment-tab ${state.truckTab === tab ? "active" : ""}" type="button" data-truck-tab="${tab}">
-          ${tab[0].toUpperCase()}${tab.slice(1)}
-        </button>
-      `).join("")}
-    </div>
-  `;
+  return appTabs({
+    items: [
+      { key: "details", label: "Details" },
+      { key: "schedule", label: "Schedule" },
+      { key: "history", label: "History" }
+    ],
+    active: state.truckTab,
+    dataAttribute: "data-truck-tab",
+    className: "truck-tabs"
+  });
 }
 
 function truckTabContent(vehicle) {
@@ -727,13 +746,16 @@ function renderProfile() {
     <div class="screen">
       ${header({ close: true })}
       <h1 class="profile-title">Profil</h1>
-      <div class="segmented-tabs profile-tabs">
-        ${["account", "fleet", "settings"].map((tab) => `
-          <button class="segment-tab ${state.profileTab === tab ? "active" : ""}" type="button" data-profile-tab="${tab}">
-            ${tab[0].toUpperCase()}${tab.slice(1)}
-          </button>
-        `).join("")}
-      </div>
+      ${appTabs({
+        items: [
+          { key: "account", label: "Account" },
+          { key: "fleet", label: "Fleet" },
+          { key: "settings", label: "Settings" }
+        ],
+        active: state.profileTab,
+        dataAttribute: "data-profile-tab",
+        className: "profile-tabs full-bleed-tabs"
+      })}
       ${profileContent()}
     </div>
   `;
