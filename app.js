@@ -98,8 +98,8 @@ function uid(prefix) {
 
 function defaultState() {
   return {
-    route: "dashboard",
-    previousRoute: "dashboard",
+    route: "services",
+    previousRoute: "services",
     activeServiceId: null,
     activeVehicleId: null,
     serviceFilter: "all",
@@ -239,6 +239,8 @@ function loadState() {
 
 function normalizeState(next) {
   if (next.theme !== "dark" && next.theme !== "light") next.theme = "light";
+  if (next.route === "dashboard") next.route = "services";
+  if (next.previousRoute === "dashboard") next.previousRoute = "services";
   return next;
 }
 
@@ -348,7 +350,6 @@ function applyInitialUrlRoute() {
   const params = new URLSearchParams(window.location.search);
   const route = params.get("route");
   const allowedRoutes = new Set([
-    "dashboard",
     "services",
     "vehicles",
     "profile",
@@ -357,7 +358,8 @@ function applyInitialUrlRoute() {
     "truckDetails"
   ]);
 
-  if (allowedRoutes.has(route)) state.route = route;
+  if (route === "dashboard") state.route = "services";
+  else if (allowedRoutes.has(route)) state.route = route;
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
@@ -366,7 +368,7 @@ function applyInitialUrlRoute() {
 
 function header({ close = false } = {}) {
   const action = close
-    ? `<button class="icon-btn" type="button" data-route="${state.previousRoute || "dashboard"}" aria-label="Close">${icons.x}</button>`
+    ? `<button class="icon-btn" type="button" data-route="${state.previousRoute || "services"}" aria-label="Close">${icons.x}</button>`
     : `<button class="icon-btn" type="button" data-route="profile" aria-label="Profile">${icons.profile}</button>`;
 
   return `
@@ -385,7 +387,6 @@ function bottomNav(active) {
     <div class="nav-scrim" aria-hidden="true"></div>
     <nav class="bottom-nav" aria-label="Main navigation">
       ${navButton("services", "Services", icons.services, active)}
-      ${navButton("dashboard", "Dashboard", icons.gauge, active)}
       ${navButton("vehicles", "Vehicles", icons.truck, active)}
     </nav>
   `;
@@ -484,10 +485,9 @@ function renderServices() {
       ${header()}
       <section class="services-content">
         <div class="screen-heading tight">
-          <h1 class="screen-title">Services</h1>
-          <p class="screen-subtitle">Manage all schedule services</p>
+          <h1 class="screen-title">Welcome<br />${escapeHtml(state.user.firstName)},</h1>
+          <p class="screen-subtitle">Services</p>
         </div>
-        ${metricCards()}
         <div>
           <div class="search-wrap">
             <label class="search-box">
@@ -507,18 +507,20 @@ function renderServices() {
 }
 
 function filterRow() {
+  const counts = statusCounts();
   const filters = [
-    ["all", "All tasks", ""],
-    ["overdue", "Overdue", "overdue"],
-    ["upcoming", "Upcoming", "upcoming"],
-    ["ok", "Ok", "ok"]
+    ["all", "All", "", state.services.length],
+    ["overdue", "Overdue", "overdue", counts.overdue],
+    ["upcoming", "Upcoming", "upcoming", counts.upcoming],
+    ["ok", "Ok", "ok", counts.ok]
   ];
 
   return `
     <div class="filter-row">
-      ${filters.map(([key, label, tone]) => `
+      ${filters.map(([key, label, tone, count]) => `
         <button class="filter-pill ${tone} ${state.serviceFilter === key ? "active" : ""}" type="button" data-filter="${key}">
-          ${label}
+          <span>${label}</span>
+          <strong>${count}</strong>
         </button>
       `).join("")}
     </div>
@@ -862,7 +864,7 @@ function routeMarkup() {
   if (state.route === "addVehicle") return renderAddVehicle();
   if (state.route === "serviceDetails") return renderServiceDetails();
   if (state.route === "truckDetails") return renderTruckDetails();
-  return renderDashboard();
+  return renderServices();
 }
 
 function escapeHtml(value) {
