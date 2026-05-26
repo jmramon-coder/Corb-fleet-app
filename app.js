@@ -709,7 +709,7 @@ function renderServices() {
       ${header()}
       <section class="services-content">
         <div class="screen-heading tight">
-          <h1 class="screen-title">${escapeHtml(t("welcome"))}<br />${escapeHtml(state.user.firstName)},</h1>
+          <h1 class="screen-title">${escapeHtml(t("welcome"))} ${escapeHtml(state.user.firstName)},</h1>
           <p class="screen-subtitle">${escapeHtml(t("services"))}</p>
         </div>
         <div>
