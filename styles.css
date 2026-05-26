@@ -21,6 +21,8 @@
   --radius-sm: 10px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --page-gutter: 18px;
+  --desktop-gutter: 32px;
 }
 
 * {
@@ -69,7 +71,7 @@ input:focus-visible {
 .screen {
   min-height: 100svh;
   overflow-x: hidden;
-  padding: 16px 18px 104px;
+  padding: 16px var(--page-gutter) 104px;
 }
 
 .screen.with-actions {
@@ -83,6 +85,7 @@ input:focus-visible {
   gap: 16px;
   min-height: 34px;
   margin-bottom: 34px;
+  padding: 0;
 }
 
 .brand {
@@ -165,7 +168,7 @@ input:focus-visible {
 
 .screen-heading {
   margin: 0 0 20px;
-  padding-left: 23px;
+  padding-left: 0;
 }
 
 .screen-heading.tight {
@@ -192,7 +195,7 @@ input:focus-visible {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin: 0 12px 16px;
+  margin: 0 0 16px;
 }
 
 .metric-card {
@@ -243,7 +246,7 @@ input:focus-visible {
   place-items: center;
   border-radius: var(--radius-lg);
   background: var(--card);
-  margin: 0 10px;
+  margin: 0;
   padding: 24px 22px;
   text-align: center;
 }
@@ -397,7 +400,7 @@ input:focus-visible {
 }
 
 .search-wrap {
-  margin: 0 3px 10px;
+  margin: 0 0 10px;
 }
 
 .search-box {
@@ -423,7 +426,7 @@ input:focus-visible {
 .filter-row {
   display: flex;
   gap: 6px;
-  margin: 0 3px 18px;
+  margin: 0 0 18px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -701,7 +704,7 @@ input:focus-visible {
 }
 
 .form-title {
-  margin: 34px 12px 24px;
+  margin: 34px 0 24px;
   color: var(--text-blue);
   font-size: 17px;
   font-weight: 800;
@@ -710,7 +713,7 @@ input:focus-visible {
 .mobile-form {
   display: grid;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0;
 }
 
 .mobile-form label {
@@ -812,8 +815,8 @@ input:focus-visible {
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   border-bottom: 1px solid var(--border-blue);
-  margin: -8px -18px 14px;
-  padding: 0 20px 8px;
+  margin: -8px 0 14px;
+  padding: 0 0 8px;
 }
 
 .segment-tab {
@@ -909,15 +912,15 @@ input:focus-visible {
 }
 
 .profile-title {
-  margin: -24px 3px 18px;
+  margin: -24px 0 18px;
   color: var(--text-blue);
   font-size: 26px;
   font-weight: 400;
 }
 
 .profile-tabs {
-  margin: 0 -18px 18px;
-  padding: 0 20px 7px;
+  margin: 0 0 18px;
+  padding: 0 0 7px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -992,7 +995,7 @@ input:focus-visible {
 
   .screen {
     width: min(100%, 980px);
-    padding: 28px 32px 124px;
+    padding: 28px var(--desktop-gutter) 124px;
   }
 
   .brand-header {
@@ -1043,9 +1046,13 @@ input:focus-visible {
 }
 
 @media (max-width: 360px) {
+  :root {
+    --page-gutter: 14px;
+  }
+
   .screen {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   .filter-pill {
