@@ -1110,16 +1110,27 @@ input:focus-visible {
 }
 
 .profile-title {
-  margin: -24px 0 18px;
+  margin: -24px 0 10px;
   color: var(--text-blue);
   font-size: 26px;
   font-weight: 400;
 }
 
 .profile-tabs {
-  margin: 0 0 18px;
-  padding: 0;
+  margin: 0 calc(var(--page-gutter) * -1) 18px;
+  padding: 0 var(--page-gutter);
   border-bottom: 1px solid var(--divider);
+}
+
+.profile-tabs .segment-tab {
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.profile-tabs .segment-tab.active::after {
+  left: 18px;
+  right: 18px;
 }
 
 .profile-card {
