@@ -1430,8 +1430,17 @@ input:focus-visible {
   gap: 18px;
 }
 
+.settings-section {
+  display: grid;
+  gap: 7px;
+}
+
+.settings-section .security-title {
+  margin-bottom: 0;
+}
+
 .settings-copy {
-  margin: -14px 0 0;
+  margin: 0;
   color: var(--muted-blue);
   font-size: 13px;
   line-height: 1.35;

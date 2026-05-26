@@ -1024,7 +1024,7 @@ function renderSettingsPanel() {
   const language = state.language === "fr" ? "fr" : "en";
   return `
     <article class="profile-card settings-card">
-      <div>
+      <div class="settings-section">
         <h2 class="security-title">${icons.gauge} ${escapeHtml(t("appearance"))}</h2>
         <p class="settings-copy">${escapeHtml(t("appearanceCopy"))}</p>
       </div>
@@ -1035,7 +1035,7 @@ function renderSettingsPanel() {
         </span>
         <span class="switch ${darkMode ? "on" : ""}" aria-hidden="true"><span></span></span>
       </button>
-      <div>
+      <div class="settings-section">
         <h2 class="security-title compact">${icons.services} ${escapeHtml(t("language"))}</h2>
         <p class="settings-copy">${escapeHtml(t("languageCopy"))}</p>
       </div>
