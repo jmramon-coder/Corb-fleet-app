@@ -711,7 +711,7 @@ function truckTabs() {
     ],
     active: state.truckTab,
     dataAttribute: "data-truck-tab",
-    className: "truck-tabs"
+    className: "truck-tabs full-bleed-tabs"
   });
 }
 

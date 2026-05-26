@@ -61,6 +61,7 @@ input {
 button {
   border: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:focus-visible,
@@ -1047,8 +1048,8 @@ input:focus-visible {
   line-height: 1;
   text-align: center;
   transition:
-    color 150ms ease,
-    background-color 150ms ease;
+    color 150ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .app-tab span {
@@ -1073,12 +1074,9 @@ input:focus-visible {
   background: var(--blue);
 }
 
-.app-tab:active {
-  background: var(--blue-softer);
-}
-
 .truck-tabs {
-  margin: 2px 0 12px;
+  margin-top: 2px;
+  margin-bottom: 12px;
 }
 
 .truck-metrics-shell {
