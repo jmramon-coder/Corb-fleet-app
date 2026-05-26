@@ -1069,11 +1069,6 @@ function serviceIdentityCard(service, vehicle) {
   const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
   return `
     <article class="detail-card service-object-card">
-      <h3>${icons.wrench} ${escapeHtml(t("serviceIdentification"))}</h3>
-      <div class="service-object-title">
-        <h2>${escapeHtml(displayServiceTitle(service))}</h2>
-        <span>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span>
-      </div>
       <div class="object-detail-grid">
         <div><span class="detail-label">${escapeHtml(t("scheduleRule"))}</span><strong>${escapeHtml(scheduleLabel)}</strong></div>
         <div><span class="detail-label">${escapeHtml(t("serviceSchedule"))}</span><strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
@@ -1111,13 +1106,13 @@ function serviceCompletionHistory(service) {
         <span>${completions.length}</span>
       </div>
       <div class="list-stack">
-        ${completions.length ? completions.map(completionCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
+        ${completions.length ? completions.map((completion) => completionCard(completion, { showVehicle: false })).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
       </div>
     </section>
   `;
 }
 
-function completionCard(completion) {
+function completionCard(completion, { showVehicle = true } = {}) {
   const vehicle = vehicleById(completion.vehicleId);
   return `
     <article class="service-card completion-card">
@@ -1126,10 +1121,10 @@ function completionCard(completion) {
           <span>${icons.history}</span>
           <div>
             <h2 class="service-card-title">${escapeHtml(displayServiceTitle(completion))}</h2>
-            <div class="vehicle-link static-link">
+            ${showVehicle ? `<div class="vehicle-link static-link">
               ${icons.truck}
               ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}
-            </div>
+            </div>` : ""}
           </div>
           <span class="due-chip ok">${escapeHtml(t("done"))}</span>
         </div>
