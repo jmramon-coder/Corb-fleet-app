@@ -436,15 +436,15 @@ input:focus-visible {
 }
 
 .filter-pill {
-  min-height: 28px;
+  min-height: 30px;
   flex: 0 0 auto;
-  border: 1.5px solid currentColor;
-  border-radius: 10px;
-  background: transparent;
-  padding: 0 12px;
+  border: 1px solid rgba(36, 81, 230, 0.2);
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 13px;
   color: var(--blue);
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 750;
 }
 
 .filter-pill.active {
@@ -455,15 +455,36 @@ input:focus-visible {
 }
 
 .filter-pill.overdue {
-  color: #ff7478;
+  border-color: rgba(255, 65, 72, 0.35);
+  color: var(--red);
 }
 
 .filter-pill.upcoming {
-  color: #ffb359;
+  border-color: rgba(255, 159, 31, 0.45);
+  color: #d97900;
 }
 
 .filter-pill.ok {
-  color: #58cf75;
+  border-color: rgba(23, 195, 70, 0.38);
+  color: #12943a;
+}
+
+.filter-pill.overdue.active {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+
+.filter-pill.upcoming.active {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: #fff;
+}
+
+.filter-pill.ok.active {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
 }
 
 .list-stack {
