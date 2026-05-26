@@ -412,14 +412,13 @@ input:focus-visible {
   right: 0;
   bottom: 0;
   z-index: 18;
-  height: 178px;
+  height: 98px;
   pointer-events: none;
   background:
     linear-gradient(
       to top,
-      rgba(36, 81, 230, 0.14) 0%,
-      rgba(36, 81, 230, 0.06) 34%,
-      rgba(245, 245, 245, 0.88) 62%,
+      rgba(245, 245, 245, 0.54) 0%,
+      rgba(245, 245, 245, 0.18) 48%,
       rgba(245, 245, 245, 0) 100%
     );
 }
@@ -427,33 +426,62 @@ input:focus-visible {
 .bottom-nav {
   position: fixed;
   left: 50%;
-  bottom: 30px;
+  bottom: 16px;
   z-index: 20;
   display: grid;
-  width: min(300px, calc(100vw - 88px));
-  min-width: 282px;
+  width: min(370px, calc(100vw - 36px));
+  min-width: 320px;
   grid-template-columns: repeat(3, 1fr);
   transform: translateX(-50%);
+  isolation: isolate;
+  overflow: visible;
   border: 1px solid rgba(191, 208, 255, 0.22);
   border-radius: 16px;
   background: var(--card);
   padding: 5px;
-  box-shadow: 0 12px 30px rgba(36, 81, 230, 0.11);
+  box-shadow:
+    0 0 0 36px var(--app-bg),
+    0 12px 30px rgba(36, 81, 230, 0.11);
+  backdrop-filter: blur(14px);
+}
+
+.bottom-nav::before {
+  content: "";
+  position: absolute;
+  inset: -36px -58px -22px;
+  z-index: -1;
+  border-radius: 30px;
+  background: var(--app-bg);
+  box-shadow: 0 0 30px rgba(245, 245, 245, 0.72);
+  pointer-events: none;
 }
 
 .theme-dark .nav-scrim {
   background:
     linear-gradient(
       to top,
-      #0b0b0c 0%,
-      #0b0b0c 68%,
-      rgba(11, 11, 12, 0.82) 82%,
-      rgba(11, 11, 12, 0.42) 92%,
+      rgba(11, 11, 12, 0.5) 0%,
+      rgba(11, 11, 12, 0.2) 48%,
+      rgba(11, 11, 12, 0.08) 78%,
       rgba(11, 11, 12, 0) 100%
     );
 }
 
+.theme-dark .bottom-nav {
+  background: rgba(22, 22, 22, 0.92);
+  box-shadow:
+    0 0 0 36px var(--app-bg),
+    0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.theme-dark .bottom-nav::before {
+  background: var(--app-bg);
+  box-shadow: 0 0 30px rgba(11, 11, 12, 0.9);
+}
+
 .nav-tab {
+  position: relative;
+  z-index: 1;
   display: grid;
   min-height: 60px;
   place-items: center;
