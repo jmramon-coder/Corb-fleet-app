@@ -19,6 +19,8 @@
   --nav-muted: #64748b;
   --nav-active-bg: rgba(36, 81, 230, 0.11);
   --nav-active-fg: #0d45e8;
+  --profile-ink: #172033;
+  --profile-muted: #667085;
   --ink: #0a37c6;
   --shadow: none;
   --shadow-strong: 0 8px 22px rgba(22, 53, 135, 0.06);
@@ -97,6 +99,8 @@ input:focus-visible {
   --nav-muted: #9ca3af;
   --nav-active-bg: rgba(77, 124, 255, 0.2);
   --nav-active-fg: #f8fbff;
+  --profile-ink: #f2f4f8;
+  --profile-muted: #9ca3af;
   --ink: #f8fafc;
   --red: #ff6b72;
   --orange: #ffad3d;
@@ -1081,6 +1085,10 @@ input:focus-visible {
   font-weight: 700;
 }
 
+.profile-card .security-title {
+  color: var(--profile-ink);
+}
+
 .history-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1097,6 +1105,7 @@ input:focus-visible {
 }
 
 .full-bleed-tabs {
+  width: calc(100% + (var(--page-gutter) * 2));
   margin-right: calc(var(--page-gutter) * -1);
   margin-left: calc(var(--page-gutter) * -1);
   padding-right: var(--page-gutter);
@@ -1237,44 +1246,91 @@ input:focus-visible {
 
 .profile-card {
   margin-bottom: 12px;
-  padding: 16px 18px;
+  padding: 16px;
 }
 
 .account-row {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 32px;
-  gap: 9px;
-  align-items: center;
-  margin-bottom: 24px;
+  grid-template-columns: 42px minmax(0, 1fr) 32px;
+  gap: 11px;
+  align-items: start;
+  margin-bottom: 20px;
 }
 
 .avatar {
-  width: 41px;
-  height: 41px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: #cbd6f7;
+  background: linear-gradient(135deg, #d8e0fb 0%, #b7c6f2 100%);
+}
+
+.theme-dark .avatar {
+  background: linear-gradient(135deg, rgba(120, 142, 196, 0.95), rgba(77, 124, 255, 0.32));
+}
+
+.account-main {
+  min-width: 0;
+  padding-top: 1px;
 }
 
 .account-name {
-  color: var(--text-blue);
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.08;
+  color: var(--profile-ink);
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.12;
 }
 
 .account-email {
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: var(--text-blue);
-  font-size: 17px;
-  line-height: 1.08;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 3px;
+  color: var(--profile-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.account-email .icon {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  color: var(--profile-muted);
+}
+
+.account-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-edit {
+  width: 30px;
+  height: 30px;
+  justify-self: end;
+  color: var(--muted-blue);
 }
 
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--divider);
+}
+
+.profile-grid strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--profile-ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.profile-grid .detail-label {
+  color: var(--profile-muted);
 }
 
 .security-card {

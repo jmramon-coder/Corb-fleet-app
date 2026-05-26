@@ -775,11 +775,11 @@ function profileContent() {
     <article class="profile-card">
       <div class="account-row">
         <span class="avatar" aria-hidden="true"></span>
-        <div>
+        <div class="account-main">
           <div class="account-name">${escapeHtml(state.user.displayName)}</div>
           <div class="account-email">${icons.mail}${escapeHtml(state.user.email)}</div>
         </div>
-        <button class="icon-btn" type="button" aria-label="Edit profile">${icons.edit}</button>
+        <button class="plain-icon-btn account-edit" type="button" aria-label="Edit profile">${icons.edit}</button>
       </div>
       <div class="profile-grid">
         <div><span class="detail-label">Joined</span><strong>${formatDate(state.user.joinedAt)}</strong></div>
