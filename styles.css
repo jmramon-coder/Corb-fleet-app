@@ -608,7 +608,7 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(36, 81, 230, 0.09);
+  background: rgba(36, 81, 230, 0.11);
   color: currentColor;
   font-size: 11px;
   font-weight: 700;
@@ -617,6 +617,10 @@ input:focus-visible {
 
 .theme-dark .filter-pill {
   background: rgba(255, 255, 255, 0.03);
+}
+
+.theme-dark .filter-pill strong {
+  background: rgba(77, 124, 255, 0.18);
 }
 
 .filter-pill.active {
@@ -635,14 +639,38 @@ input:focus-visible {
   color: var(--red);
 }
 
+.filter-pill.overdue strong {
+  background: rgba(255, 65, 72, 0.12);
+}
+
+.theme-dark .filter-pill.overdue strong {
+  background: rgba(255, 107, 114, 0.18);
+}
+
 .filter-pill.upcoming {
   border-color: rgba(255, 159, 31, 0.45);
   color: #d97900;
 }
 
+.filter-pill.upcoming strong {
+  background: rgba(255, 159, 31, 0.14);
+}
+
+.theme-dark .filter-pill.upcoming strong {
+  background: rgba(255, 173, 61, 0.2);
+}
+
 .filter-pill.ok {
   border-color: rgba(23, 195, 70, 0.38);
   color: #12943a;
+}
+
+.filter-pill.ok strong {
+  background: rgba(23, 195, 70, 0.13);
+}
+
+.theme-dark .filter-pill.ok strong {
+  background: rgba(53, 216, 103, 0.18);
 }
 
 .filter-pill.overdue.active {
@@ -660,6 +688,12 @@ input:focus-visible {
 .filter-pill.ok.active {
   border-color: var(--green);
   background: var(--green);
+  color: #fff;
+}
+
+.filter-pill.active strong,
+.theme-dark .filter-pill.active strong {
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
 }
 
