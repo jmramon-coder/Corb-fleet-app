@@ -707,8 +707,7 @@ input:focus-visible {
   min-height: 100%;
   align-items: center;
   justify-content: center;
-  border-left: 1px solid var(--divider);
-  background: color-mix(in srgb, var(--card) 88%, var(--app-bg));
+  background: transparent;
   color: color-mix(in srgb, var(--icon-muted) 78%, transparent);
 }
 
