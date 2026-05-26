@@ -33,6 +33,10 @@ html {
   background: var(--app-bg);
 }
 
+html[data-theme="dark"] {
+  background: #080d18;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -41,6 +45,11 @@ body {
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] #app {
+  background: #080d18;
 }
 
 button,
@@ -69,16 +78,16 @@ input:focus-visible {
 }
 
 .theme-dark {
-  --app-bg: #0c1220;
-  --card: #121b2d;
-  --blue: #6f8fff;
-  --blue-2: #8aa5ff;
-  --blue-soft: rgba(111, 143, 255, 0.16);
-  --blue-softer: rgba(111, 143, 255, 0.1);
-  --text-blue: #dce6ff;
-  --muted-blue: #8fa4dc;
-  --border-blue: rgba(143, 164, 220, 0.28);
-  --line: rgba(143, 164, 220, 0.18);
+  --app-bg: #080d18;
+  --card: #111827;
+  --blue: #4f7cff;
+  --blue-2: #7ea0ff;
+  --blue-soft: rgba(79, 124, 255, 0.18);
+  --blue-softer: rgba(79, 124, 255, 0.11);
+  --text-blue: #e4ecff;
+  --muted-blue: #91a7df;
+  --border-blue: rgba(145, 167, 223, 0.3);
+  --line: rgba(145, 167, 223, 0.18);
   --ink: #f6f8ff;
   --red: #ff6b72;
   --orange: #ffad3d;
@@ -145,6 +154,7 @@ input:focus-visible {
 }
 
 .theme-dark .brand-mark {
+  background: linear-gradient(135deg, #2f63ff 0%, #6f92ff 100%);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -436,8 +446,8 @@ input:focus-visible {
     linear-gradient(
       to top,
       rgba(111, 143, 255, 0.18) 0%,
-      rgba(12, 18, 32, 0.94) 62%,
-      rgba(12, 18, 32, 0) 100%
+      rgba(8, 13, 24, 0.94) 62%,
+      rgba(8, 13, 24, 0) 100%
     );
 }
 

@@ -811,6 +811,7 @@ function addVehicleFromForm(form) {
 
 function render() {
   saveState();
+  document.documentElement.dataset.theme = state.theme;
   app.innerHTML = `
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
       ${routeMarkup()}
