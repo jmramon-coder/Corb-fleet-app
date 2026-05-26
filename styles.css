@@ -890,6 +890,12 @@ input:focus-visible {
   color: var(--green);
 }
 
+.due-chip.completed {
+  border-color: rgba(255, 65, 72, 0.26);
+  background: rgba(255, 65, 72, 0.1);
+  color: var(--red);
+}
+
 .date-value {
   display: flex;
   align-items: center;
@@ -919,9 +925,28 @@ input:focus-visible {
   gap: 12px;
 }
 
-.completion-note {
-  margin: 0 0 0 33px;
+.completion-record-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-left: 33px;
+}
+
+.completion-note-block {
+  display: grid;
+  gap: 5px;
+  margin-left: 33px;
+}
+
+.completion-note-block span {
   color: var(--muted-blue);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.completion-note-block p {
+  margin: 0;
+  color: var(--text-blue);
   font-size: 13px;
   line-height: 1.35;
 }
@@ -1385,20 +1410,21 @@ input:focus-visible {
   z-index: 60;
   inset: 0;
   display: grid;
-  align-items: end;
-  background: rgba(0, 0, 0, 0.54);
-  padding: 18px;
+  align-items: stretch;
+  background: var(--app-bg);
+  padding: 0;
 }
 
 .completion-modal {
   width: 100%;
-  max-height: min(82svh, 720px);
+  min-height: 100svh;
+  max-height: 100svh;
   overflow: auto;
-  border: 1px solid var(--divider);
-  border-radius: 18px;
-  background: var(--card);
-  padding: 16px;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+  border: 0;
+  border-radius: 0;
+  background: var(--app-bg);
+  padding: calc(18px + env(safe-area-inset-top)) var(--page-gutter) calc(18px + env(safe-area-inset-bottom));
+  box-shadow: none;
 }
 
 .modal-head {
@@ -1406,13 +1432,13 @@ input:focus-visible {
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 22px;
 }
 
 .modal-head h2 {
   margin: 0;
   color: var(--text-blue);
-  font-size: 19px;
+  font-size: 22px;
   line-height: 1.1;
 }
 
@@ -1427,7 +1453,12 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
   gap: 10px;
-  margin-top: 14px;
+  position: sticky;
+  bottom: 0;
+  margin: 24px calc(var(--page-gutter) * -1) calc((18px + env(safe-area-inset-bottom)) * -1);
+  border-top: 1px solid var(--divider);
+  background: var(--app-bg);
+  padding: 12px var(--page-gutter) calc(12px + env(safe-area-inset-bottom));
 }
 
 .app-tabs {

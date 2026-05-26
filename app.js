@@ -155,6 +155,9 @@ const translations = {
     partsNumbersPlaceholder: "Filters, oil, brake parts, insurance or reference numbers",
     photosDocuments: "Photos & documents",
     photosDocumentsHint: "Photos, invoices, insurance files, inspection sheets",
+    completed: "Completed",
+    completedOn: "Completed on",
+    note: "Note",
     lastCompletion: "Last completion",
     noCompletionYet: "No completion yet",
     completedBy: "Completed by",
@@ -166,8 +169,8 @@ const translations = {
     serviceIdentification: "Service identification",
     upcomingService: "Upcoming service",
     completedServices: "Completed services",
-    completeNow: "Complete now",
-    confirmCompletion: "Confirm completion",
+    completeNow: "Complete",
+    confirmCompletion: "Complete",
     cancel: "Cancel"
   },
   fr: {
@@ -268,6 +271,9 @@ const translations = {
     partsNumbersPlaceholder: "Filtres, huile, freins, assurance ou numéros de référence",
     photosDocuments: "Photos et documents",
     photosDocumentsHint: "Photos, factures, assurances, fiches d'inspection",
+    completed: "Complété",
+    completedOn: "Complété le",
+    note: "Note",
     lastCompletion: "Dernière complétion",
     noCompletionYet: "Aucune complétion",
     completedBy: "Complété par",
@@ -279,8 +285,8 @@ const translations = {
     serviceIdentification: "Identification du service",
     upcomingService: "Service à venir",
     completedServices: "Services complétés",
-    completeNow: "Compléter maintenant",
-    confirmCompletion: "Confirmer la complétion",
+    completeNow: "Compléter",
+    confirmCompletion: "Compléter",
     cancel: "Annuler"
   }
 };
@@ -1126,11 +1132,11 @@ function completionCard(completion, { showVehicle = true } = {}) {
               ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}
             </div>` : ""}
           </div>
-          <span class="due-chip ok">${escapeHtml(t("done"))}</span>
+          <span class="due-chip completed">${escapeHtml(t("completed"))}</span>
         </div>
-        <div class="service-dates">
+        <div class="completion-record-grid">
           <div class="date-block">
-            <span>${escapeHtml(t("lastPerformed"))}</span>
+            <span>${escapeHtml(t("completedOn"))}</span>
             <strong class="date-value">${icons.calendar}${formatDate(completion.completedDate)}</strong>
           </div>
           <div class="date-block">
@@ -1138,7 +1144,7 @@ function completionCard(completion, { showVehicle = true } = {}) {
             <strong class="date-value">${icons.gauge}${formatKm(completion.completedKm)}</strong>
           </div>
         </div>
-        ${completion.mechanicNote ? `<p class="completion-note">${escapeHtml(completion.mechanicNote)}</p>` : ""}
+        ${completion.mechanicNote ? `<div class="completion-note-block"><span>${escapeHtml(t("mechanicNote"))}</span><p>${escapeHtml(completion.mechanicNote)}</p></div>` : ""}
       </div>
     </article>
   `;
