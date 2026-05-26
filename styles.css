@@ -207,7 +207,7 @@ input:focus-visible {
   flex: 0 0 19px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
   shape-rendering: geometricPrecision;
@@ -320,7 +320,7 @@ input:focus-visible {
   margin-top: 5px;
   color: #cbd6f7;
   font-size: 27px;
-  font-weight: 800;
+  font-weight: 720;
   line-height: 1;
 }
 
@@ -349,7 +349,7 @@ input:focus-visible {
   margin: 0 0 13px;
   color: #7895f6;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .empty-copy {
@@ -402,14 +402,14 @@ input:focus-visible {
   border: 1.5px solid var(--blue);
   background: transparent;
   color: var(--blue);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .secondary-detail-btn {
   border: 1.5px solid rgba(36, 81, 230, 0.78);
   background: #fff;
   color: var(--blue);
-  font-weight: 750;
+  font-weight: 650;
 }
 
 .secondary-detail-btn .icon {
@@ -520,7 +520,7 @@ input:focus-visible {
 .nav-tab.active {
   background: var(--nav-active-bg);
   color: var(--nav-active-fg);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .nav-tab .tab-icon {
@@ -530,7 +530,7 @@ input:focus-visible {
 
 .nav-tab.active .tab-icon {
   opacity: 1;
-  stroke-width: 2.25;
+  stroke-width: 1.9;
 }
 
 .theme-dark .nav-tab.active {
@@ -672,7 +672,7 @@ input:focus-visible {
   margin: 0;
   color: var(--text-blue);
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
 }
 
@@ -716,7 +716,7 @@ input:focus-visible {
   background: var(--orange);
   color: #fff;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .calendar-badge .icon {
@@ -760,13 +760,13 @@ input:focus-visible {
   margin-top: 7px;
   color: var(--text-blue);
   font-size: 13px;
-  font-weight: 800;
-  line-height: 1.04;
+  font-weight: 650;
+  line-height: 1.08;
   overflow-wrap: anywhere;
 }
 
 .date-value .icon {
-  margin-top: -2px;
+  margin-top: -1px;
 }
 
 .service-actions {
@@ -935,7 +935,7 @@ input:focus-visible {
   margin: 34px 0 24px;
   color: var(--text-blue);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .mobile-form {
@@ -1034,7 +1034,7 @@ input:focus-visible {
   margin: 0 0 24px;
   color: var(--text-blue);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .history-grid {
@@ -1070,7 +1070,7 @@ input:focus-visible {
   background: transparent;
   color: var(--muted-blue);
   font-size: 13px;
-  font-weight: 760;
+  font-weight: 680;
   line-height: 1;
   text-align: center;
   transition:
@@ -1142,6 +1142,7 @@ input:focus-visible {
   display: block;
   margin-top: 5px;
   color: var(--text-blue);
+  font-weight: 650;
 }
 
 .profile-title {
@@ -1178,7 +1179,7 @@ input:focus-visible {
 .account-name {
   color: var(--text-blue);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.08;
 }
 
