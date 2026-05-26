@@ -726,16 +726,16 @@ input:focus-visible {
 }
 
 .truck-overview-header {
-  border: 1px solid rgba(191, 208, 255, 0.34);
-  border-radius: var(--radius-lg);
-  background: #fff;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   margin: -20px 0 12px;
-  padding: 10px;
+  padding: 0;
   box-shadow: var(--shadow);
 }
 
 .truck-back-row {
-  margin: 0 0 10px;
+  margin: 0;
 }
 
 .truck-overview-header .back-title {
@@ -745,6 +745,40 @@ input:focus-visible {
 .truck-overview-header .back-title span {
   color: var(--muted-blue);
   font-size: 14px;
+}
+
+.truck-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.truck-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plain-icon-btn {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted-blue);
+}
+
+.plain-icon-btn .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.plain-icon-btn.danger-icon {
+  color: rgba(255, 65, 72, 0.78);
 }
 
 .form-title {
@@ -895,11 +929,11 @@ input:focus-visible {
 }
 
 .truck-metrics-shell {
-  border-radius: var(--radius-lg);
-  background: #fff;
+  border-radius: 0;
+  background: transparent;
   margin-bottom: 10px;
-  padding: 12px;
-  border: 1px solid rgba(191, 208, 255, 0.18);
+  padding: 0;
+  border: 0;
 }
 
 .truck-metrics-shell .metric-grid {
@@ -922,24 +956,6 @@ input:focus-visible {
   margin: 0;
 }
 
-.edit-btn {
-  display: inline-flex;
-  min-height: 32px;
-  min-width: 82px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 10px;
-  background: var(--blue);
-  color: #fff;
-  font-size: 14px;
-}
-
-.edit-btn .icon {
-  width: 18px;
-  height: 18px;
-}
-
 .technical-list {
   display: grid;
   gap: 18px;
@@ -949,10 +965,6 @@ input:focus-visible {
   display: block;
   margin-top: 5px;
   color: var(--text-blue);
-}
-
-.delete-row {
-  margin-top: 12px;
 }
 
 .profile-title {

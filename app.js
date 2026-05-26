@@ -647,15 +647,20 @@ function renderTruckDetails() {
     <div class="screen with-actions">
       ${header()}
       <section class="truck-overview-header">
-        <div class="back-row truck-back-row">
-          <button class="icon-btn" type="button" data-route="vehicles" aria-label="Back">${icons.back}</button>
-          <div class="back-title">${escapeHtml(vehicle.title)}<span>${escapeHtml(modelLine(vehicle))}</span></div>
+        <div class="truck-title-row">
+          <div class="back-row truck-back-row">
+            <button class="icon-btn" type="button" data-route="vehicles" aria-label="Back">${icons.back}</button>
+            <div class="back-title">${escapeHtml(vehicle.title)}<span>${escapeHtml(modelLine(vehicle))}</span></div>
+          </div>
+          <div class="truck-header-actions">
+            <button class="plain-icon-btn" type="button" aria-label="Edit truck">${icons.edit}</button>
+            <button class="plain-icon-btn danger-icon" type="button" data-delete-vehicle="${vehicle.id}" aria-label="Delete truck">${icons.trash}</button>
+          </div>
         </div>
         ${truckTabs()}
       </section>
       <div class="truck-metrics-shell">${metricCards(counts)}</div>
       ${truckTabContent(vehicle)}
-      <div class="delete-row"><button class="danger-btn wide" type="button" data-delete-vehicle="${vehicle.id}">Delete ${icons.trash}</button></div>
       <div class="action-bar">
         <button class="primary-btn wide" type="button" data-route="services">Service ${icons.wrench}</button>
         <button class="outline-btn wide" type="button" data-route="vehicles">Back</button>
@@ -691,7 +696,6 @@ function truckTabContent(vehicle) {
     <article class="technical-card">
       <div class="technical-head">
         <h3>${icons.folder} Technical details</h3>
-        <button class="edit-btn" type="button">Edit ${icons.edit}</button>
       </div>
       <div class="technical-list">
         <div><span class="detail-label">Unit Number</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>
