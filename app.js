@@ -683,10 +683,14 @@ function renderTruckDetails() {
     <div class="screen with-actions">
       ${header()}
       <section class="truck-overview-header">
+        <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="Back to vehicles">
+          ${icons.back}
+          <span>Vehicles</span>
+        </button>
         <div class="truck-title-row">
-          <div class="back-row truck-back-row">
-            <button class="icon-btn" type="button" data-route="vehicles" aria-label="Back">${icons.back}</button>
-            <div class="back-title">${escapeHtml(vehicle.title)}<span>${escapeHtml(modelLine(vehicle))}</span></div>
+          <div class="truck-heading">
+            <h1>${escapeHtml(vehicle.title)}</h1>
+            <p>${escapeHtml(modelLine(vehicle))}</p>
           </div>
           <div class="truck-header-actions">
             <button class="plain-icon-btn" type="button" aria-label="Edit truck">${icons.edit}</button>
@@ -697,9 +701,8 @@ function renderTruckDetails() {
       </section>
       <div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>
       ${truckTabContent(vehicle)}
-      <div class="action-bar">
+      <div class="action-bar single-action">
         <button class="primary-btn wide" type="button" data-route="services">Service ${icons.wrench}</button>
-        <button class="outline-btn wide" type="button" data-route="vehicles">Back</button>
       </div>
     </div>
   `;

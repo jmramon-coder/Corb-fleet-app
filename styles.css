@@ -879,42 +879,82 @@ input:focus-visible {
   border: 0;
   border-radius: 0;
   background: transparent;
-  margin: -20px 0 12px;
+  margin: -22px 0 12px;
   padding: 0;
   box-shadow: var(--shadow);
 }
 
-.truck-back-row {
-  margin: 0;
-}
-
-.truck-overview-header .back-title {
-  font-size: 17px;
-}
-
-.truck-overview-header .back-title span {
-  color: var(--muted-blue);
-  font-size: 14px;
-}
-
 .truck-title-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  column-gap: 10px;
+  row-gap: 8px;
+  margin-bottom: 10px;
+}
+
+.detail-back-btn {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 30px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted-blue);
+  margin: 0 0 6px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.detail-back-btn .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--blue);
+}
+
+.detail-back-btn span {
+  display: inline;
+}
+
+.truck-heading {
+  min-width: 0;
+  align-self: center;
+}
+
+.truck-heading h1 {
+  margin: 0;
+  color: var(--text-blue);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.truck-heading p {
+  margin: 3px 0 0;
+  overflow: hidden;
+  color: var(--muted-blue);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .truck-header-actions {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 2px;
 }
 
 .plain-icon-btn {
   display: inline-flex;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
@@ -923,8 +963,8 @@ input:focus-visible {
 }
 
 .plain-icon-btn .icon {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
 }
 
 .plain-icon-btn.danger-icon {
@@ -974,6 +1014,10 @@ input:focus-visible {
   border-top: 1px solid var(--divider);
   background: var(--app-bg);
   padding: 10px 22px 14px;
+}
+
+.action-bar.single-action {
+  grid-template-columns: 1fr;
 }
 
 .theme-dark .action-bar {
@@ -1396,6 +1440,10 @@ input:focus-visible {
 
   .screen-title {
     font-size: 23px;
+  }
+
+  .detail-back-btn span {
+    display: none;
   }
 
   .service-head,
