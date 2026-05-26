@@ -1421,6 +1421,10 @@ input:focus-visible {
   margin-bottom: 24px;
 }
 
+.security-title.compact {
+  margin-bottom: 12px;
+}
+
 .settings-card {
   display: grid;
   gap: 18px;
@@ -1486,6 +1490,30 @@ input:focus-visible {
 
 .switch.on span {
   transform: translateX(18px);
+}
+
+.language-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card) 85%, var(--app-bg));
+  padding: 4px;
+}
+
+.language-toggle button {
+  min-height: 38px;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted-blue);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.language-toggle button.active {
+  background: var(--blue);
+  color: #fff;
 }
 
 .ghost-note {

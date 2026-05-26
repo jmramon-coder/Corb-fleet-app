@@ -54,6 +54,181 @@ const icons = {
   logout: icon("logOut", "icon")
 };
 
+const translations = {
+  en: {
+    fleetManager: "Fleet Manager",
+    close: "Close",
+    profile: "Profile",
+    mainNavigation: "Main navigation",
+    services: "Services",
+    vehicles: "Vehicles",
+    welcome: "Welcome",
+    vehicleFleet: "Vehicle Fleet",
+    manageVehicles: "Manage all vehicles in your fleet",
+    searchServices: "Search services",
+    noServicesMatch: "No services match this view.",
+    all: "All",
+    overdue: "Overdue",
+    upcoming: "Upcoming",
+    ok: "Ok",
+    done: "Done",
+    dueToday: "Due today",
+    dueIn: "Due in {time}",
+    overdueTasks: "Overdue<br />Tasks",
+    upcomingTasks: "Upcoming<br />Tasks",
+    noVehicleYet: "No vehicle yet",
+    emptyVehicleCopy: "Add your first vehicle to start tracking maintenance schedules and service history",
+    addVehicle: "Add vehicle",
+    unknownVehicle: "Unknown vehicle",
+    nextDue: "Next due",
+    lastPerformed: "Last performed",
+    markCompleted: "Mark as completed",
+    maintenanceSchedules: "{count} maintenance schedules",
+    backToVehicles: "Back to vehicles",
+    back: "Back",
+    title: "Title",
+    unitNumber: "Unit Number",
+    brandModel: "Brand/Model",
+    timeBased: "Time based",
+    maintenanceHistory: "Maintenance history",
+    atMileage: "At mileage",
+    service: "Service",
+    details: "Details",
+    schedule: "Schedule",
+    history: "History",
+    editTruck: "Edit truck",
+    deleteTruck: "Delete truck",
+    technicalDetails: "Technical details",
+    engineBrandModel: "Engine Brand/Model",
+    engineSerialNumber: "Engine Serial Number",
+    filterPartNumbers: "Filter Part Numbers",
+    noScheduledServices: "No scheduled services.",
+    noCompletedHistory: "No completed service history.",
+    profileTitle: "Profile",
+    account: "Account",
+    fleet: "Fleet",
+    settings: "Settings",
+    fleetPreferences: "Fleet preferences will live here.",
+    editProfile: "Edit profile",
+    joined: "Joined",
+    role: "Role",
+    mechanic: "Mechanic",
+    security: "Security",
+    changePassword: "Change password",
+    logout: "Logout",
+    appearance: "Appearance",
+    appearanceCopy: "Choose the visual mode that feels best for your workspace.",
+    darkMode: "Dark mode",
+    on: "On",
+    off: "Off",
+    language: "Language",
+    languageCopy: "Switch the app interface between English and French.",
+    english: "English",
+    french: "French",
+    notRecorded: "Not recorded",
+    today: "Today",
+    dayLate: "{count} day late",
+    daysLate: "{count} days late",
+    day: "{count} day",
+    days: "{count} days",
+    deleteVehicleConfirm: "Delete this vehicle and its services?",
+    completionNotes: "Marked complete from mobile workflow.",
+    oilChange: "Oil change",
+    brakeInspection: "Brake inspection",
+    annualInspection: "Annual inspection",
+    every30Days: "Every 30 days",
+    every60Days: "Every 60 days",
+    every12Months: "Every 12 months",
+    truckNumber: "Truck #{number}"
+  },
+  fr: {
+    fleetManager: "Gestion de flotte",
+    close: "Fermer",
+    profile: "Profil",
+    mainNavigation: "Navigation principale",
+    services: "Services",
+    vehicles: "Véhicules",
+    welcome: "Bonjour",
+    vehicleFleet: "Flotte de véhicules",
+    manageVehicles: "Gérez tous les véhicules de votre flotte",
+    searchServices: "Rechercher des services",
+    noServicesMatch: "Aucun service ne correspond à cette vue.",
+    all: "Tous",
+    overdue: "En retard",
+    upcoming: "À venir",
+    ok: "Ok",
+    done: "Terminé",
+    dueToday: "À faire aujourd'hui",
+    dueIn: "Dans {time}",
+    overdueTasks: "Tâches<br />en retard",
+    upcomingTasks: "Tâches<br />à venir",
+    noVehicleYet: "Aucun véhicule",
+    emptyVehicleCopy: "Ajoutez votre premier véhicule pour suivre les entretiens et l'historique des services",
+    addVehicle: "Ajouter un véhicule",
+    unknownVehicle: "Véhicule inconnu",
+    nextDue: "Prochaine échéance",
+    lastPerformed: "Dernier service",
+    markCompleted: "Marquer comme terminé",
+    maintenanceSchedules: "{count} entretiens planifiés",
+    backToVehicles: "Retour aux véhicules",
+    back: "Retour",
+    title: "Titre",
+    unitNumber: "Numéro d'unité",
+    brandModel: "Marque/modèle",
+    timeBased: "Selon le temps",
+    maintenanceHistory: "Historique d'entretien",
+    atMileage: "Au kilométrage",
+    service: "Service",
+    details: "Détails",
+    schedule: "Horaire",
+    history: "Historique",
+    editTruck: "Modifier le camion",
+    deleteTruck: "Supprimer le camion",
+    technicalDetails: "Détails techniques",
+    engineBrandModel: "Marque/modèle du moteur",
+    engineSerialNumber: "Numéro de série du moteur",
+    filterPartNumbers: "Numéros de pièces des filtres",
+    noScheduledServices: "Aucun service planifié.",
+    noCompletedHistory: "Aucun historique de service terminé.",
+    profileTitle: "Profil",
+    account: "Compte",
+    fleet: "Flotte",
+    settings: "Réglages",
+    fleetPreferences: "Les préférences de flotte seront ici.",
+    editProfile: "Modifier le profil",
+    joined: "Inscrit",
+    role: "Rôle",
+    mechanic: "Mécanicien",
+    security: "Sécurité",
+    changePassword: "Changer le mot de passe",
+    logout: "Déconnexion",
+    appearance: "Apparence",
+    appearanceCopy: "Choisissez le mode visuel le plus confortable pour votre espace de travail.",
+    darkMode: "Mode sombre",
+    on: "Activé",
+    off: "Désactivé",
+    language: "Langue",
+    languageCopy: "Basculez l'interface entre le français et l'anglais.",
+    english: "Anglais",
+    french: "Français",
+    notRecorded: "Non enregistré",
+    today: "Aujourd'hui",
+    dayLate: "{count} jour de retard",
+    daysLate: "{count} jours de retard",
+    day: "{count} jour",
+    days: "{count} jours",
+    deleteVehicleConfirm: "Supprimer ce véhicule et ses services?",
+    completionNotes: "Marqué comme terminé depuis le flux mobile.",
+    oilChange: "Changement d'huile",
+    brakeInspection: "Inspection des freins",
+    annualInspection: "Inspection annuelle",
+    every30Days: "Tous les 30 jours",
+    every60Days: "Tous les 60 jours",
+    every12Months: "Tous les 12 mois",
+    truckNumber: "Camion no {number}"
+  }
+};
+
 const app = document.querySelector("#app");
 let state = loadState();
 let chromeHidden = false;
@@ -67,8 +242,8 @@ function isoDate(date) {
 }
 
 function formatDate(value) {
-  if (!value) return "Not recorded";
-  return new Intl.DateTimeFormat("en-US", {
+  if (!value) return t("notRecorded");
+  return new Intl.DateTimeFormat(dateLocale(), {
     month: "long",
     day: "numeric",
     year: "numeric"
@@ -76,8 +251,8 @@ function formatDate(value) {
 }
 
 function shortDate(value) {
-  if (!value) return "Not recorded";
-  return new Intl.DateTimeFormat("en-US", {
+  if (!value) return t("notRecorded");
+  return new Intl.DateTimeFormat(dateLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric"
@@ -85,7 +260,19 @@ function shortDate(value) {
 }
 
 function formatKm(value) {
-  return `${Number(value || 0).toLocaleString()} km`;
+  return `${Number(value || 0).toLocaleString(dateLocale())} km`;
+}
+
+function t(key, replacements = {}) {
+  const template = translations[state?.language || "en"]?.[key] ?? translations.en[key] ?? key;
+  return Object.entries(replacements).reduce(
+    (text, [name, value]) => text.replaceAll(`{${name}}`, value),
+    template
+  );
+}
+
+function dateLocale() {
+  return state?.language === "fr" ? "fr-CA" : "en-US";
 }
 
 function addDays(days) {
@@ -109,6 +296,7 @@ function defaultState() {
     profileTab: "account",
     truckTab: "details",
     theme: "light",
+    language: "en",
     user: {
       firstName: "Anthony",
       displayName: "Anthony.Corbin",
@@ -241,6 +429,7 @@ function loadState() {
 
 function normalizeState(next) {
   if (next.theme !== "dark" && next.theme !== "light") next.theme = "light";
+  if (next.language !== "fr" && next.language !== "en") next.language = "en";
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   return next;
@@ -310,7 +499,7 @@ function visibleServices() {
     const vehicle = vehicleById(service.vehicleId);
     const status = serviceStatus(service);
     const matchesFilter = state.serviceFilter === "all" || state.serviceFilter === status;
-    const haystack = `${service.title} ${vehicle?.title || ""} ${vehicle?.brandModel || ""}`.toLowerCase();
+    const haystack = `${service.title} ${displayServiceTitle(service)} ${vehicle?.title || ""} ${vehicle ? displayVehicleTitle(vehicle) : ""} ${vehicle?.brandModel || ""}`.toLowerCase();
     return matchesFilter && (!query || haystack.includes(query));
   });
 }
@@ -333,9 +522,38 @@ function daysUntil(value) {
 
 function relativeDue(value) {
   const days = daysUntil(value);
-  if (days < 0) return `${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} late`;
-  if (days === 0) return "Today";
-  return `${days} day${days === 1 ? "" : "s"}`;
+  if (days < 0) return t(Math.abs(days) === 1 ? "dayLate" : "daysLate", { count: Math.abs(days) });
+  if (days === 0) return t("today");
+  return t(days === 1 ? "day" : "days", { count: days });
+}
+
+function displayVehicleTitle(vehicle) {
+  const match = /^Truck #(\d+)$/i.exec(vehicle?.title || "");
+  return match ? t("truckNumber", { number: match[1] }) : vehicle?.title || "";
+}
+
+function displayServiceTitle(service) {
+  const titles = {
+    "Changement d’huile": "oilChange",
+    "Changement d'huile": "oilChange",
+    "Oil change": "oilChange",
+    "Brake inspection": "brakeInspection",
+    "Annual inspection": "annualInspection"
+  };
+  return t(titles[service?.title] || "", {}) || service?.title || "";
+}
+
+function displayRecurrenceLabel(value) {
+  const labels = {
+    "Every 30 days": "every30Days",
+    "Every 60 days": "every60Days",
+    "Every 12 months": "every12Months"
+  };
+  return t(labels[value] || "", {}) || value;
+}
+
+function displayRole(value) {
+  return value === "Mechanic" ? t("mechanic") : value;
 }
 
 function navigate(route, options = {}) {
@@ -367,18 +585,19 @@ function applyInitialUrlRoute() {
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
   if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
+  if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
 }
 
 function header({ close = false } = {}) {
   const action = close
-    ? `<button class="icon-btn" type="button" data-route="${state.previousRoute || "services"}" aria-label="Close">${icons.x}</button>`
-    : `<button class="icon-btn" type="button" data-route="profile" aria-label="Profile">${icons.profile}</button>`;
+    ? `<button class="icon-btn" type="button" data-route="${state.previousRoute || "services"}" aria-label="${escapeAttr(t("close"))}">${icons.x}</button>`
+    : `<button class="icon-btn" type="button" data-route="profile" aria-label="${escapeAttr(t("profile"))}">${icons.profile}</button>`;
 
   return `
     <header class="brand-header">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name"><strong>CORB</strong><span>Fleet Manager</span></span>
+        <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
       </div>
       ${action}
     </header>
@@ -388,9 +607,9 @@ function header({ close = false } = {}) {
 function bottomNav(active) {
   return `
     <div class="nav-scrim" aria-hidden="true"></div>
-    <nav class="bottom-nav" aria-label="Main navigation">
-      ${navButton("services", "Services", icons.services, active)}
-      ${navButton("vehicles", "Vehicles", icons.truck, active)}
+    <nav class="bottom-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
+      ${navButton("services", t("services"), icons.services, active)}
+      ${navButton("vehicles", t("vehicles"), icons.truck, active)}
     </nav>
   `;
 }
@@ -423,8 +642,8 @@ function appTabs({ items, active, dataAttribute, className = "" }) {
 }
 
 function metricCards(counts = statusCounts(), options = {}) {
-  const overdueLabel = options.compact ? "Overdue" : "Overdue<br />Tasks";
-  const upcomingLabel = options.compact ? "Upcoming" : "Upcoming<br />Tasks";
+  const overdueLabel = options.compact ? t("overdue") : t("overdueTasks");
+  const upcomingLabel = options.compact ? t("upcoming") : t("upcomingTasks");
 
   return `
     <div class="metric-grid">
@@ -447,10 +666,10 @@ function emptyVehicleCard() {
     <article class="empty-card">
       <div class="empty-content">
         <span class="empty-icon">${icons.truck}</span>
-        <h2 class="empty-title">No vehicle yet</h2>
-        <p class="empty-copy">Add your first vehicle to start tracking maintenance schedules and service history</p>
+        <h2 class="empty-title">${escapeHtml(t("noVehicleYet"))}</h2>
+        <p class="empty-copy">${escapeHtml(t("emptyVehicleCopy"))}</p>
         <button class="primary-btn" type="button" data-route="addVehicle">
-          Add vehicle
+          ${escapeHtml(t("addVehicle"))}
           <span class="button-icon-box">${icons.plus}</span>
         </button>
       </div>
@@ -467,7 +686,7 @@ function renderDashboard() {
       ${header()}
       <section class="dashboard-content">
         <div class="screen-heading">
-          <h1 class="screen-title">Welcome<br />${state.user.firstName},</h1>
+          <h1 class="screen-title">${escapeHtml(t("welcome"))}<br />${escapeHtml(state.user.firstName)},</h1>
         </div>
         ${metricCards()}
         ${
@@ -488,19 +707,19 @@ function renderServices() {
       ${header()}
       <section class="services-content">
         <div class="screen-heading tight">
-          <h1 class="screen-title">Welcome<br />${escapeHtml(state.user.firstName)},</h1>
-          <p class="screen-subtitle">Services</p>
+          <h1 class="screen-title">${escapeHtml(t("welcome"))}<br />${escapeHtml(state.user.firstName)},</h1>
+          <p class="screen-subtitle">${escapeHtml(t("services"))}</p>
         </div>
         <div>
           <div class="search-wrap">
             <label class="search-box">
               ${icons.search}
-              <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="Search services" data-service-search />
+              <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="${escapeAttr(t("searchServices"))}" data-service-search />
             </label>
           </div>
           ${filterRow()}
           <div class="list-stack">
-            ${services.length ? services.map(serviceCard).join("") : `<div class="ghost-note">No services match this view.</div>`}
+            ${services.length ? services.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noServicesMatch"))}</div>`}
           </div>
         </div>
       </section>
@@ -512,10 +731,10 @@ function renderServices() {
 function filterRow() {
   const counts = statusCounts();
   const filters = [
-    ["all", "All", "", state.services.length],
-    ["overdue", "Overdue", "overdue", counts.overdue],
-    ["upcoming", "Upcoming", "upcoming", counts.upcoming],
-    ["ok", "Ok", "ok", counts.ok]
+    ["all", t("all"), "", state.services.length],
+    ["overdue", t("overdue"), "overdue", counts.overdue],
+    ["upcoming", t("upcoming"), "upcoming", counts.upcoming],
+    ["ok", t("ok"), "ok", counts.ok]
   ];
 
   return `
@@ -535,32 +754,32 @@ function serviceCard(service) {
   const disabled = serviceStatus(service) === "ok";
   const status = serviceStatus(service);
   const dueDays = daysUntil(service.dueDate);
-  const dueChipLabel = status === "ok" ? "Done" : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? "Due today" : `Due in ${relativeDue(service.dueDate)}`;
+  const dueChipLabel = status === "ok" ? t("done") : status === "overdue" ? relativeDue(service.dueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(service.dueDate) });
   return `
     <article class="service-card click-card card-with-rail" data-open-service="${service.id}">
       <div class="service-card-body">
         <div class="service-head">
           <span>${icons.wrench}</span>
           <div>
-            <h2 class="service-card-title">${escapeHtml(service.title)}</h2>
+            <h2 class="service-card-title">${escapeHtml(displayServiceTitle(service))}</h2>
             <button class="vehicle-link" type="button" data-open-vehicle="${service.vehicleId}">
               ${icons.truck}
-              ${escapeHtml(vehicle?.title || "Unknown vehicle")}
+              ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}
             </button>
           </div>
           <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
         </div>
         <div class="service-dates">
           <div class="date-block">
-            <span>Next due</span>
+            <span>${escapeHtml(t("nextDue"))}</span>
             <strong class="date-value">${icons.calendar}${formatDate(service.dueDate)}</strong>
           </div>
           <div class="date-block">
-            <span>Last performed</span>
+            <span>${escapeHtml(t("lastPerformed"))}</span>
             <strong class="date-value">${icons.calendar}${formatDate(service.lastPerformedDate)}</strong>
           </div>
         </div>
-        ${disabled ? "" : `<div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">Mark as completed ${icons.check}</button></div>`}
+        ${disabled ? "" : `<div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button></div>`}
       </div>
       <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
     </article>
@@ -574,8 +793,8 @@ function renderVehicles() {
       ${header()}
       <section class="vehicles-content">
         <div class="screen-heading">
-          <h1 class="screen-title">Vehicle Fleet</h1>
-          <p class="screen-subtitle">Manage all vehicles in your fleet</p>
+          <h1 class="screen-title">${escapeHtml(t("vehicleFleet"))}</h1>
+          <p class="screen-subtitle">${escapeHtml(t("manageVehicles"))}</p>
         </div>
         ${
           vehicles.length
@@ -595,14 +814,14 @@ function vehicleCard(vehicle) {
       <div class="vehicle-card-body">
         <div class="vehicle-top">
           <div>
-            <h2 class="vehicle-card-title">${escapeHtml(vehicle.title)}</h2>
+            <h2 class="vehicle-card-title">${escapeHtml(displayVehicleTitle(vehicle))}</h2>
             <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
           </div>
           <span class="calendar-badge soft">${icons.calendar}<span>${openServices.length}</span></span>
         </div>
         <div class="vehicle-stats">
           <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
-          <span class="vehicle-stat">${icons.wrench}${openServices.length} maintenance schedules</span>
+          <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: openServices.length }))}</span>
         </div>
       </div>
       <div class="card-chevron-rail" aria-hidden="true">${icons.chevronRight}</div>
@@ -619,18 +838,18 @@ function renderAddVehicle() {
     <div class="screen with-actions">
       ${header()}
       <div class="back-row">
-        <button class="icon-btn" type="button" data-route="vehicles" aria-label="Back to vehicles">${icons.back}</button>
-        <div class="back-title">Back to vehicles</div>
+        <button class="icon-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">${icons.back}</button>
+        <div class="back-title">${escapeHtml(t("backToVehicles"))}</div>
       </div>
-      <h1 class="form-title">Add Vehicle</h1>
+      <h1 class="form-title">${escapeHtml(t("addVehicle"))}</h1>
       <form class="mobile-form" data-add-vehicle-form>
-        <label>Title <input name="title" autocomplete="off" required /></label>
-        <label>Unity Number <input name="unitNumber" autocomplete="off" required /></label>
-        <label>Brand/Model <input name="brandModel" autocomplete="off" required /></label>
+        <label>${escapeHtml(t("title"))} <input name="title" autocomplete="off" required /></label>
+        <label>${escapeHtml(t("unitNumber"))} <input name="unitNumber" autocomplete="off" required /></label>
+        <label>${escapeHtml(t("brandModel"))} <input name="brandModel" autocomplete="off" required /></label>
       </form>
       <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="unused" data-submit-add-vehicle>Mark as completed ${icons.check}</button>
-        <button class="outline-btn wide" type="button" data-route="vehicles">Back</button>
+        <button class="success-btn wide" type="submit" form="unused" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
+        <button class="outline-btn wide" type="button" data-route="vehicles">${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
@@ -645,30 +864,30 @@ function renderServiceDetails() {
     <div class="screen with-actions">
       ${header()}
       <div class="back-row">
-        <button class="icon-btn" type="button" data-route="services" aria-label="Back">${icons.back}</button>
-        <div class="back-title">${escapeHtml(service.title)}<span>${icons.truck} ${escapeHtml(vehicle?.title || "Unknown vehicle")}</span></div>
+        <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
+        <div class="back-title">${escapeHtml(displayServiceTitle(service))}<span>${icons.truck} ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span></div>
       </div>
       <div class="detail-chip-grid">
-        <div class="detail-chip">${icons.calendar} Time based<strong>${escapeHtml(service.recurrenceLabel)}</strong></div>
-        <div class="detail-chip">${icons.calendar} Next due<strong>${shortDate(service.dueDate)}</strong></div>
+        <div class="detail-chip">${icons.calendar} ${escapeHtml(t("timeBased"))}<strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
+        <div class="detail-chip">${icons.calendar} ${escapeHtml(t("nextDue"))}<strong>${shortDate(service.dueDate)}</strong></div>
       </div>
-      <div class="status-panel">${icons.calendar}<div>${serviceStatus(service) === "ok" ? "Ok" : serviceStatus(service) === "overdue" ? "Overdue" : "Upcoming"}<strong>${relativeDue(service.dueDate)}</strong></div></div>
+      <div class="status-panel">${icons.calendar}<div>${escapeHtml(serviceStatus(service) === "ok" ? t("ok") : serviceStatus(service) === "overdue" ? t("overdue") : t("upcoming"))}<strong>${escapeHtml(relativeDue(service.dueDate))}</strong></div></div>
       <article class="detail-card">
-        <h3>${icons.history} Maintenance history</h3>
+        <h3>${icons.history} ${escapeHtml(t("maintenanceHistory"))}</h3>
         <div class="history-grid">
           <div>
-            <span class="detail-label">Last performed</span>
+            <span class="detail-label">${escapeHtml(t("lastPerformed"))}</span>
             <strong class="date-value">${icons.calendar}${shortDate(service.lastPerformedDate)}</strong>
           </div>
           <div>
-            <span class="detail-label">At mileage</span>
+            <span class="detail-label">${escapeHtml(t("atMileage"))}</span>
             <strong class="date-value">${icons.gauge}${formatKm(service.lastPerformedKm)}</strong>
           </div>
         </div>
       </article>
       <div class="action-bar">
-        <button class="success-btn wide" type="button" data-complete-service="${service.id}">Mark as completed ${icons.check}</button>
-        <button class="outline-btn wide" type="button" data-route="services">Back</button>
+        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button>
+        <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
@@ -689,18 +908,18 @@ function renderTruckDetails() {
     <div class="screen with-actions">
       ${header()}
       <section class="truck-overview-header">
-        <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="Back to vehicles">
+        <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">
           ${icons.back}
-          <span>Vehicles</span>
+          <span>${escapeHtml(t("vehicles"))}</span>
         </button>
         <div class="truck-title-row">
           <div class="truck-heading">
-            <h1>${escapeHtml(vehicle.title)}</h1>
+            <h1>${escapeHtml(displayVehicleTitle(vehicle))}</h1>
             <p>${escapeHtml(modelLine(vehicle))}</p>
           </div>
           <div class="truck-header-actions">
-            <button class="plain-icon-btn" type="button" aria-label="Edit truck">${icons.edit}</button>
-            <button class="plain-icon-btn danger-icon" type="button" data-delete-vehicle="${vehicle.id}" aria-label="Delete truck">${icons.trash}</button>
+            <button class="plain-icon-btn" type="button" aria-label="${escapeAttr(t("editTruck"))}">${icons.edit}</button>
+            <button class="plain-icon-btn danger-icon" type="button" data-delete-vehicle="${vehicle.id}" aria-label="${escapeAttr(t("deleteTruck"))}">${icons.trash}</button>
           </div>
         </div>
         ${truckTabs()}
@@ -708,7 +927,7 @@ function renderTruckDetails() {
       ${state.truckTab === "schedule" ? `<div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>` : ""}
       ${truckTabContent(vehicle)}
       <div class="action-bar single-action">
-        <button class="primary-btn wide" type="button" data-route="services">Service ${icons.wrench}</button>
+        <button class="primary-btn wide" type="button" data-route="services">${escapeHtml(t("service"))} ${icons.wrench}</button>
       </div>
     </div>
   `;
@@ -717,9 +936,9 @@ function renderTruckDetails() {
 function truckTabs() {
   return appTabs({
     items: [
-      { key: "details", label: "Details" },
-      { key: "schedule", label: "Schedule" },
-      { key: "history", label: "History" }
+      { key: "details", label: t("details") },
+      { key: "schedule", label: t("schedule") },
+      { key: "history", label: t("history") }
     ],
     active: state.truckTab,
     dataAttribute: "data-truck-tab",
@@ -730,24 +949,24 @@ function truckTabs() {
 function truckTabContent(vehicle) {
   if (state.truckTab === "schedule") {
     const scheduled = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) !== "ok");
-    return `<div class="list-stack">${scheduled.length ? scheduled.map(serviceCard).join("") : `<div class="ghost-note">No scheduled services.</div>`}</div>`;
+    return `<div class="list-stack">${scheduled.length ? scheduled.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noScheduledServices"))}</div>`}</div>`;
   }
 
   if (state.truckTab === "history") {
     const history = servicesForVehicle(vehicle.id).filter((service) => serviceStatus(service) === "ok");
-    return `<div class="list-stack">${history.length ? history.map(serviceCard).join("") : `<div class="ghost-note">No completed service history.</div>`}</div>`;
+    return `<div class="list-stack">${history.length ? history.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}</div>`;
   }
 
   return `
     <article class="technical-card">
       <div class="technical-head">
-        <h3>${icons.folder} Technical details</h3>
+        <h3>${icons.folder} ${escapeHtml(t("technicalDetails"))}</h3>
       </div>
       <div class="technical-list">
-        <div><span class="detail-label">Unit Number</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>
-        <div><span class="detail-label">Engine Brand/Model</span><strong>${escapeHtml(vehicle.technical.engineBrandModel)}</strong></div>
-        <div><span class="detail-label">Engine Serial Number</span><strong>${escapeHtml(vehicle.technical.engineSerialNumber)}</strong></div>
-        <div><span class="detail-label">Filter Part Numbers</span><strong>${escapeHtml(vehicle.technical.filterPartNumbers)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("unitNumber"))}</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("engineBrandModel"))}</span><strong>${escapeHtml(vehicle.technical.engineBrandModel)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("engineSerialNumber"))}</span><strong>${escapeHtml(vehicle.technical.engineSerialNumber)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("filterPartNumbers"))}</span><strong>${escapeHtml(vehicle.technical.filterPartNumbers)}</strong></div>
       </div>
     </article>
   `;
@@ -757,12 +976,12 @@ function renderProfile() {
   return `
     <div class="screen">
       ${header({ close: true })}
-      <h1 class="profile-title">Profil</h1>
+      <h1 class="profile-title">${escapeHtml(t("profileTitle"))}</h1>
       ${appTabs({
         items: [
-          { key: "account", label: "Account" },
-          { key: "fleet", label: "Fleet" },
-          { key: "settings", label: "Settings" }
+          { key: "account", label: t("account") },
+          { key: "fleet", label: t("fleet") },
+          { key: "settings", label: t("settings") }
         ],
         active: state.profileTab,
         dataAttribute: "data-profile-tab",
@@ -774,7 +993,7 @@ function renderProfile() {
 }
 
 function profileContent() {
-  if (state.profileTab === "fleet") return `<div class="ghost-note">Fleet preferences will live here.</div>`;
+  if (state.profileTab === "fleet") return `<div class="ghost-note">${escapeHtml(t("fleetPreferences"))}</div>`;
   if (state.profileTab === "settings") return renderSettingsPanel();
 
   return `
@@ -785,36 +1004,45 @@ function profileContent() {
           <div class="account-name">${escapeHtml(state.user.displayName)}</div>
           <div class="account-email">${icons.mail}${escapeHtml(state.user.email)}</div>
         </div>
-        <button class="plain-icon-btn account-edit" type="button" aria-label="Edit profile">${icons.edit}</button>
+        <button class="plain-icon-btn account-edit" type="button" aria-label="${escapeAttr(t("editProfile"))}">${icons.edit}</button>
       </div>
       <div class="profile-grid">
-        <div><span class="detail-label">Joined</span><strong>${formatDate(state.user.joinedAt)}</strong></div>
-        <div><span class="detail-label">Role</span><strong>${escapeHtml(state.user.role)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("joined"))}</span><strong>${formatDate(state.user.joinedAt)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("role"))}</span><strong>${escapeHtml(displayRole(state.user.role))}</strong></div>
       </div>
     </article>
     <article class="profile-card security-card">
-      <h2 class="security-title">${icons.lock} Security</h2>
-      <button class="outline-btn wide" type="button">Change password</button>
-      <button class="danger-btn wide" type="button">Logout ${icons.logout}</button>
+      <h2 class="security-title">${icons.lock} ${escapeHtml(t("security"))}</h2>
+      <button class="outline-btn wide" type="button">${escapeHtml(t("changePassword"))}</button>
+      <button class="danger-btn wide" type="button">${escapeHtml(t("logout"))} ${icons.logout}</button>
     </article>
   `;
 }
 
 function renderSettingsPanel() {
   const darkMode = state.theme === "dark";
+  const language = state.language === "fr" ? "fr" : "en";
   return `
     <article class="profile-card settings-card">
       <div>
-        <h2 class="security-title">${icons.gauge} Appearance</h2>
-        <p class="settings-copy">Choose the visual mode that feels best for your workspace.</p>
+        <h2 class="security-title">${icons.gauge} ${escapeHtml(t("appearance"))}</h2>
+        <p class="settings-copy">${escapeHtml(t("appearanceCopy"))}</p>
       </div>
       <button class="setting-row" type="button" data-toggle-theme aria-pressed="${darkMode}">
         <span>
-          <strong>Dark mode</strong>
-          <small>${darkMode ? "On" : "Off"}</small>
+          <strong>${escapeHtml(t("darkMode"))}</strong>
+          <small>${darkMode ? t("on") : t("off")}</small>
         </span>
         <span class="switch ${darkMode ? "on" : ""}" aria-hidden="true"><span></span></span>
       </button>
+      <div>
+        <h2 class="security-title compact">${icons.services} ${escapeHtml(t("language"))}</h2>
+        <p class="settings-copy">${escapeHtml(t("languageCopy"))}</p>
+      </div>
+      <div class="language-toggle" role="group" aria-label="${escapeAttr(t("language"))}">
+        <button class="${language === "en" ? "active" : ""}" type="button" data-language="en">${escapeHtml(t("english"))}</button>
+        <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr">${escapeHtml(t("french"))}</button>
+      </div>
     </article>
   `;
 }
@@ -827,7 +1055,7 @@ function completeService(serviceId) {
   service.completedAt = new Date().toISOString();
   service.lastPerformedDate = todayIso;
   service.lastPerformedKm = vehicle?.kilometers || service.lastPerformedKm || 0;
-  service.completionNotes = "Marked complete from mobile workflow.";
+  service.completionNotes = t("completionNotes");
 }
 
 function addVehicleFromForm(form) {
@@ -853,6 +1081,8 @@ function addVehicleFromForm(form) {
 function render() {
   saveState();
   document.documentElement.dataset.theme = state.theme;
+  document.documentElement.lang = state.language === "fr" ? "fr-CA" : "en";
+  document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
   app.innerHTML = `
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
@@ -967,6 +1197,7 @@ app.addEventListener("click", (event) => {
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const toggleTheme = event.target.closest("[data-toggle-theme]");
+  const language = event.target.closest("[data-language]")?.dataset.language;
 
   if (completeId) {
     completeService(completeId);
@@ -1001,7 +1232,11 @@ app.addEventListener("click", (event) => {
     state.theme = state.theme === "dark" ? "light" : "dark";
     render();
   }
-  if (deleteVehicleId && confirm("Delete this vehicle and its services?")) {
+  if (language === "en" || language === "fr") {
+    state.language = language;
+    render();
+  }
+  if (deleteVehicleId && confirm(t("deleteVehicleConfirm"))) {
     state.vehicles = state.vehicles.filter((vehicle) => vehicle.id !== deleteVehicleId);
     state.services = state.services.filter((service) => service.vehicleId !== deleteVehicleId);
     navigate("vehicles");
