@@ -1114,7 +1114,42 @@ input:focus-visible {
 }
 
 .truck-metrics-shell .metric-grid {
+  gap: 8px;
   margin: 0;
+}
+
+.truck-metrics-shell .metric-card {
+  display: grid;
+  min-height: 46px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  border-color: var(--divider);
+  border-radius: 10px;
+  background: transparent;
+  padding: 0 12px;
+  text-align: left;
+}
+
+.truck-metrics-shell .metric-rule {
+  width: 7px;
+  height: 7px;
+  margin: 0;
+}
+
+.truck-metrics-shell .metric-label {
+  min-height: 0;
+  color: var(--muted-blue);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.truck-metrics-shell .metric-value {
+  margin: 0;
+  color: var(--text-blue);
+  font-size: 16px;
+  font-weight: 650;
 }
 
 .technical-card {

@@ -418,17 +418,20 @@ function appTabs({ items, active, dataAttribute, className = "" }) {
   `;
 }
 
-function metricCards(counts = statusCounts()) {
+function metricCards(counts = statusCounts(), options = {}) {
+  const overdueLabel = options.compact ? "Overdue" : "Overdue<br />Tasks";
+  const upcomingLabel = options.compact ? "Upcoming" : "Upcoming<br />Tasks";
+
   return `
     <div class="metric-grid">
       <article class="metric-card">
         <span class="metric-rule red"></span>
-        <span class="metric-label">Overdue<br />Tasks</span>
+        <span class="metric-label">${overdueLabel}</span>
         <strong class="metric-value">${counts.overdue}</strong>
       </article>
       <article class="metric-card">
         <span class="metric-rule yellow"></span>
-        <span class="metric-label">Upcoming<br />Tasks</span>
+        <span class="metric-label">${upcomingLabel}</span>
         <strong class="metric-value">${counts.upcoming}</strong>
       </article>
     </div>
@@ -692,7 +695,7 @@ function renderTruckDetails() {
         </div>
         ${truckTabs()}
       </section>
-      <div class="truck-metrics-shell">${metricCards(counts)}</div>
+      <div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>
       ${truckTabContent(vehicle)}
       <div class="action-bar">
         <button class="primary-btn wide" type="button" data-route="services">Service ${icons.wrench}</button>
