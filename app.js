@@ -819,7 +819,6 @@ function vehicleCard(vehicle) {
             <h2 class="vehicle-card-title">${escapeHtml(displayVehicleTitle(vehicle))}</h2>
             <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
           </div>
-          <span class="calendar-badge soft">${icons.calendar}<span>${openServices.length}</span></span>
         </div>
         <div class="vehicle-stats">
           <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
