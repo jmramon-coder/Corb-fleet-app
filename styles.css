@@ -15,6 +15,7 @@
   --green: #17c346;
   --green-2: #5ed67a;
   --line: #e6ebfa;
+  --divider: rgba(15, 23, 42, 0.1);
   --ink: #0a37c6;
   --shadow: none;
   --shadow-strong: 0 8px 22px rgba(22, 53, 135, 0.06);
@@ -88,6 +89,7 @@ input:focus-visible {
   --muted-blue: #9ca3af;
   --border-blue: rgba(156, 163, 175, 0.26);
   --line: rgba(156, 163, 175, 0.16);
+  --divider: rgba(255, 255, 255, 0.12);
   --ink: #f8fafc;
   --red: #ff6b72;
   --orange: #ffad3d;
@@ -273,7 +275,6 @@ input:focus-visible {
 .theme-dark .empty-card,
 .theme-dark .search-box,
 .theme-dark .detail-chip,
-.theme-dark .truck-overview-header .segmented-tabs,
 .theme-dark .bottom-nav {
   background: var(--card);
   border-color: var(--line);
@@ -430,43 +431,32 @@ input:focus-visible {
   right: 0;
   bottom: 0;
   z-index: 18;
-  height: 66px;
-  border-top: 1px solid var(--border-blue);
+  height: 82px;
+  border-top: 1px solid var(--divider);
   pointer-events: none;
   opacity: 1;
-  background:
-    linear-gradient(
-      to top,
-      rgba(245, 245, 245, 0.54) 0%,
-      rgba(245, 245, 245, 0.18) 48%,
-      rgba(245, 245, 245, 0) 100%
-    );
+  background: var(--app-bg);
   transition: opacity 180ms ease;
 }
 
 .bottom-nav {
   position: fixed;
-  left: 50%;
-  bottom: 16px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 20;
   display: grid;
-  width: min(370px, calc(100vw - 36px));
-  min-width: 320px;
+  width: 100%;
+  min-width: 0;
   grid-template-columns: repeat(3, 1fr);
-  transform: translateX(-50%);
+  transform: translateY(0);
   isolation: isolate;
-  overflow: visible;
-  border: 1px solid rgba(191, 208, 255, 0.22);
-  border-top-color: rgba(36, 81, 230, 0.34);
-  border-radius: 16px;
-  background: var(--card);
-  padding: 5px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 0 0 12px var(--app-bg),
-    0 -4px 14px rgba(36, 81, 230, 0.08),
-    0 12px 30px rgba(36, 81, 230, 0.11);
-  backdrop-filter: blur(14px);
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: var(--app-bg);
+  padding: 7px var(--page-gutter) calc(10px + env(safe-area-inset-bottom));
+  box-shadow: none;
   transition:
     transform 220ms ease,
     opacity 180ms ease;
@@ -477,42 +467,24 @@ input:focus-visible {
 }
 
 .chrome-hidden .bottom-nav {
-  transform: translate(-50%, calc(100% + 30px));
+  transform: translateY(calc(100% + 8px));
   opacity: 0;
   pointer-events: none;
 }
 
 .bottom-nav::before {
-  content: "";
-  position: absolute;
-  inset: -9px -34px -18px;
-  z-index: -1;
-  border-radius: 30px;
-  background: var(--app-bg);
-  box-shadow: 0 0 18px rgba(245, 245, 245, 0.68);
-  pointer-events: none;
+  display: none;
 }
 
 .theme-dark .nav-scrim {
-  border-top-color: var(--line);
-  background:
-    linear-gradient(
-      to top,
-      rgba(11, 11, 12, 0.5) 0%,
-      rgba(11, 11, 12, 0.2) 48%,
-      rgba(11, 11, 12, 0.08) 78%,
-      rgba(11, 11, 12, 0) 100%
-    );
+  border-top-color: var(--divider);
+  background: var(--app-bg);
 }
 
 .theme-dark .bottom-nav {
-  background: rgba(22, 22, 22, 0.92);
-  border-top-color: rgba(255, 255, 255, 0.26);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 0 0 12px var(--app-bg),
-    0 -5px 16px rgba(255, 255, 255, 0.06),
-    0 12px 30px rgba(0, 0, 0, 0.18);
+  background: var(--app-bg);
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .theme-dark .bottom-nav::before {
@@ -736,8 +708,8 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 10px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
   padding: 16px 18px 14px;
 }
 
@@ -837,7 +809,7 @@ input:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--divider);
   background: color-mix(in srgb, var(--card) 82%, var(--app-bg));
   color: #8ca0e6;
   padding: 0 18px;
@@ -972,14 +944,14 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 108px;
   gap: 10px;
-  border-top: 1px solid var(--border-blue);
+  border-top: 1px solid var(--divider);
   background: var(--app-bg);
   padding: 10px 22px 14px;
 }
 
 .theme-dark .action-bar {
   background: var(--app-bg);
-  border-color: var(--line);
+  border-color: var(--divider);
 }
 
 .detail-chip-grid {
@@ -1047,40 +1019,54 @@ input:focus-visible {
 .segmented-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  border-bottom: 1px solid var(--border-blue);
+  gap: 0;
+  border-bottom: 1px solid var(--divider);
   margin: -8px 0 14px;
-  padding: 0 0 8px;
+  padding: 0;
 }
 
 .segment-tab {
-  min-height: 32px;
-  border-radius: 10px;
+  position: relative;
+  min-height: 38px;
+  border-radius: 0;
   background: transparent;
-  color: var(--text-blue);
+  color: var(--muted-blue);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 750;
 }
 
 .segment-tab.active {
-  background: var(--blue-soft);
+  background: transparent;
+  color: var(--text-blue);
+}
+
+.segment-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--blue);
 }
 
 .truck-overview-header .segmented-tabs {
-  border: 1px solid rgba(191, 208, 255, 0.45);
-  border-radius: 12px;
-  background: #fff;
-  margin: 0;
-  padding: 3px;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  border-radius: 0;
+  background: transparent;
+  margin: 2px 0 0;
+  padding: 0;
 }
 
 .truck-overview-header .segment-tab {
-  min-height: 34px;
+  min-height: 38px;
 }
 
 .truck-overview-header .segment-tab.active {
-  background: var(--blue);
-  color: #fff;
+  background: transparent;
+  color: var(--text-blue);
   box-shadow: none;
 }
 
@@ -1132,8 +1118,8 @@ input:focus-visible {
 
 .profile-tabs {
   margin: 0 0 18px;
-  padding: 0 0 7px;
-  border-bottom: 1px solid var(--line);
+  padding: 0;
+  border-bottom: 1px solid var(--divider);
 }
 
 .profile-card {
@@ -1310,15 +1296,16 @@ input:focus-visible {
   }
 
   .bottom-nav {
-    bottom: 26px;
-    width: 360px;
+    bottom: 0;
+    width: min(100%, 980px);
+    padding-inline: var(--desktop-gutter);
   }
 
   .action-bar {
     left: 50%;
     width: min(100%, 760px);
     transform: translateX(-50%);
-    border: 1px solid var(--border-blue);
+    border: 1px solid var(--divider);
     border-bottom: 0;
     border-radius: 18px 18px 0 0;
   }
