@@ -31,6 +31,7 @@
   --radius-lg: 16px;
   --page-gutter: 18px;
   --desktop-gutter: 32px;
+  --brand-text-offset: 36px;
 }
 
 * {
@@ -1021,6 +1022,7 @@ input:focus-visible {
   column-gap: 10px;
   row-gap: 8px;
   margin-bottom: 10px;
+  padding-left: var(--brand-text-offset);
 }
 
 .detail-back-btn {
@@ -1048,6 +1050,7 @@ input:focus-visible {
 
 .detail-back-btn span {
   display: inline;
+  margin-left: 14px;
 }
 
 .truck-heading {
@@ -1282,6 +1285,17 @@ input:focus-visible {
 .truck-tabs {
   margin-top: 2px;
   margin-bottom: 12px;
+}
+
+.truck-tabs .app-tab {
+  justify-content: flex-start;
+  padding-left: var(--brand-text-offset);
+}
+
+.truck-tabs .app-tab.active::after {
+  right: auto;
+  left: var(--brand-text-offset);
+  width: 46px;
 }
 
 .truck-metrics-shell {
