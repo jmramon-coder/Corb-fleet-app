@@ -960,7 +960,7 @@ function truckTabContent(vehicle) {
   return `
     <article class="technical-card">
       <div class="technical-head">
-        <h3>${icons.folder} ${escapeHtml(t("technicalDetails"))}</h3>
+        <h3><span class="technical-title-icon">${icons.wrench}</span>${escapeHtml(t("technicalDetails"))}</h3>
       </div>
       <div class="technical-list">
         <div><span class="detail-label">${escapeHtml(t("unitNumber"))}</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>
