@@ -160,7 +160,13 @@ const translations = {
     completedBy: "Completed by",
     mechanicAccessCode: "Mechanic access code",
     scheduleRule: "Schedule rule",
-    serviceSchedule: "Service schedule"
+    serviceSchedule: "Service schedule",
+    serviceIdentification: "Service identification",
+    upcomingService: "Upcoming service",
+    completedServices: "Completed services",
+    completeNow: "Complete now",
+    confirmCompletion: "Confirm completion",
+    cancel: "Cancel"
   },
   fr: {
     fleetManager: "Gestion de flotte",
@@ -265,7 +271,13 @@ const translations = {
     completedBy: "Complété par",
     mechanicAccessCode: "Code d'accès mécanicien",
     scheduleRule: "Règle de planification",
-    serviceSchedule: "Horaire de service"
+    serviceSchedule: "Horaire de service",
+    serviceIdentification: "Identification du service",
+    upcomingService: "Service à venir",
+    completedServices: "Services complétés",
+    completeNow: "Compléter maintenant",
+    confirmCompletion: "Confirmer la complétion",
+    cancel: "Annuler"
   }
 };
 
@@ -332,6 +344,7 @@ function defaultState() {
     activeFleetId: "fleet-1",
     activeServiceId: null,
     activeVehicleId: null,
+    completionModalServiceId: null,
     serviceFilter: "all",
     serviceSearch: "",
     profileTab: "account",
@@ -572,6 +585,7 @@ function normalizeState(next) {
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
+  next.completionModalServiceId = null;
   if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
   if (Array.isArray(next.services) && !Array.isArray(next.serviceSchedules)) {
@@ -843,6 +857,7 @@ function applyInitialUrlRoute() {
   if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
   if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
+  if (params.get("completionModal")) state.completionModalServiceId = params.get("completionModal");
 }
 
 function header({ close = false } = {}) {
@@ -1036,9 +1051,61 @@ function serviceCard(service) {
             <strong class="date-value">${icons.calendar}${formatDate(service.lastPerformedDate)}</strong>
           </div>
         </div>
-        <div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button></div>
+        <div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button></div>
       </div>
     </article>
+  `;
+}
+
+function serviceIdentityCard(service, vehicle) {
+  const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
+  return `
+    <article class="detail-card service-object-card">
+      <h3>${icons.wrench} ${escapeHtml(t("serviceIdentification"))}</h3>
+      <div class="service-object-title">
+        <h2>${escapeHtml(displayServiceTitle(service))}</h2>
+        <span>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span>
+      </div>
+      <div class="object-detail-grid">
+        <div><span class="detail-label">${escapeHtml(t("scheduleRule"))}</span><strong>${escapeHtml(scheduleLabel)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("serviceSchedule"))}</span><strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("lastPerformed"))}</span><strong>${service.lastPerformedDate ? shortDate(service.lastPerformedDate) : t("noCompletionYet")}</strong></div>
+      </div>
+    </article>
+  `;
+}
+
+function upcomingServiceCard(service, vehicle) {
+  const status = serviceStatus(service);
+  return `
+    <article class="detail-card upcoming-service-card">
+      <div class="section-card-head">
+        <h3>${icons.calendar} ${escapeHtml(t("upcomingService"))}</h3>
+        <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
+      </div>
+      <div class="object-detail-grid">
+        <div><span class="detail-label">${escapeHtml(t("nextDue"))}</span><strong class="date-value">${icons.calendar}${shortDate(service.dueDate)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("nextDueKm"))}</span><strong class="date-value">${icons.gauge}${service.dueKm ? formatKm(service.dueKm) : t("notRecorded")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong class="date-value">${icons.gauge}${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("details"))}</span><strong>${escapeHtml(service.dueKm ? `${relativeDue(service.dueDate)} / ${relativeKm(service)}` : relativeDue(service.dueDate))}</strong></div>
+      </div>
+    </article>
+  `;
+}
+
+function serviceCompletionHistory(service) {
+  const completions = completionsForSchedule(service.id);
+  return `
+    <section class="service-history-section">
+      <div class="section-title-row">
+        <h3>${icons.history} ${escapeHtml(t("completedServices"))}</h3>
+        <span>${completions.length}</span>
+      </div>
+      <div class="list-stack">
+        ${completions.length ? completions.map(completionCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
+      </div>
+    </section>
   `;
 }
 
@@ -1147,9 +1214,6 @@ function renderServiceDetails() {
   const service = serviceById(state.activeServiceId) || state.serviceSchedules[0];
   if (!service) return renderServices();
   const vehicle = vehicleById(service.vehicleId);
-  const status = serviceStatus(service);
-  const latestCompletion = completionsForSchedule(service.id)[0];
-  const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
 
   return `
     <div class="screen with-actions">
@@ -1158,38 +1222,11 @@ function renderServiceDetails() {
         <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
         <div class="back-title">${escapeHtml(displayServiceTitle(service))}<span>${icons.truck} ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</span></div>
       </div>
-      <div class="detail-chip-grid">
-        <div class="detail-chip">${icons.calendar} ${escapeHtml(scheduleLabel)}<strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
-        <div class="detail-chip">${icons.calendar} ${escapeHtml(t("nextDue"))}<strong>${shortDate(service.dueDate)}</strong></div>
-        <div class="detail-chip">${icons.gauge} ${escapeHtml(t("nextDueKm"))}<strong>${service.dueKm ? formatKm(service.dueKm) : t("notRecorded")}</strong></div>
-        <div class="detail-chip">${icons.gauge} ${escapeHtml(t("currentKm"))}<strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
-      </div>
-      <div class="status-panel">${icons.calendar}<div>${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}<strong>${escapeHtml(service.dueKm ? `${relativeDue(service.dueDate)} / ${relativeKm(service)}` : relativeDue(service.dueDate))}</strong></div></div>
-      <article class="detail-card">
-        <h3>${icons.history} ${escapeHtml(t("lastCompletion"))}</h3>
-        <div class="history-grid">
-          <div>
-            <span class="detail-label">${escapeHtml(t("lastPerformed"))}</span>
-            <strong class="date-value">${icons.calendar}${latestCompletion ? shortDate(latestCompletion.completedDate) : t("noCompletionYet")}</strong>
-          </div>
-          <div>
-            <span class="detail-label">${escapeHtml(t("atMileage"))}</span>
-            <strong class="date-value">${icons.gauge}${latestCompletion ? formatKm(latestCompletion.completedKm) : t("notRecorded")}</strong>
-          </div>
-        </div>
-        ${latestCompletion?.mechanicNote ? `<p class="completion-note">${escapeHtml(latestCompletion.mechanicNote)}</p>` : ""}
-      </article>
-      <article class="detail-card completion-form-card">
-        <h3>${icons.wrench} ${escapeHtml(t("completionDetails"))}</h3>
-        <form class="completion-form" data-completion-form="${service.id}">
-          <label>${escapeHtml(t("currentKm"))}<input name="completedKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(vehicle?.kilometers || service.lastPerformedKm || 0)}" /></label>
-          <label>${escapeHtml(t("mechanicNote"))}<textarea name="mechanicNote" rows="3" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea></label>
-          <label>${escapeHtml(t("partsNumbers"))}<input name="partsNumbers" autocomplete="off" placeholder="${escapeAttr(t("partsNumbersPlaceholder"))}" /></label>
-          <label>${escapeHtml(t("photosDocuments"))}<input name="attachments" type="file" multiple /><small>${escapeHtml(t("photosDocumentsHint"))}</small></label>
-        </form>
-      </article>
+      ${serviceIdentityCard(service, vehicle)}
+      ${upcomingServiceCard(service, vehicle)}
+      ${serviceCompletionHistory(service)}
       <div class="action-bar">
-        <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("markCompleted"))} ${icons.check}</button>
+        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
@@ -1350,6 +1387,36 @@ function renderSettingsPanel() {
   `;
 }
 
+function completionModal() {
+  const service = serviceById(state.completionModalServiceId);
+  if (!service) return "";
+  const vehicle = vehicleById(service.vehicleId);
+
+  return `
+    <div class="modal-backdrop" data-close-modal role="presentation">
+      <section class="completion-modal" role="dialog" aria-modal="true" aria-labelledby="completion-modal-title" data-modal-panel>
+        <div class="modal-head">
+          <div>
+            <h2 id="completion-modal-title">${escapeHtml(t("completeNow"))}</h2>
+            <p>${escapeHtml(displayServiceTitle(service))} · ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
+          </div>
+          <button class="icon-btn" type="button" data-close-modal-trigger aria-label="${escapeAttr(t("cancel"))}">${icons.x}</button>
+        </div>
+        <form class="completion-form" data-completion-form="${service.id}">
+          <label>${escapeHtml(t("currentKm"))}<input name="completedKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(vehicle?.kilometers || service.lastPerformedKm || 0)}" /></label>
+          <label>${escapeHtml(t("mechanicNote"))}<textarea name="mechanicNote" rows="3" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea></label>
+          <label>${escapeHtml(t("partsNumbers"))}<input name="partsNumbers" autocomplete="off" placeholder="${escapeAttr(t("partsNumbersPlaceholder"))}" /></label>
+          <label>${escapeHtml(t("photosDocuments"))}<input name="attachments" type="file" multiple /><small>${escapeHtml(t("photosDocumentsHint"))}</small></label>
+        </form>
+        <div class="modal-actions">
+          <button class="outline-btn wide" type="button" data-close-modal-trigger>${escapeHtml(t("cancel"))}</button>
+          <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("confirmCompletion"))} ${icons.check}</button>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
 function completeService(serviceId, details = {}) {
   const service = serviceById(serviceId);
   if (!service) return;
@@ -1358,6 +1425,7 @@ function completeService(serviceId, details = {}) {
   const mechanicNote = details.mechanicNote || t("completionNotes");
   const attachmentNames = Array.isArray(details.attachmentNames) ? details.attachmentNames : [];
   const completedAt = new Date().toISOString();
+  const completedDate = isoDate(new Date(completedAt));
 
   state.serviceCompletions.unshift(normalizeCompletion({
     id: uid("completion"),
@@ -1366,7 +1434,7 @@ function completeService(serviceId, details = {}) {
     vehicleId: service.vehicleId,
     title: service.title,
     completedAt,
-    completedDate: todayIso,
+    completedDate,
     completedKm,
     completedBy: state.user.displayName,
     mechanicNote,
@@ -1376,10 +1444,10 @@ function completeService(serviceId, details = {}) {
 
   service.status = "scheduled";
   service.completedAt = null;
-  service.lastPerformedDate = todayIso;
+  service.lastPerformedDate = completedDate;
   service.lastPerformedKm = completedKm;
   service.completionNotes = mechanicNote;
-  if (service.intervalDays) service.dueDate = addDaysToIso(todayIso, service.intervalDays);
+  if (service.intervalDays) service.dueDate = addDaysToIso(completedDate, service.intervalDays);
   if (service.intervalKm) service.dueKm = completedKm + Number(service.intervalKm);
   if (vehicle && completedKm > Number(vehicle.kilometers || 0)) vehicle.kilometers = completedKm;
 }
@@ -1426,6 +1494,7 @@ function render() {
   app.innerHTML = `
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
       ${routeMarkup()}
+      ${completionModal()}
     </div>
   `;
 }
@@ -1538,14 +1607,22 @@ app.addEventListener("click", (event) => {
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const toggleTheme = event.target.closest("[data-toggle-theme]");
   const language = event.target.closest("[data-language]")?.dataset.language;
+  const closeModalTrigger = event.target.closest("[data-close-modal-trigger]");
+  const backdropClose = event.target.matches("[data-close-modal]");
 
   if (submitCompletionId) {
     completeService(submitCompletionId, completionFormValues(submitCompletionId));
+    state.completionModalServiceId = null;
     render();
     return;
   }
   if (completeId) {
-    completeService(completeId);
+    state.completionModalServiceId = completeId;
+    render();
+    return;
+  }
+  if (closeModalTrigger || backdropClose) {
+    state.completionModalServiceId = null;
     render();
     return;
   }
