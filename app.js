@@ -11,6 +11,7 @@ const lucidePaths = {
   search: `<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>`,
   calendar: `<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>`,
   wrench: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.6 7.6l-6.7 6.7a2.1 2.1 0 0 1-3-3l6.7-6.7a6 6 0 0 1 7.6-7.6z"/>`,
+  engine: `<path d="M3 10h4l2-3h4l2 3h3a3 3 0 0 1 3 3v3h-3l-2 3H8l-2-3H3z"/><path d="M7 10V7"/><path d="M10 7h4"/><path d="M14 10v9"/><path d="M3 14H1"/><path d="M21 14h2"/>`,
   arrowRight: `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
   chevronRight: `<path d="m9 18 6-6-6-6"/>`,
   arrowLeft: `<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>`,
@@ -38,6 +39,7 @@ const icons = {
   search: icon("search", "icon"),
   calendar: icon("calendar", "icon"),
   wrench: icon("wrench", "card-icon"),
+  engine: icon("engine", "icon"),
   arrowRight: icon("arrowRight", "icon"),
   chevronRight: icon("chevronRight", "icon"),
   back: icon("arrowLeft", "icon"),
@@ -960,7 +962,7 @@ function truckTabContent(vehicle) {
   return `
     <article class="technical-card">
       <div class="technical-head">
-        <h3><span class="technical-title-icon">${icons.wrench}</span>${escapeHtml(t("technicalDetails"))}</h3>
+        <h3><span class="technical-title-icon">${icons.engine}</span>${escapeHtml(t("technicalDetails"))}</h3>
       </div>
       <div class="technical-list">
         <div><span class="detail-label">${escapeHtml(t("unitNumber"))}</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>

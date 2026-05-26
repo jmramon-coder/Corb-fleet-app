@@ -1301,19 +1301,17 @@ input:focus-visible {
 
 .technical-title-icon {
   display: inline-flex;
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
-  background: var(--blue-soft);
   color: var(--icon-action);
 }
 
-.technical-title-icon .card-icon {
-  width: 17px;
-  height: 17px;
-  flex-basis: 17px;
+.technical-title-icon .icon {
+  width: 21px;
+  height: 21px;
+  flex-basis: 21px;
 }
 
 .technical-list {
