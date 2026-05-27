@@ -1640,7 +1640,7 @@ function renderLanding() {
           ${stats.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
         </section>
 
-        <section class="landing-section" id="product">
+        <section class="landing-section landing-product-section" id="product">
           <div class="landing-section-head">
             <span>${escapeHtml(t("landingIncluded"))}</span>
             <h2>${escapeHtml(t("landingFeaturesTitle"))}</h2>
@@ -1656,19 +1656,6 @@ function renderLanding() {
           </div>
         </section>
 
-        <section class="landing-section landing-workflow">
-          <div class="landing-section-head">
-            <span>${escapeHtml(t("commandCenter"))}</span>
-            <h2>${escapeHtml(t("landingWorkflowTitle"))}</h2>
-          </div>
-          <ol>
-            <li>${escapeHtml(t("landingWorkflowOne"))}</li>
-            <li>${escapeHtml(t("landingWorkflowTwo"))}</li>
-            <li>${escapeHtml(t("landingWorkflowThree"))}</li>
-            <li>${escapeHtml(t("landingWorkflowFour"))}</li>
-          </ol>
-        </section>
-
         <section class="landing-section" id="pricing">
           <div class="landing-section-head">
             <span>${escapeHtml(t("landingPricingCopy"))}</span>
@@ -1677,9 +1664,11 @@ function renderLanding() {
           <div class="landing-pricing-grid">
             ${pricing.map(([name, price, copy], index) => `
               <article class="${index === 1 ? "featured" : ""}">
-                <h3>${escapeHtml(name)}</h3>
+                <div>
+                  <h3>${escapeHtml(name)}</h3>
+                  <p>${escapeHtml(copy)}</p>
+                </div>
                 <strong>${escapeHtml(price)}${index < 2 ? `<small>/mo</small>` : ""}</strong>
-                <p>${escapeHtml(copy)}</p>
               </article>
             `).join("")}
           </div>
