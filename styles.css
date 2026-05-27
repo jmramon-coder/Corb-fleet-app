@@ -725,42 +725,46 @@ button:disabled {
 }
 
 .create-nav-tab {
+  grid-template-rows: 34px 13px;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
   color: var(--blue);
+  font-size: 11px;
   font-weight: 760;
+  line-height: 1;
+  text-align: center;
 }
 
-.create-nav-tab .icon {
-  width: 20px;
-  height: 20px;
-  stroke-width: 2;
-}
-
-.create-nav-tab::before {
-  content: "";
-  position: absolute;
-  top: 6px;
+.action-tab-icon {
+  display: inline-flex;
   width: 34px;
   height: 34px;
-  border: 1px solid color-mix(in srgb, var(--blue) 72%, transparent);
+  align-items: center;
+  justify-content: center;
+  border: 0;
   border-radius: 50%;
   background: var(--blue);
   box-shadow: none;
-  pointer-events: none;
 }
 
-.create-nav-tab .icon,
-.create-nav-tab span {
-  position: relative;
-  z-index: 1;
-}
-
-.create-nav-tab .icon {
+.action-tab-icon .icon {
+  width: 19px;
+  height: 19px;
   color: #fff;
-  transform: translateY(-1px);
+  stroke-width: 2;
 }
 
-.create-nav-tab span {
-  margin-top: 2px;
+.create-nav-tab > span:last-child {
+  align-self: start;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.theme-dark .action-tab-icon {
+  background: var(--blue);
 }
 
 .theme-dark .nav-tab.active {
@@ -1918,12 +1922,10 @@ button:disabled {
   padding-bottom: 76px;
 }
 
-.completion-form .mechanic-work-card {
-  border-color: transparent;
-  background: color-mix(in srgb, var(--card) 38%, transparent);
-  box-shadow: none;
-  padding: 14px;
-  overflow: visible;
+.mechanic-work-section {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
 }
 
 .completion-context-strip {
@@ -1977,14 +1979,14 @@ button:disabled {
 
 .completion-form .form-field input,
 .completion-form .form-field textarea {
-  border-color: var(--line);
-  background: color-mix(in srgb, var(--card) 86%, transparent);
+  border-color: var(--divider);
+  background: transparent;
 }
 
 .theme-dark .completion-form .form-field input,
 .theme-dark .completion-form .form-field textarea {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: #151719;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: transparent;
 }
 
 .completion-form .form-field small {
@@ -2156,8 +2158,8 @@ button:disabled {
 }
 
 .completion-modal {
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
   min-height: 100svh;
   max-height: 100svh;
@@ -2173,16 +2175,11 @@ button:disabled {
 
 .completion-modal > *,
 .completion-modal form,
-.completion-modal .form-card,
 .completion-modal .form-stack,
 .completion-modal .form-field,
 .completion-modal .note-input-shell {
   max-width: 100%;
   min-width: 0;
-}
-
-.completion-modal .form-card {
-  overflow: hidden;
 }
 
 .modal-head {
@@ -2216,8 +2213,8 @@ button:disabled {
   left: 0;
   bottom: 0;
   z-index: 2;
-  width: 100vw;
-  max-width: 100vw;
+  width: auto;
+  max-width: 100%;
   box-sizing: border-box;
   margin: 0;
   border-top: 1px solid var(--divider);

@@ -1120,7 +1120,7 @@ function bottomNav(active) {
     <nav class="bottom-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
       ${navButton("services", t("services"), icons.services, active)}
       <button class="nav-tab create-nav-tab" type="button" data-toggle-create-menu aria-label="${escapeAttr(t("createNew"))}">
-        ${icons.plus}
+        <span class="action-tab-icon">${icons.plus}</span>
         <span>${escapeHtml(t("createNew"))}</span>
       </button>
       ${navButton("vehicles", t("vehicles"), icons.truck, active)}
@@ -1911,7 +1911,7 @@ function completionModal() {
           <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
         </div>
         <form class="completion-form" data-completion-form="${service.id}">
-          <section class="form-card mechanic-work-card">
+          <section class="mechanic-work-section">
             <div class="form-section-row">
               <h2 class="form-section-title">${escapeHtml(t("completionWork"))}</h2>
             </div>
