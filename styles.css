@@ -2551,7 +2551,7 @@ button:disabled {
 }
 
 .profile-title {
-  margin: -24px 0 10px;
+  margin: -24px 0 10px calc(var(--brand-text-offset) + 10px);
   color: var(--text-blue);
   font-size: 26px;
   font-weight: 400;
@@ -2559,6 +2559,17 @@ button:disabled {
 
 .profile-tabs {
   margin-bottom: 18px;
+}
+
+.profile-tabs .app-tab {
+  justify-content: flex-start;
+  padding-left: calc(var(--brand-text-offset) + 10px);
+}
+
+.profile-tabs .app-tab.active::after {
+  right: auto;
+  left: calc(var(--brand-text-offset) + 10px);
+  width: 42px;
 }
 
 .profile-card {
