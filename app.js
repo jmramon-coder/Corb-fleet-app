@@ -97,9 +97,10 @@ const translations = {
     addVehicle: "Add vehicle",
     addService: "Add maintenance",
     create: "Create",
-    createNew: "Create new",
-    createVehicle: "Create vehicle",
-    createService: "Add maintenance",
+    createNew: "Actions",
+    quickActions: "Quick actions",
+    createVehicle: "Add vehicle",
+    createService: "Schedule maintenance",
     serviceTitle: "Maintenance name",
     selectTruck: "Select truck",
     intervalDays: "Repeat days",
@@ -285,9 +286,10 @@ const translations = {
     addVehicle: "Ajouter un véhicule",
     addService: "Ajouter un entretien",
     create: "Créer",
-    createNew: "Créer",
-    createVehicle: "Créer un véhicule",
-    createService: "Ajouter un entretien",
+    createNew: "Actions",
+    quickActions: "Actions rapides",
+    createVehicle: "Ajouter un véhicule",
+    createService: "Planifier un entretien",
     serviceTitle: "Nom de l'entretien",
     selectTruck: "Choisir un camion",
     intervalDays: "Répétition en jours",
@@ -1139,9 +1141,9 @@ function createActionMenu() {
   if (!state.createMenuOpen) return "";
   return `
     <div class="create-menu-backdrop" data-close-create-menu role="presentation">
-      <section class="create-menu" role="dialog" aria-modal="true" aria-label="${escapeAttr(t("createNew"))}">
+      <section class="create-menu action-menu" role="dialog" aria-modal="true" aria-label="${escapeAttr(t("createNew"))}">
         <div class="create-menu-head">
-          <h2>${escapeHtml(t("createNew"))}</h2>
+          <h2>${escapeHtml(t("quickActions"))}</h2>
           <button class="icon-btn" type="button" data-close-create-menu-trigger aria-label="${escapeAttr(t("close"))}">${icons.x}</button>
         </div>
         <button class="create-option" type="button" data-route="addVehicle">

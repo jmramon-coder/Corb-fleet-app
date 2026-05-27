@@ -730,19 +730,21 @@ button:disabled {
 }
 
 .create-nav-tab .icon {
-  width: 24px;
-  height: 24px;
-  stroke-width: 1.9;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
 }
 
 .create-nav-tab::before {
   content: "";
   position: absolute;
-  top: 7px;
-  width: 38px;
-  height: 28px;
-  border-radius: 999px;
-  background: var(--blue-soft);
+  top: 6px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--blue) 72%, transparent);
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   pointer-events: none;
 }
 
@@ -750,6 +752,15 @@ button:disabled {
 .create-nav-tab span {
   position: relative;
   z-index: 1;
+}
+
+.create-nav-tab .icon {
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.create-nav-tab span {
+  margin-top: 2px;
 }
 
 .theme-dark .nav-tab.active {
