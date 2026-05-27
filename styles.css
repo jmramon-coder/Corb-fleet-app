@@ -73,7 +73,9 @@ button {
 }
 
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: 3px solid rgba(36, 81, 230, 0.22);
   outline-offset: 2px;
 }
@@ -1251,48 +1253,136 @@ input:focus-visible {
   font-weight: 700;
 }
 
+.form-page-head {
+  display: grid;
+  gap: 4px;
+  margin: 28px 0 14px;
+}
+
 .form-title {
-  margin: 34px 0 24px;
+  margin: 0;
   color: var(--text-blue);
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
+  line-height: 1.1;
 }
 
 .mobile-form {
   display: grid;
-  gap: 8px;
+  gap: 12px;
   padding: 0;
 }
 
-.mobile-form label {
+.form-card {
   display: grid;
-  gap: 6px;
-  color: var(--text-blue);
-  font-size: 17px;
-}
-
-.mobile-form input,
-.mobile-form select,
-.mobile-form textarea {
-  width: 100%;
-  min-height: 48px;
-  border: 0;
-  border-radius: 11px;
-  background: #fff;
-  color: var(--text-blue);
-  padding: 0 14px;
-  font-size: 16px;
-}
-
-.mobile-form select {
-  appearance: none;
-}
-
-.theme-dark .mobile-form input,
-.theme-dark .mobile-form select,
-.theme-dark .mobile-form textarea {
+  gap: 14px;
   border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   background: var(--card);
+  padding: 16px;
+}
+
+.form-section-title {
+  margin: 0;
+  color: var(--text-blue);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.form-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-blue);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.form-field label span,
+.form-field small {
+  color: var(--profile-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card) 88%, var(--app-bg));
+  color: var(--text-blue);
+  padding: 0 13px;
+  font-size: 16px;
+  line-height: 1.2;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.form-field input:focus-visible,
+.form-field select:focus-visible,
+.form-field textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 70%, var(--line));
+  box-shadow: 0 0 0 3px rgba(36, 81, 230, 0.12);
+}
+
+.form-field textarea {
+  min-height: 112px;
+  padding-top: 13px;
+  resize: vertical;
+}
+
+.form-field select {
+  appearance: none;
+  padding-right: 34px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-blue) 50%),
+    linear-gradient(135deg, var(--muted-blue) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 22px,
+    calc(100% - 13px) 22px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.theme-dark .form-field input,
+.theme-dark .form-field select,
+.theme-dark .form-field textarea {
+  background: var(--card);
+}
+
+.form-field input[type="file"] {
+  display: flex;
+  align-items: center;
+  padding: 11px 12px;
+  color: var(--muted-blue);
+  font-size: 14px;
 }
 
 .action-bar {
@@ -1474,39 +1564,6 @@ input:focus-visible {
 .completion-form {
   display: grid;
   gap: 12px;
-}
-
-.completion-form label {
-  display: grid;
-  gap: 7px;
-  color: var(--muted-blue);
-  font-size: 13px;
-  line-height: 1.25;
-}
-
-.completion-form input,
-.completion-form textarea {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--card) 86%, var(--app-bg));
-  color: var(--text-blue);
-  padding: 11px 12px;
-  font-size: 14px;
-}
-
-.completion-form textarea {
-  resize: vertical;
-}
-
-.completion-form input[type="file"] {
-  color: var(--muted-blue);
-}
-
-.completion-form small {
-  color: var(--profile-muted);
-  font-size: 12px;
-  line-height: 1.25;
 }
 
 .modal-backdrop {
@@ -1798,23 +1855,6 @@ input:focus-visible {
 .fleet-name-form {
   display: grid;
   gap: 10px;
-}
-
-.fleet-name-form label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted-blue);
-  font-size: 12px;
-}
-
-.fleet-name-form input {
-  min-height: 42px;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--card) 85%, var(--app-bg));
-  color: var(--text-blue);
-  padding: 0 12px;
-  font-size: 15px;
 }
 
 .small-btn {

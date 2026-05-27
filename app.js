@@ -97,6 +97,11 @@ const translations = {
     engineSerial: "Engine serial",
     filters: "Filters",
     noVehicleForService: "Create a vehicle before adding maintenance.",
+    vehicleIdentity: "Vehicle identity",
+    technicalInfo: "Technical info",
+    maintenanceSetup: "Maintenance setup",
+    completionWork: "Work completed",
+    optional: "Optional",
     unknownVehicle: "Unknown vehicle",
     nextDue: "Next due",
     lastPerformed: "Last performed",
@@ -234,6 +239,11 @@ const translations = {
     engineSerial: "Série moteur",
     filters: "Filtres",
     noVehicleForService: "Créez un véhicule avant d'ajouter un entretien.",
+    vehicleIdentity: "Identité du véhicule",
+    technicalInfo: "Infos techniques",
+    maintenanceSetup: "Configuration de l'entretien",
+    completionWork: "Travail complété",
+    optional: "Optionnel",
     unknownVehicle: "Véhicule inconnu",
     nextDue: "Prochaine échéance",
     lastPerformed: "Dernier service",
@@ -1049,6 +1059,32 @@ function appTabs({ items, active, dataAttribute, className = "" }) {
   `;
 }
 
+function formSection(title, fields) {
+  return `
+    <section class="form-card">
+      <h2 class="form-section-title">${escapeHtml(title)}</h2>
+      <div class="form-stack">${fields}</div>
+    </section>
+  `;
+}
+
+function formField({ label, name, id = name, type = "text", value = "", required = false, inputmode = "", autocomplete = "off", options = null, hint = "", attrs = "" }) {
+  const requiredAttr = required ? "required" : "";
+  const inputmodeAttr = inputmode ? `inputmode="${escapeAttr(inputmode)}"` : "";
+  const autocompleteAttr = autocomplete ? `autocomplete="${escapeAttr(autocomplete)}"` : "";
+  const control = options
+    ? `<select id="${escapeAttr(id)}" name="${escapeAttr(name)}" ${requiredAttr} ${attrs}>${options}</select>`
+    : `<input id="${escapeAttr(id)}" name="${escapeAttr(name)}" type="${escapeAttr(type)}" value="${escapeAttr(value)}" ${requiredAttr} ${inputmodeAttr} ${autocompleteAttr} ${attrs} />`;
+
+  return `
+    <div class="form-field">
+      <label for="${escapeAttr(id)}">${escapeHtml(label)}${required ? "" : `<span>${escapeHtml(t("optional"))}</span>`}</label>
+      ${control}
+      ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
+    </div>
+  `;
+}
+
 function metricCards(counts = statusCounts(), options = {}) {
   const overdueLabel = options.compact ? t("overdue") : t("overdueTasks");
   const upcomingLabel = options.compact ? t("upcoming") : t("upcomingTasks");
@@ -1319,16 +1355,24 @@ function renderAddVehicle() {
         <button class="icon-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">${icons.back}</button>
         <div class="back-title">${escapeHtml(t("backToVehicles"))}</div>
       </div>
-      <h1 class="form-title">${escapeHtml(t("addVehicle"))}</h1>
+      <div class="form-page-head">
+        <h1 class="form-title">${escapeHtml(t("addVehicle"))}</h1>
+      </div>
       <form class="mobile-form" data-add-vehicle-form>
-        <label>${escapeHtml(t("title"))} <input name="title" autocomplete="off" required /></label>
-        <label>${escapeHtml(t("unitNumber"))} <input name="unitNumber" autocomplete="off" required /></label>
-        <label>${escapeHtml(t("brandModel"))} <input name="brandModel" autocomplete="off" required /></label>
-        <label>${escapeHtml(t("year"))} <input name="year" inputmode="numeric" autocomplete="off" /></label>
-        <label>${escapeHtml(t("kilometers"))} <input name="kilometers" type="number" inputmode="numeric" min="0" value="0" /></label>
-        <label>${escapeHtml(t("engineBrandModel"))} <input name="engineBrandModel" autocomplete="off" /></label>
-        <label>${escapeHtml(t("engineSerial"))} <input name="engineSerialNumber" autocomplete="off" /></label>
-        <label>${escapeHtml(t("filters"))} <input name="filterPartNumbers" autocomplete="off" /></label>
+        ${formSection(t("vehicleIdentity"), `
+          ${formField({ label: t("title"), name: "title", required: true })}
+          ${formField({ label: t("unitNumber"), name: "unitNumber", required: true })}
+          ${formField({ label: t("brandModel"), name: "brandModel", required: true })}
+          <div class="form-grid two">
+            ${formField({ label: t("year"), name: "year", inputmode: "numeric" })}
+            ${formField({ label: t("kilometers"), name: "kilometers", type: "number", inputmode: "numeric", value: "0", attrs: 'min="0"' })}
+          </div>
+        `)}
+        ${formSection(t("technicalInfo"), `
+          ${formField({ label: t("engineBrandModel"), name: "engineBrandModel" })}
+          ${formField({ label: t("engineSerial"), name: "engineSerialNumber" })}
+          ${formField({ label: t("filters"), name: "filterPartNumbers" })}
+        `)}
       </form>
       <div class="action-bar">
         <button class="success-btn wide" type="submit" form="unused" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
@@ -1340,8 +1384,6 @@ function renderAddVehicle() {
 
 function renderAddService() {
   const vehicles = vehiclesForActiveFleet();
-  const firstVehicle = vehicles[0];
-  const defaultKm = firstVehicle ? Number(firstVehicle.kilometers || 0) + 10000 : 10000;
   return `
     <div class="screen with-actions">
       ${header()}
@@ -1349,18 +1391,25 @@ function renderAddService() {
         <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
         <div class="back-title">${escapeHtml(t("addService"))}</div>
       </div>
-      <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
+      <div class="form-page-head">
+        <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
+      </div>
       ${vehicles.length ? `
         <form class="mobile-form" data-add-service-form>
-          <label>${escapeHtml(t("selectTruck"))}
-            <select name="vehicleId" required>
-              ${vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}">${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")}
-            </select>
-          </label>
-          <label>${escapeHtml(t("serviceTitle"))} <input name="title" autocomplete="off" value="${escapeAttr(t("oilChange"))}" required /></label>
-          <label>${escapeHtml(t("intervalDays"))} <input name="intervalDays" type="number" inputmode="numeric" min="0" value="30" /></label>
-          <label>${escapeHtml(t("intervalKm"))} <input name="intervalKm" type="number" inputmode="numeric" min="0" value="10000" /></label>
-          <label>${escapeHtml(t("dueDate"))} <input name="dueDate" type="date" value="${escapeAttr(addDays(30))}" required /></label>
+          ${formSection(t("maintenanceSetup"), `
+            ${formField({
+              label: t("selectTruck"),
+              name: "vehicleId",
+              required: true,
+              options: vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}">${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")
+            })}
+            ${formField({ label: t("serviceTitle"), name: "title", value: t("oilChange"), required: true })}
+            <div class="form-grid two">
+              ${formField({ label: t("intervalDays"), name: "intervalDays", type: "number", inputmode: "numeric", value: "30", attrs: 'min="0"' })}
+              ${formField({ label: t("intervalKm"), name: "intervalKm", type: "number", inputmode: "numeric", value: "10000", attrs: 'min="0"' })}
+            </div>
+            ${formField({ label: t("dueDate"), name: "dueDate", type: "date", value: addDays(30), required: true })}
+          `)}
         </form>
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
       <div class="action-bar">
@@ -1549,7 +1598,7 @@ function renderFleetPanel() {
               <span>${escapeHtml(t("servicesCount", { count: serviceCount }))}</span>
             </div>
             <form class="fleet-name-form" data-fleet-name-form="${fleet.id}">
-              <label>${escapeHtml(t("fleetName"))}<input name="name" value="${escapeAttr(fleet.name)}" required /></label>
+              ${formField({ label: t("fleetName"), name: "name", id: `fleetName-${fleet.id}`, value: fleet.name, required: true })}
               <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("saveFleet"))}</button>
             </form>
           </article>
@@ -1557,7 +1606,7 @@ function renderFleetPanel() {
       }).join("")}
       <article class="profile-card fleet-card">
         <form class="fleet-name-form" data-create-fleet-form>
-          <label>${escapeHtml(t("fleetName"))}<input name="name" placeholder="${escapeAttr(t("fleetName"))}" required /></label>
+          ${formField({ label: t("fleetName"), name: "name", id: "newFleetName", required: true, attrs: `placeholder="${escapeAttr(t("fleetName"))}"` })}
           <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("createFleet"))} ${icons.plus}</button>
         </form>
       </article>
@@ -1610,10 +1659,22 @@ function completionModal() {
           <button class="icon-btn" type="button" data-close-modal-trigger aria-label="${escapeAttr(t("cancel"))}">${icons.x}</button>
         </div>
         <form class="completion-form" data-completion-form="${service.id}">
-          <label>${escapeHtml(t("currentKm"))}<input name="completedKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(vehicle?.kilometers || summary.lastPerformedKm || 0)}" /></label>
-          <label>${escapeHtml(t("mechanicNote"))}<textarea name="mechanicNote" rows="3" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea></label>
-          <label>${escapeHtml(t("partsNumbers"))}<input name="partsNumbers" autocomplete="off" placeholder="${escapeAttr(t("partsNumbersPlaceholder"))}" /></label>
-          <label>${escapeHtml(t("photosDocuments"))}<input name="attachments" type="file" multiple /><small>${escapeHtml(t("photosDocumentsHint"))}</small></label>
+          <section class="form-card">
+            <h2 class="form-section-title">${escapeHtml(t("completionWork"))}</h2>
+            <div class="form-stack">
+              ${formField({ label: t("currentKm"), name: "completedKm", type: "number", inputmode: "numeric", value: vehicle?.kilometers || summary.lastPerformedKm || 0, attrs: 'min="0"' })}
+              <div class="form-field">
+                <label for="mechanicNote">${escapeHtml(t("mechanicNote"))}<span>${escapeHtml(t("optional"))}</span></label>
+                <textarea id="mechanicNote" name="mechanicNote" rows="4" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
+              </div>
+              ${formField({ label: t("partsNumbers"), name: "partsNumbers", value: "", hint: t("partsNumbersPlaceholder") })}
+              <div class="form-field">
+                <label for="attachments">${escapeHtml(t("photosDocuments"))}<span>${escapeHtml(t("optional"))}</span></label>
+                <input id="attachments" name="attachments" type="file" multiple />
+                <small>${escapeHtml(t("photosDocumentsHint"))}</small>
+              </div>
+            </div>
+          </section>
         </form>
         <div class="modal-actions">
           <button class="outline-btn wide" type="button" data-close-modal-trigger>${escapeHtml(t("cancel"))}</button>
