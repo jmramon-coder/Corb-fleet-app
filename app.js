@@ -1747,11 +1747,30 @@ function renderTruckDetails() {
         </div>
         ${truckTabs()}
       </section>
-      ${state.truckTab === "schedule" ? `<div class="truck-metrics-shell">${metricCards(counts, { compact: true })}</div>` : ""}
+      ${state.truckTab === "schedule" ? truckScheduleSummary(counts) : ""}
       ${truckTabContent(vehicle)}
       <div class="action-bar single-action">
         <button class="primary-btn wide" type="button" data-route="services">${escapeHtml(t("service"))} ${icons.wrench}</button>
       </div>
+    </div>
+  `;
+}
+
+function truckScheduleSummary(counts) {
+  const items = [
+    { key: "overdue", label: t("overdue"), count: counts.overdue },
+    { key: "upcoming", label: t("upcoming"), count: counts.upcoming }
+  ];
+
+  return `
+    <div class="truck-schedule-summary" aria-label="${escapeAttr(t("schedule"))}">
+      ${items.map(({ key, label, count }) => `
+        <article class="truck-schedule-count ${key}">
+          <span aria-hidden="true"></span>
+          <strong>${count}</strong>
+          <small>${escapeHtml(label)}</small>
+        </article>
+      `).join("")}
     </div>
   `;
 }

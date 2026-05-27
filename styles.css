@@ -2476,6 +2476,77 @@ button:disabled {
   font-weight: 650;
 }
 
+.truck-schedule-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.truck-schedule-count {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--divider);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 34%, transparent);
+  padding: 0 8px 0 12px;
+}
+
+.truck-schedule-count > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--muted-blue);
+}
+
+.truck-schedule-count strong {
+  order: 3;
+  display: inline-flex;
+  min-width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-raised) 42%, transparent);
+  color: var(--text-blue);
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.truck-schedule-count small {
+  order: 2;
+  min-width: 0;
+  color: var(--muted-blue);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.truck-schedule-count.overdue > span {
+  background: var(--red);
+}
+
+.truck-schedule-count.overdue strong {
+  background: rgba(255, 95, 99, 0.13);
+  color: var(--red);
+}
+
+.truck-schedule-count.upcoming > span {
+  background: var(--orange);
+}
+
+.truck-schedule-count.upcoming strong {
+  background: rgba(247, 185, 85, 0.13);
+  color: var(--orange);
+}
+
 .technical-card {
   padding: 16px 18px 18px;
 }
