@@ -10,7 +10,6 @@ const lucidePaths = {
   truck: `<path d="M14 18V6a2 2 0 0 0-2-2H3v14h2"/><path d="M15 18H9"/><path d="M19 18h2v-6l-3-4h-4"/><path d="M2 9h12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>`,
   search: `<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>`,
   calendar: `<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>`,
-  clock: `<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>`,
   wrench: `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.6 7.6l-6.7 6.7a2.1 2.1 0 0 1-3-3l6.7-6.7a6 6 0 0 1 7.6-7.6z"/>`,
   engine: `<path d="M3 10h4l2-3h4l2 3h3a3 3 0 0 1 3 3v3h-3l-2 3H8l-2-3H3z"/><path d="M7 10V7"/><path d="M10 7h4"/><path d="M14 10v9"/><path d="M3 14H1"/><path d="M21 14h2"/>`,
   arrowRight: `<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>`,
@@ -48,7 +47,6 @@ const icons = {
   truck: icon("truck", "tab-icon"),
   search: icon("search", "icon"),
   calendar: icon("calendar", "icon"),
-  clock: icon("clock", "icon"),
   wrench: icon("wrench", "card-icon"),
   engine: icon("engine", "icon"),
   arrowRight: icon("arrowRight", "icon"),
@@ -1032,14 +1030,6 @@ function relativeDue(value) {
   return t(days === 1 ? "day" : "days", { count: days });
 }
 
-function compactRelativeDue(value) {
-  const days = daysUntil(value);
-  if (days === 0) return t("today");
-  const count = Math.abs(days);
-  const suffix = state.language === "fr" ? "j" : "d";
-  return days < 0 ? `-${count}${suffix}` : `${count}${suffix}`;
-}
-
 function kmUntil(service) {
   return dueSummaryForPlan(service).kmRemaining;
 }
@@ -1419,7 +1409,7 @@ function serviceCard(service) {
   const vehicle = vehicleById(service.vehicleId);
   const summary = dueSummaryForPlan(service);
   const status = planStatus(service);
-  const dueChipLabel = status === "ok" ? t("ok") : compactRelativeDue(summary.nextDueDate);
+  const dueChipLabel = status === "ok" ? t("ok") : relativeDue(summary.nextDueDate);
   return `
     <article class="service-card click-card status-${status}" data-complete-service="${service.id}">
       <div class="service-card-body">
@@ -1437,18 +1427,13 @@ function serviceCard(service) {
           </button>
         </div>
         <div class="service-dates">
-          <div class="date-block">
-            <span class="date-label-row">
-              <span class="service-date-caption">${icons.calendar}${escapeHtml(t("nextDue"))}</span>
-              <small class="due-inline ${status}">${icons.clock}${escapeHtml(dueChipLabel)}</small>
-            </span>
+          <div class="date-block service-date-next">
+            <span>${escapeHtml(t("nextDue"))}</span>
             <strong class="date-value">${icons.calendar}${shortDate(summary.nextDueDate)}</strong>
+            <small class="due-inline ${status}">${escapeHtml(dueChipLabel)}</small>
           </div>
           <div class="date-block">
-            <span class="date-label-row">
-              <span class="service-date-caption">${icons.history}${escapeHtml(t("lastPerformed"))}</span>
-              <small class="due-inline placeholder" aria-hidden="true">${icons.clock}${escapeHtml(dueChipLabel)}</small>
-            </span>
+            <span>${escapeHtml(t("lastPerformed"))}</span>
             <strong class="date-value">${icons.calendar}${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong>
           </div>
         </div>
