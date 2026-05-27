@@ -432,22 +432,22 @@ textarea:focus-visible {
   gap: 2px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--card) 46%, transparent);
-  padding: 2px;
+  padding: 3px;
 }
 
 .compact-segment button {
-  min-width: 22px;
-  min-height: 22px;
+  min-width: 27px;
+  min-height: 27px;
   border-radius: 999px;
-  padding: 0 5px;
-  font-size: 9px;
+  padding: 0 6px;
+  font-size: 11px;
   font-weight: 760;
 }
 
 .compact-segment button .icon {
-  width: 13px;
-  height: 13px;
-  flex-basis: 13px;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
 }
 
 .icon-segment button {
@@ -455,11 +455,11 @@ textarea:focus-visible {
 }
 
 .icon-segment {
-  width: 50px;
+  width: 62px;
 }
 
 .language-segment {
-  width: 54px;
+  width: 68px;
 }
 
 .language-segment button {
