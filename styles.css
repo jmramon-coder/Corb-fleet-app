@@ -744,7 +744,7 @@ button:disabled {
   border: 1px solid color-mix(in srgb, var(--blue) 72%, transparent);
   border-radius: 50%;
   background: var(--blue);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  box-shadow: none;
   pointer-events: none;
 }
 
@@ -1977,8 +1977,14 @@ button:disabled {
 
 .completion-form .form-field input,
 .completion-form .form-field textarea {
-  border-color: transparent;
-  background: color-mix(in srgb, var(--card) 82%, transparent);
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--card) 86%, transparent);
+}
+
+.theme-dark .completion-form .form-field input,
+.theme-dark .completion-form .form-field textarea {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #151719;
 }
 
 .completion-form .form-field small {
