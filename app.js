@@ -217,6 +217,20 @@ const translations = {
     noCompletionYet: "No completion yet",
     completedBy: "Completed by",
     mechanicAccessCode: "Mechanic access code",
+    mechanicAccess: "Mechanic access",
+    mechanicAccessCopy: "Create revocable codes for mechanics. They can view this fleet and log work without managing vehicles or settings.",
+    mechanicName: "Mechanic name",
+    mechanicCode: "Access code",
+    createAccessCode: "Create code",
+    revoke: "Revoke",
+    regenerate: "Regenerate",
+    copy: "Copy",
+    active: "Active",
+    revoked: "Revoked",
+    lastUsed: "Last used",
+    neverUsed: "Never used",
+    mechanicSession: "Mechanic session",
+    signedInWithCode: "Signed in with access code",
     scheduleRule: "Schedule rule",
     serviceSchedule: "Service schedule",
     completedServices: "Completed work",
@@ -419,6 +433,20 @@ const translations = {
     noCompletionYet: "Aucune complétion",
     completedBy: "Complété par",
     mechanicAccessCode: "Code d'accès mécanicien",
+    mechanicAccess: "Accès mécaniciens",
+    mechanicAccessCopy: "Créez des codes révocables pour les mécaniciens. Ils peuvent voir cette flotte et consigner les travaux sans gérer les véhicules ni les réglages.",
+    mechanicName: "Nom du mécanicien",
+    mechanicCode: "Code d'accès",
+    createAccessCode: "Créer un code",
+    revoke: "Révoquer",
+    regenerate: "Régénérer",
+    copy: "Copier",
+    active: "Actif",
+    revoked: "Révoqué",
+    lastUsed: "Dernière utilisation",
+    neverUsed: "Jamais utilisé",
+    mechanicSession: "Session mécanicien",
+    signedInWithCode: "Connecté avec un code d'accès",
     scheduleRule: "Règle de planification",
     serviceSchedule: "Horaire de service",
     completedServices: "Travaux complétés",
@@ -547,6 +575,7 @@ function defaultState() {
     loginMode: "owner",
     loginError: "",
     activeFleetId: "fleet-1",
+    activeMechanicAccessId: null,
     activeServiceId: null,
     activeVehicleId: null,
     createMenuOpen: false,
@@ -561,7 +590,7 @@ function defaultState() {
       firstName: "Anthony",
       displayName: "Anthony.Corbin",
       email: "Anthony_1997@gmail.com",
-      role: "Mechanic",
+      role: "Owner",
       joinedAt: "2025-10-10"
     },
     fleets: [
@@ -576,9 +605,14 @@ function defaultState() {
       {
         id: "access-1",
         fleetId: "fleet-1",
+        name: "Marc Tremblay",
         code: "2468",
         role: "mechanic",
-        active: true
+        status: "active",
+        active: true,
+        createdAt: "2025-10-10T12:00:00.000Z",
+        lastUsedAt: "",
+        revokedAt: null
       }
     ],
     vehicles: [
@@ -705,6 +739,9 @@ function defaultState() {
         completedDate: "2025-10-29",
         completedKm: 99920,
         completedBy: "Anthony.Corbin",
+        completedByType: "owner",
+        completedByName: "Anthony.Corbin",
+        completedByAccessId: "",
         mechanicNote: "Oil and filter changed. No leak found.",
         partsNumbers: "F42141",
         attachmentNames: ["oil-filter-photo.jpg"]
@@ -719,6 +756,9 @@ function defaultState() {
         completedDate: "2025-10-10",
         completedKm: 98200,
         completedBy: "Anthony.Corbin",
+        completedByType: "owner",
+        completedByName: "Anthony.Corbin",
+        completedByAccessId: "",
         mechanicNote: "Pads inspected and cleared for service.",
         partsNumbers: "",
         attachmentNames: ["brake-check.jpg"]
@@ -733,6 +773,9 @@ function defaultState() {
         completedDate: "2025-10-29",
         completedKm: 1251100,
         completedBy: "Anthony.Corbin",
+        completedByType: "owner",
+        completedByName: "Anthony.Corbin",
+        completedByAccessId: "",
         mechanicNote: "Oil service completed.",
         partsNumbers: "F42141",
         attachmentNames: []
@@ -774,17 +817,26 @@ function normalizeState(next) {
   if (next.language !== "fr" && next.language !== "en") next.language = "fr";
   next.isAuthenticated = next.isAuthenticated === true;
   if (next.authMode !== "owner" && next.authMode !== "mechanic") next.authMode = null;
+  if (next.authMode === "owner" && next.user?.role === "Mechanic") next.user.role = "Owner";
   if (next.loginMode !== "owner" && next.loginMode !== "mechanic") next.loginMode = "owner";
   next.loginError = "";
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
   if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || "fleet-1";
+  if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
   next.createMenuOpen = false;
   next.completionModalServiceId = null;
   if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
   if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
+  next.mechanicAccessCodes = next.mechanicAccessCodes.map(normalizeMechanicAccess);
+  if (next.authMode === "mechanic" && !next.mechanicAccessCodes.some((access) => access.id === next.activeMechanicAccessId && access.active)) {
+    next.authMode = null;
+    next.isAuthenticated = false;
+    next.activeMechanicAccessId = null;
+    next.route = "login";
+  }
   if (Array.isArray(next.services) && !Array.isArray(next.maintenancePlans)) {
     next.maintenancePlans = next.services.map(normalizeMaintenancePlan);
   }
@@ -896,8 +948,27 @@ function normalizeMaintenancePlan(plan) {
   };
 }
 
+function normalizeMechanicAccess(access) {
+  const active = access.active !== false && access.status !== "revoked";
+  return {
+    id: access.id || uid("access"),
+    fleetId: access.fleetId || "fleet-1",
+    name: access.name || access.mechanicName || "Mechanic",
+    code: String(access.code || access.accessCode || access.mechanicAccessCode || "2468"),
+    role: access.role || "mechanic",
+    status: active ? "active" : "revoked",
+    active,
+    createdAt: access.createdAt || new Date().toISOString(),
+    lastUsedAt: access.lastUsedAt || "",
+    revokedAt: access.revokedAt || null
+  };
+}
+
 function normalizeServiceRecord(record) {
   const maintenancePlanId = record.maintenancePlanId || record.scheduleId;
+  const completedByName = record.completedByName || record.completedBy || "Anthony.Corbin";
+  const completedByAccessId = record.completedByAccessId || "";
+  const completedByType = record.completedByType || (completedByAccessId ? "mechanic" : "owner");
   return {
     id: record.id || uid("record"),
     fleetId: record.fleetId || "fleet-1",
@@ -907,7 +978,10 @@ function normalizeServiceRecord(record) {
     completedAt: record.completedAt || `${record.completedDate || todayIso}T12:00:00.000Z`,
     completedDate: record.completedDate || (record.completedAt ? isoDate(new Date(record.completedAt)) : todayIso),
     completedKm: Number(record.completedKm || 0),
-    completedBy: record.completedBy || "Anthony.Corbin",
+    completedBy: record.completedBy || completedByName,
+    completedByType,
+    completedByName,
+    completedByAccessId,
     mechanicNote: record.mechanicNote || record.completionNotes || "",
     partsNumbers: record.partsNumbers || "",
     attachmentNames: Array.isArray(record.attachmentNames) ? record.attachmentNames : []
@@ -941,6 +1015,26 @@ function vehicleById(id) {
 
 function activeFleet() {
   return state.fleets.find((fleet) => fleet.id === state.activeFleetId) || state.fleets[0];
+}
+
+function isOwner() {
+  return state.authMode === "owner";
+}
+
+function isMechanic() {
+  return state.authMode === "mechanic";
+}
+
+function currentMechanicAccess() {
+  return state.mechanicAccessCodes.find((access) => access.id === state.activeMechanicAccessId) || null;
+}
+
+function mechanicDisplayName() {
+  return currentMechanicAccess()?.name || t("mechanic");
+}
+
+function sessionDisplayName() {
+  return isMechanic() ? mechanicDisplayName() : state.user.firstName;
 }
 
 function vehiclesForActiveFleet() {
@@ -1087,6 +1181,7 @@ function displayRecurrenceLabel(value) {
 }
 
 function displayRole(value) {
+  if (value === "Owner") return t("ownerLogin");
   return value === "Mechanic" ? t("mechanic") : value;
 }
 
@@ -1146,6 +1241,16 @@ function header({ close = false } = {}) {
 }
 
 function bottomNav(active) {
+  if (isMechanic()) {
+    return `
+      <div class="nav-scrim" aria-hidden="true"></div>
+      <nav class="bottom-nav two-tab-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
+        ${navButton("services", t("services"), icons.services, active)}
+        ${navButton("vehicles", t("vehicles"), icons.truck, active)}
+      </nav>
+    `;
+  }
+
   return `
     <div class="nav-scrim" aria-hidden="true"></div>
     <nav class="bottom-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
@@ -1169,6 +1274,7 @@ function navButton(route, label, icon, active) {
 }
 
 function createActionMenu() {
+  if (!isOwner()) return "";
   if (!state.createMenuOpen) return "";
   return `
     <div class="create-menu-backdrop" data-close-create-menu role="presentation">
@@ -1263,10 +1369,10 @@ function emptyVehicleCard() {
         <span class="empty-icon">${icons.truck}</span>
         <h2 class="empty-title">${escapeHtml(t("noVehicleYet"))}</h2>
         <p class="empty-copy">${escapeHtml(t("emptyVehicleCopy"))}</p>
-        <button class="primary-btn" type="button" data-route="addVehicle">
+        ${isOwner() ? `<button class="primary-btn" type="button" data-route="addVehicle">
           ${escapeHtml(t("addVehicle"))}
           <span class="button-icon-box">${icons.plus}</span>
-        </button>
+        </button>` : ""}
       </div>
     </article>
   `;
@@ -1368,7 +1474,7 @@ function renderServices() {
       ${header()}
       <section class="services-content">
         ${cockpitHero({
-          title: `${t("welcome")} ${state.user.firstName}`,
+          title: `${t("welcome")} ${sessionDisplayName()}`,
           subtitle: t("services"),
           eyebrow: t("serviceBay"),
           meta: [
@@ -1521,6 +1627,10 @@ function completionCard(completion, { showVehicle = true } = {}) {
             <span>${escapeHtml(t("atMileage"))}</span>
             <strong class="date-value">${icons.gauge}${formatKm(completion.completedKm)}</strong>
           </div>
+          <div class="date-block">
+            <span>${escapeHtml(t("completedBy"))}</span>
+            <strong>${escapeHtml(completion.completedByName || completion.completedBy)}</strong>
+          </div>
         </div>
         ${completion.mechanicNote ? `<div class="completion-note-block"><span>${escapeHtml(t("mechanicNote"))}</span><p>${escapeHtml(completion.mechanicNote)}</p></div>` : ""}
       </div>
@@ -1593,6 +1703,7 @@ function modelLine(vehicle) {
 }
 
 function renderAddVehicle() {
+  if (!isOwner()) return renderVehicles();
   return `
     <div class="screen with-actions">
       ${header()}
@@ -1659,6 +1770,7 @@ function servicePresetBar() {
 }
 
 function renderAddService() {
+  if (!isOwner()) return renderServices();
   const vehicles = vehiclesForActiveFleet();
   return `
     <div class="screen with-actions">
@@ -1738,8 +1850,17 @@ function renderTruckDetails() {
     { overdue: 0, upcoming: 0, ok: 0 }
   );
 
+  const ownerActionBar = isOwner()
+    ? `<div class="action-bar single-action">
+        <button class="primary-btn wide" type="button" data-route="${state.truckTab === "schedule" ? "addService" : "services"}">
+          ${escapeHtml(state.truckTab === "schedule" ? t("addScheduledService") : t("service"))}
+          ${state.truckTab === "schedule" ? icons.plus : icons.wrench}
+        </button>
+      </div>`
+    : "";
+
   return `
-    <div class="screen with-actions">
+    <div class="screen ${isOwner() ? "with-actions" : ""}">
       ${header()}
       <section class="truck-overview-header">
         <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">
@@ -1751,21 +1872,16 @@ function renderTruckDetails() {
             <h1>${escapeHtml(displayVehicleTitle(vehicle))}</h1>
             <p>${escapeHtml(modelLine(vehicle))}</p>
           </div>
-          <div class="truck-header-actions">
+          ${isOwner() ? `<div class="truck-header-actions">
             <button class="plain-icon-btn" type="button" aria-label="${escapeAttr(t("editTruck"))}">${icons.edit}</button>
             <button class="plain-icon-btn danger-icon" type="button" data-delete-vehicle="${vehicle.id}" aria-label="${escapeAttr(t("deleteTruck"))}">${icons.trash}</button>
-          </div>
+          </div>` : ""}
         </div>
         ${truckTabs()}
       </section>
       ${state.truckTab === "schedule" ? truckScheduleSummary(counts) : ""}
       ${truckTabContent(vehicle)}
-      <div class="action-bar single-action">
-        <button class="primary-btn wide" type="button" data-route="${state.truckTab === "schedule" ? "addService" : "services"}">
-          ${escapeHtml(state.truckTab === "schedule" ? t("addScheduledService") : t("service"))}
-          ${state.truckTab === "schedule" ? icons.plus : icons.wrench}
-        </button>
-      </div>
+      ${ownerActionBar}
     </div>
   `;
 }
@@ -1829,6 +1945,34 @@ function truckTabContent(vehicle) {
 }
 
 function renderProfile() {
+  if (isMechanic()) {
+    const access = currentMechanicAccess();
+    return `
+      <div class="screen">
+        ${header({ close: true })}
+        <h1 class="profile-title">${escapeHtml(t("profileTitle"))}</h1>
+        <article class="profile-card mechanic-session-card">
+          <div class="account-row">
+            <span class="avatar mechanic-avatar" aria-hidden="true">${icons.garage}</span>
+            <div class="account-main">
+              <div class="account-name">${escapeHtml(mechanicDisplayName())}</div>
+              <div class="account-email">${icons.key}${escapeHtml(t("signedInWithCode"))}</div>
+            </div>
+          </div>
+          <div class="profile-grid">
+            <div><span class="detail-label">${escapeHtml(t("activeFleet"))}</span><strong>${escapeHtml(activeFleet()?.name || "")}</strong></div>
+            <div><span class="detail-label">${escapeHtml(t("role"))}</span><strong>${escapeHtml(t("mechanic"))}</strong></div>
+            <div><span class="detail-label">${escapeHtml(t("lastUsed"))}</span><strong>${escapeHtml(access?.lastUsedAt ? formatDate(isoDate(new Date(access.lastUsedAt))) : t("neverUsed"))}</strong></div>
+          </div>
+        </article>
+        <article class="profile-card security-card">
+          <h2 class="security-title">${icons.lock} ${escapeHtml(t("mechanicSession"))}</h2>
+          <button class="danger-btn wide" type="button" data-logout>${escapeHtml(t("logout"))} ${icons.logout}</button>
+        </article>
+      </div>
+    `;
+  }
+
   return `
     <div class="screen">
       ${header({ close: true })}
@@ -1909,7 +2053,49 @@ function renderFleetPanel() {
           <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("createFleet"))} ${icons.plus}</button>
         </form>
       </article>
+      ${renderMechanicAccessPanel()}
     </div>
+  `;
+}
+
+function renderMechanicAccessPanel() {
+  const accessCodes = state.mechanicAccessCodes
+    .filter((access) => access.fleetId === state.activeFleetId)
+    .sort((a, b) => Number(b.active) - Number(a.active) || new Date(b.createdAt) - new Date(a.createdAt));
+
+  return `
+    <section class="profile-card access-card">
+      <div class="section-title-row access-title-row">
+        <div>
+          <h3>${icons.key} ${escapeHtml(t("mechanicAccess"))}</h3>
+          <p>${escapeHtml(t("mechanicAccessCopy"))}</p>
+        </div>
+      </div>
+      <div class="access-list">
+        ${accessCodes.map((access) => `
+          <article class="access-row ${access.active ? "active" : "revoked"}">
+            <div>
+              <strong>${escapeHtml(access.name)}</strong>
+              <span>${escapeHtml(t("lastUsed"))}: ${escapeHtml(access.lastUsedAt ? formatDate(isoDate(new Date(access.lastUsedAt))) : t("neverUsed"))}</span>
+            </div>
+            <div class="access-code-box">
+              <code>${escapeHtml(access.code)}</code>
+              <span>${escapeHtml(access.active ? t("active") : t("revoked"))}</span>
+            </div>
+            <div class="access-actions">
+              <button class="plain-icon-btn" type="button" data-copy-access="${access.id}" aria-label="${escapeAttr(t("copy"))}">${icons.key}</button>
+              <button class="plain-icon-btn" type="button" data-regenerate-access="${access.id}" aria-label="${escapeAttr(t("regenerate"))}">${icons.history}</button>
+              <button class="plain-icon-btn danger-icon" type="button" data-revoke-access="${access.id}" aria-label="${escapeAttr(t("revoke"))}" ${access.active ? "" : "disabled"}>${icons.trash}</button>
+            </div>
+          </article>
+        `).join("")}
+      </div>
+      <form class="fleet-name-form" data-create-mechanic-access-form>
+        ${formField({ label: t("mechanicName"), name: "name", id: "mechanicAccessName", required: true, attrs: `placeholder="${escapeAttr(t("mechanic"))}"` })}
+        ${formField({ label: t("mechanicCode"), name: "code", id: "mechanicAccessCode", inputmode: "numeric", attrs: `placeholder="${generateAccessCode()}" maxlength="8"` })}
+        <button class="primary-btn compact-btn" type="submit">${escapeHtml(t("createAccessCode"))} ${icons.plus}</button>
+      </form>
+    </section>
   `;
 }
 
@@ -2038,6 +2224,10 @@ function completeMaintenancePlan(serviceId, details = {}) {
   const attachmentNames = Array.isArray(details.attachmentNames) ? details.attachmentNames : [];
   const completedAt = new Date().toISOString();
   const completedDate = isoDate(new Date(completedAt));
+  const access = currentMechanicAccess();
+  const completedByType = isMechanic() ? "mechanic" : "owner";
+  const completedByName = isMechanic() ? mechanicDisplayName() : state.user.displayName;
+  const completedByAccessId = isMechanic() ? access?.id || "" : "";
 
   state.serviceRecords.unshift(normalizeServiceRecord({
     id: uid("record"),
@@ -2048,7 +2238,10 @@ function completeMaintenancePlan(serviceId, details = {}) {
     completedAt,
     completedDate,
     completedKm,
-    completedBy: state.user.displayName,
+    completedBy: completedByName,
+    completedByType,
+    completedByName,
+    completedByAccessId,
     mechanicNote,
     partsNumbers: details.partsNumbers || "",
     attachmentNames
@@ -2135,22 +2328,76 @@ function createFleetFromForm(form) {
   const data = new FormData(form);
   const name = String(data.get("name") || "").trim();
   if (!name) return;
+  const code = generateAccessCode();
   const fleet = {
     id: uid("fleet"),
     name,
     ownerUserId: "user-1",
-    mechanicAccessCode: String(Math.floor(1000 + Math.random() * 9000))
+    mechanicAccessCode: code
   };
   state.fleets.unshift(fleet);
-  state.mechanicAccessCodes.unshift({
+  state.mechanicAccessCodes.unshift(normalizeMechanicAccess({
     id: uid("access"),
     fleetId: fleet.id,
-    code: fleet.mechanicAccessCode,
-    role: "mechanic",
-    active: true
-  });
+    name: t("mechanic"),
+    code,
+    role: "mechanic"
+  }));
   state.activeFleetId = fleet.id;
   render();
+}
+
+function generateAccessCode() {
+  let code = "";
+  do {
+    code = String(Math.floor(100000 + Math.random() * 900000));
+  } while (state.mechanicAccessCodes.some((access) => access.active && access.code === code));
+  return code;
+}
+
+function createMechanicAccessFromForm(form) {
+  const data = new FormData(form);
+  const name = String(data.get("name") || "").trim();
+  const requestedCode = String(data.get("code") || "").trim();
+  if (!name) return;
+  const code = requestedCode && !state.mechanicAccessCodes.some((access) => access.active && access.code === requestedCode)
+    ? requestedCode
+    : generateAccessCode();
+  state.mechanicAccessCodes.unshift(normalizeMechanicAccess({
+    id: uid("access"),
+    fleetId: state.activeFleetId,
+    name,
+    code,
+    role: "mechanic",
+    createdAt: new Date().toISOString()
+  }));
+  render();
+}
+
+function revokeMechanicAccess(accessId) {
+  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  if (!access) return;
+  access.active = false;
+  access.status = "revoked";
+  access.revokedAt = new Date().toISOString();
+  if (state.activeMechanicAccessId === access.id) logout();
+  else render();
+}
+
+function regenerateMechanicAccess(accessId) {
+  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  if (!access) return;
+  access.code = generateAccessCode();
+  access.active = true;
+  access.status = "active";
+  access.revokedAt = null;
+  render();
+}
+
+function copyMechanicAccess(accessId) {
+  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  if (!access) return;
+  navigator.clipboard?.writeText(access.code).catch(() => {});
 }
 
 function loginFromForm(form) {
@@ -2159,28 +2406,26 @@ function loginFromForm(form) {
 
   if (state.loginMode === "mechanic") {
     const code = String(data.get("accessCode") || "").trim();
-    const access = state.mechanicAccessCodes.find((item) => item.active && item.code === code);
+    const access = state.mechanicAccessCodes.find((item) => item.active && item.status !== "revoked" && item.code === code);
     if (!access) {
       state.loginError = t("invalidAccessCode");
       render();
       return;
     }
     state.activeFleetId = access.fleetId;
+    state.activeMechanicAccessId = access.id;
     state.authMode = "mechanic";
-    state.user = {
-      ...state.user,
-      firstName: t("mechanic"),
-      displayName: t("mechanic"),
-      role: "Mechanic"
-    };
+    access.lastUsedAt = new Date().toISOString();
   } else {
     const email = String(data.get("email") || state.user.email).trim();
     state.authMode = "owner";
+    state.activeMechanicAccessId = null;
     state.user = {
       ...state.user,
       email,
       firstName: "Anthony",
-      displayName: email === "Anthony_1997@gmail.com" ? "Anthony.Corbin" : email.split("@")[0] || "Anthony.Corbin"
+      displayName: email === "Anthony_1997@gmail.com" ? "Anthony.Corbin" : email.split("@")[0] || "Anthony.Corbin",
+      role: "Owner"
     };
   }
 
@@ -2191,6 +2436,7 @@ function loginFromForm(form) {
 function logout() {
   state.isAuthenticated = false;
   state.authMode = null;
+  state.activeMechanicAccessId = null;
   state.route = "login";
   state.previousRoute = "services";
   state.createMenuOpen = false;
@@ -2325,6 +2571,9 @@ function render() {
 
 function routeMarkup() {
   if (!state.isAuthenticated || state.route === "login") return renderLogin();
+  if (isMechanic() && ["addVehicle", "addService"].includes(state.route)) {
+    state.route = state.route === "addVehicle" ? "vehicles" : "services";
+  }
   if (state.route === "services") return renderServices();
   if (state.route === "vehicles") return renderVehicles();
   if (state.route === "profile") return renderProfile();
@@ -2448,6 +2697,9 @@ app.addEventListener("click", (event) => {
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const switchFleetId = event.target.closest("[data-switch-fleet]")?.dataset.switchFleet;
+  const revokeAccessId = event.target.closest("[data-revoke-access]")?.dataset.revokeAccess;
+  const regenerateAccessId = event.target.closest("[data-regenerate-access]")?.dataset.regenerateAccess;
+  const copyAccessId = event.target.closest("[data-copy-access]")?.dataset.copyAccess;
   const servicePreset = event.target.closest("[data-service-preset]");
   const toggleCreateMenu = event.target.closest("[data-toggle-create-menu]");
   const closeCreateMenuTrigger = event.target.closest("[data-close-create-menu-trigger]");
@@ -2467,6 +2719,18 @@ app.addEventListener("click", (event) => {
   }
   if (logoutTrigger) {
     logout();
+    return;
+  }
+  if (revokeAccessId) {
+    revokeMechanicAccess(revokeAccessId);
+    return;
+  }
+  if (regenerateAccessId) {
+    regenerateMechanicAccess(regenerateAccessId);
+    return;
+  }
+  if (copyAccessId) {
+    copyMechanicAccess(copyAccessId);
     return;
   }
   if (quickNote) {
@@ -2521,11 +2785,16 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (route) {
+    if (isMechanic() && ["addVehicle", "addService"].includes(route)) {
+      navigate(route === "addVehicle" ? "vehicles" : "services");
+      return;
+    }
     state.createMenuOpen = false;
     navigate(route);
     return;
   }
   if (switchFleetId) {
+    if (!isOwner()) return;
     state.activeFleetId = switchFleetId;
     render();
     return;
@@ -2554,7 +2823,7 @@ app.addEventListener("click", (event) => {
     state.language = language;
     render();
   }
-  if (deleteVehicleId && confirm(t("deleteVehicleConfirm"))) {
+  if (deleteVehicleId && isOwner() && confirm(t("deleteVehicleConfirm"))) {
     state.vehicles = state.vehicles.filter((vehicle) => vehicle.id !== deleteVehicleId);
     state.maintenancePlans = state.maintenancePlans.filter((service) => service.vehicleId !== deleteVehicleId);
     state.serviceRecords = state.serviceRecords.filter((completion) => completion.vehicleId !== deleteVehicleId);
@@ -2583,19 +2852,23 @@ app.addEventListener("submit", (event) => {
   }
   if (event.target.matches("[data-add-vehicle-form]")) {
     event.preventDefault();
-    addVehicleFromForm(event.target);
+    if (isOwner()) addVehicleFromForm(event.target);
   }
   if (event.target.matches("[data-add-service-form]")) {
     event.preventDefault();
-    addMaintenancePlanFromForm(event.target);
+    if (isOwner()) addMaintenancePlanFromForm(event.target);
   }
   if (event.target.matches("[data-fleet-name-form]")) {
     event.preventDefault();
-    updateFleetName(event.target);
+    if (isOwner()) updateFleetName(event.target);
   }
   if (event.target.matches("[data-create-fleet-form]")) {
     event.preventDefault();
-    createFleetFromForm(event.target);
+    if (isOwner()) createFleetFromForm(event.target);
+  }
+  if (event.target.matches("[data-create-mechanic-access-form]")) {
+    event.preventDefault();
+    if (isOwner()) createMechanicAccessFromForm(event.target);
   }
 });
 
