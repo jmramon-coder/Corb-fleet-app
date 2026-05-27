@@ -286,7 +286,7 @@ const translations = {
     landingEyebrow: "Fleet maintenance SaaS",
     landingHeadline: "One place to plan, log, and prove every service.",
     landingCopy: "CORB gives fleet owners a clean maintenance command center and mechanics a fast mobile workflow for logging work in the yard.",
-    landingPrimaryCta: "Open demo",
+    landingPrimaryCta: "Log in",
     landingSecondaryCta: "See pricing",
     landingActiveFleet: "Active fleet",
     landingVehicles: "Vehicles tracked",
@@ -299,13 +299,13 @@ const translations = {
     landingFeatureMechanicsCopy: "Use revocable codes so mechanics can log work without managing the fleet.",
     landingFeatureEvidence: "Proof of work",
     landingFeatureEvidenceCopy: "Capture notes, parts, photos, videos, and documents on completion.",
-    landingWorkflowTitle: "The workflow we are consolidating",
+    landingWorkflowTitle: "How CORB works",
     landingWorkflowOne: "Create a fleet and register vehicles.",
     landingWorkflowTwo: "Schedule recurring maintenance by date or kilometers.",
     landingWorkflowThree: "Let mechanics log service with notes and evidence.",
     landingWorkflowFour: "Review history and upcoming work from the vehicle or service view.",
-    landingPricingTitle: "Prototype pricing vision",
-    landingPricingCopy: "Pricing is illustrative while we validate the product shape.",
+    landingPricingTitle: "Simple pricing for growing fleets",
+    landingPricingCopy: "Start small, then add mechanics and reporting as your operation grows.",
     landingStarter: "Starter",
     landingStarterPrice: "$39",
     landingStarterCopy: "For small fleets getting organized.",
@@ -315,12 +315,10 @@ const translations = {
     landingEnterprise: "Fleet Ops",
     landingEnterprisePrice: "Custom",
     landingEnterpriseCopy: "For multi-site operations and deeper reporting.",
-    landingIncluded: "Included in the vision",
+    landingIncluded: "Product",
     landingIncludedOne: "Fleet, vehicle, and schedule management",
     landingIncludedTwo: "Mechanic mobile work logging",
     landingIncludedThree: "Maintenance history and evidence trail",
-    landingVisionTitle: "A practical foundation first.",
-    landingVisionCopy: "This prototype focuses on the workflows that matter most: knowing what is due, logging what was done, and keeping proof attached to the truck.",
     fleetStatus: "Fleet status",
     activeFleetLabel: "Active fleet",
     vehiclesOnline: "{count} vehicles",
@@ -542,7 +540,7 @@ const translations = {
     landingEyebrow: "SaaS d'entretien de flotte",
     landingHeadline: "Un seul endroit pour planifier, consigner et prouver chaque service.",
     landingCopy: "CORB donne aux propriétaires une vue claire de l'entretien et aux mécaniciens un flux mobile rapide pour consigner le travail sur le terrain.",
-    landingPrimaryCta: "Ouvrir la démo",
+    landingPrimaryCta: "Connexion",
     landingSecondaryCta: "Voir les prix",
     landingActiveFleet: "Flotte active",
     landingVehicles: "Véhicules suivis",
@@ -555,13 +553,13 @@ const translations = {
     landingFeatureMechanicsCopy: "Utilisez des codes révocables pour consigner le travail sans gérer la flotte.",
     landingFeatureEvidence: "Preuve du travail",
     landingFeatureEvidenceCopy: "Ajoutez notes, pièces, photos, vidéos et documents à chaque complétion.",
-    landingWorkflowTitle: "Le flux que nous consolidons",
+    landingWorkflowTitle: "Comment CORB fonctionne",
     landingWorkflowOne: "Créer une flotte et enregistrer les véhicules.",
     landingWorkflowTwo: "Planifier les entretiens récurrents par date ou kilométrage.",
     landingWorkflowThree: "Permettre aux mécaniciens de consigner notes et preuves.",
     landingWorkflowFour: "Revoir l'historique et les travaux à venir par véhicule ou service.",
-    landingPricingTitle: "Vision de prix du prototype",
-    landingPricingCopy: "Les prix sont indicatifs pendant la validation du produit.",
+    landingPricingTitle: "Des prix simples pour les flottes en croissance",
+    landingPricingCopy: "Commencez petit, puis ajoutez mécaniciens et rapports avec votre opération.",
     landingStarter: "Départ",
     landingStarterPrice: "39 $",
     landingStarterCopy: "Pour les petites flottes qui s'organisent.",
@@ -571,12 +569,10 @@ const translations = {
     landingEnterprise: "Opérations",
     landingEnterprisePrice: "Sur mesure",
     landingEnterpriseCopy: "Pour les opérations multi-sites et les rapports avancés.",
-    landingIncluded: "Inclus dans la vision",
+    landingIncluded: "Produit",
     landingIncludedOne: "Gestion de flotte, véhicules et horaires",
     landingIncludedTwo: "Consignation mobile par les mécaniciens",
     landingIncludedThree: "Historique d'entretien et preuves",
-    landingVisionTitle: "Une fondation pratique d'abord.",
-    landingVisionCopy: "Ce prototype vise les flux essentiels : savoir ce qui est dû, consigner ce qui est fait et garder les preuves liées au camion.",
     fleetStatus: "État de la flotte",
     activeFleetLabel: "Flotte active",
     vehiclesOnline: "{count} véhicules",
@@ -1542,7 +1538,6 @@ function renderLogin() {
           <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
             <a href="#product">${escapeHtml(t("landingNavProduct"))}</a>
             <a href="#pricing">${escapeHtml(t("landingNavPricing"))}</a>
-            <a href="#login-panel">${escapeHtml(t("landingLoginCta"))}</a>
           </nav>
           <div class="login-preferences">
             <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
@@ -1557,6 +1552,7 @@ function renderLogin() {
               <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
               <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
             </div>
+            <a class="landing-login-button" href="#login-panel">${escapeHtml(t("landingLoginCta"))}</a>
           </div>
         </div>
 
@@ -1641,19 +1637,6 @@ function renderLogin() {
               </article>
             `).join("")}
           </div>
-        </section>
-
-        <section class="landing-section landing-vision">
-          <div>
-            <span>${escapeHtml(t("landingIncluded"))}</span>
-            <h2>${escapeHtml(t("landingVisionTitle"))}</h2>
-            <p>${escapeHtml(t("landingVisionCopy"))}</p>
-          </div>
-          <ul>
-            <li>${icons.check}${escapeHtml(t("landingIncludedOne"))}</li>
-            <li>${icons.check}${escapeHtml(t("landingIncludedTwo"))}</li>
-            <li>${icons.check}${escapeHtml(t("landingIncludedThree"))}</li>
-          </ul>
         </section>
 
         <section class="login-auth-panel" id="login-panel">

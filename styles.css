@@ -4044,8 +4044,23 @@ button:disabled {
 }
 
 .landing-nav a:last-child {
+  color: var(--muted-blue);
+}
+
+.landing-login-button {
+  display: inline-flex;
+  min-height: 31px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
   background: var(--blue);
   color: #fff;
+  padding: 0 13px;
+  font-size: 12px;
+  font-weight: 780;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .landing-hero {
@@ -4270,8 +4285,7 @@ button:disabled {
 }
 
 .landing-stats span,
-.landing-section-head span,
-.landing-vision > div > span {
+.landing-section-head span {
   color: var(--muted-blue);
   font-size: 12px;
   font-weight: 720;
@@ -4297,7 +4311,6 @@ button:disabled {
 }
 
 .landing-section h2,
-.landing-vision h2,
 .login-hero h2 {
   margin: 0;
   color: var(--text-blue);
@@ -4314,7 +4327,6 @@ button:disabled {
 }
 
 .landing-section p,
-.landing-vision p,
 .landing-pricing-grid p {
   margin: 0;
   color: var(--muted-blue);
@@ -4373,33 +4385,6 @@ button:disabled {
   font-size: 13px;
 }
 
-.landing-vision {
-  gap: 18px;
-}
-
-.landing-vision ul {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.landing-vision li {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--text-blue);
-  font-size: 13px;
-  font-weight: 680;
-}
-
-.landing-vision li .icon {
-  width: 18px;
-  height: 18px;
-  color: var(--green);
-}
-
 .login-auth-panel .login-hero {
   margin: 0;
   box-shadow: none;
@@ -4450,10 +4435,6 @@ button:disabled {
     padding: 24px;
   }
 
-  .landing-vision {
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.8fr);
-    align-items: center;
-  }
 }
 
 @media (max-width: 360px) {
