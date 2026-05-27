@@ -1317,25 +1317,17 @@ function renderLogin() {
           <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
         </form>
         <div class="login-preferences">
-          <div class="login-pref">
-            <span>${escapeHtml(t("appearance"))}</span>
-            <div class="login-segment compact-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
-              <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark">
-                ${icons.moon}
-                <span>${escapeHtml(t("dark"))}</span>
-              </button>
-              <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light">
-                ${icons.sun}
-                <span>${escapeHtml(t("light"))}</span>
-              </button>
-            </div>
+          <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
+            <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark" aria-label="${escapeAttr(t("darkMode"))}">
+              ${icons.moon}
+            </button>
+            <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light" aria-label="${escapeAttr(t("lightMode"))}">
+              ${icons.sun}
+            </button>
           </div>
-          <div class="login-pref">
-            <span>${escapeHtml(t("language"))}</span>
-            <div class="login-segment compact-segment" role="group" aria-label="${escapeAttr(t("language"))}">
-              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr">${escapeHtml(t("french"))}</button>
-              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en">${escapeHtml(t("english"))}</button>
-            </div>
+          <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
+            <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
+            <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
           </div>
         </div>
       </section>
@@ -1359,16 +1351,14 @@ function renderServices() {
             { iconMarkup: icons.gauge, label: t("garage"), value: t("vehiclesOnline", { count: vehicles.length }) }
           ]
         })}
-        <div class="services-list-zone">
-          <div class="services-controls">
-            <div class="search-wrap">
-              <label class="search-box">
-                ${icons.search}
-                <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="${escapeAttr(t("searchServices"))}" data-service-search />
-              </label>
-            </div>
-            ${filterRow()}
+        <div>
+          <div class="search-wrap">
+            <label class="search-box">
+              ${icons.search}
+              <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="${escapeAttr(t("searchServices"))}" data-service-search />
+            </label>
           </div>
+          ${filterRow()}
           <div class="list-stack">
             ${services.length ? services.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noServicesMatch"))}</div>`}
           </div>

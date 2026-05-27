@@ -414,19 +414,9 @@ textarea:focus-visible {
 
 .login-preferences {
   display: grid;
+  grid-template-columns: 0.78fr 1fr;
   gap: 10px;
-}
-
-.login-pref {
-  display: grid;
-  gap: 8px;
-}
-
-.login-pref > span {
-  color: var(--muted-blue);
-  font-size: 12px;
-  font-weight: 760;
-  line-height: 1;
+  align-items: center;
 }
 
 .compact-segment {
@@ -436,16 +426,25 @@ textarea:focus-visible {
 }
 
 .compact-segment button {
-  min-height: 36px;
+  min-height: 34px;
   border-radius: 12px;
   padding: 0 8px;
   font-size: 12px;
+  font-weight: 760;
 }
 
 .compact-segment button .icon {
-  width: 15px;
-  height: 15px;
-  flex-basis: 15px;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+}
+
+.icon-segment button {
+  padding: 0;
+}
+
+.language-segment button {
+  letter-spacing: 0.02em;
 }
 
 .screen-heading {
@@ -811,54 +810,6 @@ button:disabled {
 
 .theme-dark .nav-tab.active .tab-icon {
   color: currentColor;
-}
-
-.services-list-zone {
-  min-width: 0;
-}
-
-.services-controls {
-  position: relative;
-  z-index: 12;
-  min-width: 0;
-  margin: 0 calc(var(--page-gutter) * -1) 12px;
-  padding: 0 var(--page-gutter) 1px;
-  border: 1px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  transition:
-    border-color 160ms ease,
-    border-radius 160ms ease,
-    background-color 160ms ease,
-    box-shadow 160ms ease,
-    padding 160ms ease;
-}
-
-.chrome-hidden .services-controls {
-  position: fixed;
-  top: calc(8px + env(safe-area-inset-top));
-  right: var(--page-gutter);
-  left: var(--page-gutter);
-  border-color: var(--divider);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--app-bg) 88%, transparent);
-  box-shadow: 0 10px 28px rgba(16, 17, 19, 0.08);
-  margin: 0;
-  padding: 8px;
-}
-
-.chrome-hidden .theme-dark .services-controls {
-  background: color-mix(in srgb, var(--app-bg) 90%, #24272b 10%);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
-}
-
-.chrome-hidden .services-list-zone {
-  padding-top: 118px;
-}
-
-.chrome-hidden .services-controls .filter-row {
-  margin-inline: 0;
-  padding-inline: 0;
 }
 
 .search-wrap {
@@ -3073,11 +3024,6 @@ button:disabled {
   color: #071126;
 }
 
-.services-controls .filter-row {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
 .service-card,
 .vehicle-card,
 .profile-card,
@@ -3492,16 +3438,6 @@ button:disabled {
 
   .services-content .metric-grid {
     margin: 0;
-  }
-
-  .chrome-hidden .services-list-zone {
-    padding-top: 0;
-  }
-
-  .chrome-hidden .services-controls {
-    position: relative;
-    inset: auto;
-    margin: 0 calc(var(--page-gutter) * -1) 12px;
   }
 
   .empty-card {
