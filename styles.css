@@ -2969,6 +2969,13 @@ button:disabled {
   text-transform: uppercase;
 }
 
+.service-card .date-block span {
+  font-size: 11px;
+  font-weight: 680;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .date-value {
   font-size: 12px;
   font-weight: 760;

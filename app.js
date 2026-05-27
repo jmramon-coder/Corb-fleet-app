@@ -1418,11 +1418,11 @@ function serviceCard(service) {
               ${escapeHtml(t("nextDue"))}
               <small class="due-inline ${status}">${escapeHtml(dueChipLabel)}</small>
             </span>
-            <strong class="date-value">${icons.calendar}${formatDate(summary.nextDueDate)}</strong>
+            <strong class="date-value">${icons.calendar}${shortDate(summary.nextDueDate)}</strong>
           </div>
           <div class="date-block">
             <span>${escapeHtml(t("lastPerformed"))}</span>
-            <strong class="date-value">${icons.calendar}${summary.lastPerformedDate ? formatDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong>
+            <strong class="date-value">${icons.calendar}${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong>
           </div>
         </div>
         <div class="service-card-footer">
