@@ -1099,7 +1099,8 @@ button:disabled {
   margin-top: 0;
 }
 
-.service-actions {
+.service-actions,
+.service-card-footer {
   display: grid;
   gap: 8px;
   margin-left: 33px;
@@ -1112,6 +1113,50 @@ button:disabled {
   background: rgba(23, 195, 70, 0.1);
   color: var(--green);
   box-shadow: none;
+}
+
+.service-card-footer {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.service-card-footer > span,
+.service-details-link {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.service-card-footer > span {
+  justify-content: flex-start;
+  border: 0;
+  background: transparent;
+  color: var(--muted-blue);
+}
+
+.service-card-footer .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--green);
+}
+
+.service-details-link {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card-raised) 48%, transparent);
+  color: var(--muted-blue);
+  padding: 0 10px;
+}
+
+.service-details-link .icon {
+  margin-left: auto;
+  color: var(--icon-muted);
 }
 
 .completion-card .service-card-body {
@@ -2871,6 +2916,7 @@ button:disabled {
 .completion-record-grid,
 .completion-note-block,
 .service-actions,
+.service-card-footer,
 .vehicle-stats {
   margin-left: 38px;
 }

@@ -254,7 +254,10 @@ const translations = {
     vehiclesOnline: "{count} vehicles",
     maintenanceQueue: "{count} maintenance",
     serviceBay: "Service bay",
-    garage: "Garage"
+    garage: "Garage",
+    startService: "Start service",
+    serviceDetailsHistory: "Details & history",
+    tapCardToComplete: "Tap card to complete"
   },
   fr: {
     fleetManager: "Gestion de flotte",
@@ -439,7 +442,10 @@ const translations = {
     vehiclesOnline: "{count} véhicules",
     maintenanceQueue: "{count} entretiens",
     serviceBay: "Atelier",
-    garage: "Garage"
+    garage: "Garage",
+    startService: "Commencer",
+    serviceDetailsHistory: "Détails et historique",
+    tapCardToComplete: "Touchez la carte pour compléter"
   }
 };
 
@@ -1391,7 +1397,7 @@ function serviceCard(service) {
   const dueDays = daysUntil(summary.nextDueDate);
   const dueChipLabel = status === "ok" ? t("ok") : status === "overdue" ? relativeDue(summary.nextDueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(summary.nextDueDate) });
   return `
-    <article class="service-card click-card status-${status}" data-open-service="${service.id}">
+    <article class="service-card click-card status-${status}" data-complete-service="${service.id}">
       <span class="status-rail" aria-hidden="true"></span>
       <div class="service-card-body">
         <div class="service-head">
@@ -1416,7 +1422,13 @@ function serviceCard(service) {
             <strong class="date-value">${icons.calendar}${summary.lastPerformedDate ? formatDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong>
           </div>
         </div>
-        <div class="service-actions"><button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button></div>
+        <div class="service-card-footer">
+          <span>${icons.check}${escapeHtml(t("tapCardToComplete"))}</span>
+          <button class="service-details-link" type="button" data-open-service="${service.id}">
+            ${escapeHtml(t("serviceDetailsHistory"))}
+            ${icons.chevronRight}
+          </button>
+        </div>
       </div>
     </article>
   `;
@@ -2356,11 +2368,6 @@ app.addEventListener("click", (event) => {
     render();
     return;
   }
-  if (completeId) {
-    state.completionModalServiceId = completeId;
-    render();
-    return;
-  }
   if (closeModalTrigger || backdropClose) {
     state.completionModalServiceId = null;
     render();
@@ -2382,6 +2389,11 @@ app.addEventListener("click", (event) => {
   }
   if (serviceId) {
     navigate("serviceDetails", { activeServiceId: serviceId });
+    return;
+  }
+  if (completeId) {
+    state.completionModalServiceId = completeId;
+    render();
     return;
   }
   if (route) {
