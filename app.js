@@ -1946,16 +1946,18 @@ function completionModal() {
           <section class="form-card mechanic-work-card">
             <div class="form-section-row">
               <h2 class="form-section-title">${escapeHtml(t("completionWork"))}</h2>
-              <button class="voice-btn" type="button" data-start-voice="${service.id}">
-                ${icons.mic}
-                <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
-              </button>
             </div>
             <div class="form-stack">
               ${formField({ label: t("currentKm"), name: "completedKm", type: "number", inputmode: "numeric", value: vehicle?.kilometers || summary.lastPerformedKm || 0, attrs: 'min="0"' })}
-              <div class="form-field">
+              <div class="form-field note-field">
                 <label for="mechanicNote">${escapeHtml(t("mechanicNote"))}<span>${escapeHtml(t("optional"))}</span></label>
-                <textarea id="mechanicNote" name="mechanicNote" rows="5" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
+                <div class="note-input-shell">
+                  <textarea id="mechanicNote" name="mechanicNote" rows="5" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
+                  <button class="voice-btn" type="button" data-start-voice="${service.id}">
+                    ${icons.mic}
+                    <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
+                  </button>
+                </div>
               </div>
               <div class="quick-note-panel">
                 <span>${escapeHtml(t("quickNotes"))}</span>

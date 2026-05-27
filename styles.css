@@ -29,7 +29,7 @@
   --shadow-strong: 0 22px 46px rgba(27, 31, 35, 0.12);
   --radius-sm: 14px;
   --radius-md: 18px;
-  --radius-lg: 28px;
+  --radius-lg: 22px;
   --page-gutter: 18px;
   --desktop-gutter: 32px;
   --brand-text-offset: 36px;
@@ -1608,6 +1608,7 @@ button:disabled {
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--card) 92%, var(--app-bg));
   padding: 16px;
+  min-width: 0;
 }
 
 .form-section-title {
@@ -1661,6 +1662,7 @@ button:disabled {
 .form-field select,
 .form-field textarea {
   width: 100%;
+  min-width: 0;
   min-height: 50px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -1925,6 +1927,7 @@ button:disabled {
   display: grid;
   gap: 12px;
   min-width: 0;
+  padding-bottom: 76px;
 }
 
 .completion-summary-card {
@@ -1933,7 +1936,7 @@ button:disabled {
   gap: 10px;
   align-items: center;
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
+  border-radius: 22px;
   background: color-mix(in srgb, var(--card) 86%, var(--app-bg));
   margin-bottom: 12px;
   padding: 14px;
@@ -1966,23 +1969,36 @@ button:disabled {
   display: grid;
   grid-template-columns: 1fr;
   align-items: start;
-  gap: 10px;
+  gap: 6px;
   min-width: 0;
 }
 
-.voice-btn {
-  display: inline-flex;
-  min-height: 34px;
+.note-input-shell {
+  position: relative;
   min-width: 0;
-  width: 100%;
+}
+
+.note-input-shell textarea {
+  padding-bottom: 52px;
+}
+
+.voice-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  min-height: 32px;
+  min-width: 0;
+  width: auto;
+  max-width: min(148px, calc(100% - 20px));
   align-items: center;
   justify-content: center;
   gap: 6px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--card);
+  background: color-mix(in srgb, var(--card-raised) 56%, transparent);
   color: var(--muted-blue);
-  padding: 0 10px;
+  padding: 0 11px;
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -2116,10 +2132,13 @@ button:disabled {
   align-items: stretch;
   background: var(--app-bg);
   padding: 0;
+  overflow: hidden;
 }
 
 .completion-modal {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 100svh;
   max-height: 100svh;
   overflow: auto;
@@ -2130,6 +2149,21 @@ button:disabled {
   padding: calc(18px + env(safe-area-inset-top)) var(--page-gutter) calc(18px + env(safe-area-inset-bottom));
   box-shadow: none;
   scrollbar-width: none;
+  contain: inline-size;
+}
+
+.completion-modal > *,
+.completion-modal form,
+.completion-modal .form-card,
+.completion-modal .form-stack,
+.completion-modal .form-field,
+.completion-modal .note-input-shell {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.completion-modal .form-card {
+  overflow: hidden;
 }
 
 .modal-head {
@@ -2923,7 +2957,7 @@ button:disabled {
 .form-card,
 .service-preset-panel {
   border-color: rgba(255, 255, 255, 0.74);
-  border-radius: 30px;
+  border-radius: 22px;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--card-raised) 72%, transparent), color-mix(in srgb, var(--card) 92%, var(--app-bg))),
     var(--card);
