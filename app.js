@@ -247,7 +247,14 @@ const translations = {
     voiceListening: "Listening...",
     voiceReady: "Voice ready",
     voiceNotSupported: "Voice dictation is not supported in this browser.",
-    filesSelected: "{count} selected"
+    filesSelected: "{count} selected",
+    commandCenter: "Command center",
+    fleetStatus: "Fleet status",
+    activeFleetLabel: "Active fleet",
+    vehiclesOnline: "{count} vehicles",
+    maintenanceQueue: "{count} maintenance",
+    serviceBay: "Service bay",
+    garage: "Garage"
   },
   fr: {
     fleetManager: "Gestion de flotte",
@@ -425,7 +432,14 @@ const translations = {
     voiceListening: "Écoute...",
     voiceReady: "Voix prête",
     voiceNotSupported: "La dictée vocale n'est pas prise en charge dans ce navigateur.",
-    filesSelected: "{count} sélectionné(s)"
+    filesSelected: "{count} sélectionné(s)",
+    commandCenter: "Centre de commande",
+    fleetStatus: "État de la flotte",
+    activeFleetLabel: "Flotte active",
+    vehiclesOnline: "{count} véhicules",
+    maintenanceQueue: "{count} entretiens",
+    serviceBay: "Atelier",
+    garage: "Garage"
   }
 };
 
@@ -1218,6 +1232,27 @@ function emptyVehicleCard() {
   `;
 }
 
+function cockpitHero({ title, subtitle, eyebrow = t("commandCenter"), meta = [] }) {
+  return `
+    <section class="cockpit-hero">
+      <div class="cockpit-hero-copy">
+        <span class="cockpit-eyebrow">${escapeHtml(eyebrow)}</span>
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(subtitle)}</p>
+      </div>
+      <div class="cockpit-meta">
+        ${meta.map(({ iconMarkup, label, value }) => `
+          <span>
+            ${iconMarkup}
+            <small>${escapeHtml(label)}</small>
+            <strong>${escapeHtml(value)}</strong>
+          </span>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderLogin() {
   const ownerMode = state.loginMode !== "mechanic";
   return `
@@ -1274,9 +1309,14 @@ function renderDashboard() {
     <div class="screen">
       ${header()}
       <section class="dashboard-content">
-        <div class="screen-heading">
-          <h1 class="screen-title">${escapeHtml(t("welcome"))}<br />${escapeHtml(state.user.firstName)},</h1>
-        </div>
+        ${cockpitHero({
+          title: `${t("welcome")} ${state.user.firstName}`,
+          subtitle: t("fleetStatus"),
+          meta: [
+            { iconMarkup: icons.truck, label: t("activeFleetLabel"), value: activeFleet()?.name || "CORB" },
+            { iconMarkup: icons.wrench, label: t("serviceBay"), value: t("maintenanceQueue", { count: state.maintenancePlans.length }) }
+          ]
+        })}
         ${metricCards()}
         ${
           hasVehicles
@@ -1291,14 +1331,20 @@ function renderDashboard() {
 
 function renderServices() {
   const services = visibleServices();
+  const vehicles = vehiclesForActiveFleet();
   return `
     <div class="screen">
       ${header()}
       <section class="services-content">
-        <div class="screen-heading tight">
-          <h1 class="screen-title">${escapeHtml(t("welcome"))} ${escapeHtml(state.user.firstName)},</h1>
-          <p class="screen-subtitle">${escapeHtml(t("services"))}</p>
-        </div>
+        ${cockpitHero({
+          title: `${t("welcome")} ${state.user.firstName}`,
+          subtitle: t("services"),
+          eyebrow: t("serviceBay"),
+          meta: [
+            { iconMarkup: icons.truck, label: t("activeFleetLabel"), value: activeFleet()?.name || "CORB" },
+            { iconMarkup: icons.gauge, label: t("garage"), value: t("vehiclesOnline", { count: vehicles.length }) }
+          ]
+        })}
         <div>
           <div class="search-wrap">
             <label class="search-box">
@@ -1345,7 +1391,8 @@ function serviceCard(service) {
   const dueDays = daysUntil(summary.nextDueDate);
   const dueChipLabel = status === "ok" ? t("ok") : status === "overdue" ? relativeDue(summary.nextDueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(summary.nextDueDate) });
   return `
-    <article class="service-card click-card" data-open-service="${service.id}">
+    <article class="service-card click-card status-${status}" data-open-service="${service.id}">
+      <span class="status-rail" aria-hidden="true"></span>
       <div class="service-card-body">
         <div class="service-head">
           <span>${icons.wrench}</span>
@@ -1450,10 +1497,15 @@ function renderVehicles() {
     <div class="screen">
       ${header()}
       <section class="vehicles-content">
-        <div class="screen-heading">
-          <h1 class="screen-title">${escapeHtml(t("vehicleFleet"))}</h1>
-          <p class="screen-subtitle">${escapeHtml(t("manageVehicles"))}</p>
-        </div>
+        ${cockpitHero({
+          title: t("vehicleFleet"),
+          subtitle: t("manageVehicles"),
+          eyebrow: t("garage"),
+          meta: [
+            { iconMarkup: icons.truck, label: t("activeFleetLabel"), value: activeFleet()?.name || "CORB" },
+            { iconMarkup: icons.wrench, label: t("serviceBay"), value: t("maintenanceQueue", { count: state.maintenancePlans.filter((service) => service.fleetId === state.activeFleetId).length }) }
+          ]
+        })}
         ${
           vehicles.length
             ? `<div class="list-stack desktop-grid">${vehicles.map(vehicleCard).join("")}</div>`
@@ -1467,6 +1519,13 @@ function renderVehicles() {
 
 function vehicleCard(vehicle) {
   const scheduledServices = plansForVehicle(vehicle.id);
+  const counts = scheduledServices.reduce(
+    (acc, service) => {
+      acc[planStatus(service)] += 1;
+      return acc;
+    },
+    { overdue: 0, upcoming: 0, ok: 0 }
+  );
   return `
     <article class="vehicle-card click-card" data-open-vehicle="${vehicle.id}">
       <div class="vehicle-card-body">
@@ -1476,11 +1535,17 @@ function vehicleCard(vehicle) {
             <h2 class="vehicle-card-title">${escapeHtml(displayVehicleTitle(vehicle))}</h2>
             <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
           </div>
+          <span class="vehicle-status-dot ${counts.overdue ? "overdue" : counts.upcoming ? "upcoming" : "ok"}" aria-hidden="true"></span>
           <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
         </div>
         <div class="vehicle-stats">
           <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
           <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: scheduledServices.length }))}</span>
+        </div>
+        <div class="vehicle-health-strip" aria-hidden="true">
+          <span class="overdue" style="--value: ${Math.max(counts.overdue, 0)}"></span>
+          <span class="upcoming" style="--value: ${Math.max(counts.upcoming, 0)}"></span>
+          <span class="ok" style="--value: ${Math.max(counts.ok, 1)}"></span>
         </div>
       </div>
     </article>
