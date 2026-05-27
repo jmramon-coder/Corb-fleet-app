@@ -1549,7 +1549,6 @@ function vehicleCard(vehicle) {
             <h2 class="vehicle-card-title">${escapeHtml(displayVehicleTitle(vehicle))}</h2>
             <div class="vehicle-model">${escapeHtml(modelLine(vehicle))}</div>
           </div>
-          <span class="vehicle-status-dot ${counts.overdue ? "overdue" : counts.upcoming ? "upcoming" : "ok"}" aria-hidden="true"></span>
           <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
         </div>
         <div class="vehicle-stats">

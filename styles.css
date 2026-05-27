@@ -146,7 +146,7 @@ textarea:focus-visible {
   max-height: 40px;
   margin-bottom: 34px;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   transform: translateY(0);
   opacity: 1;
   transition:
@@ -624,10 +624,10 @@ button:disabled {
   bottom: 0;
   z-index: 18;
   height: 82px;
-  border-top: 1px solid var(--divider);
+  border-top: 0;
   pointer-events: none;
   opacity: 1;
-  background: var(--app-bg);
+  background: linear-gradient(180deg, transparent 0%, var(--app-bg) 54%);
   transition: opacity 180ms ease;
 }
 
@@ -675,13 +675,13 @@ button:disabled {
 }
 
 .theme-dark .nav-scrim {
-  border-top-color: var(--divider);
-  background: var(--app-bg);
+  border-top-color: transparent;
+  background: linear-gradient(180deg, transparent 0%, var(--app-bg) 54%);
 }
 
 .theme-dark .bottom-nav {
   background: var(--app-bg);
-  border-color: transparent;
+  border-color: var(--divider);
   box-shadow: none;
 }
 
@@ -2881,12 +2881,28 @@ button:disabled {
 }
 
 .service-head {
-  grid-template-columns: 28px minmax(0, 1fr) 34px;
-  gap: 10px;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  gap: 12px;
   align-items: center;
 }
 
-.service-head > span:first-child,
+.service-head > span:first-child {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: color-mix(in srgb, var(--card-raised) 80%, transparent);
+  color: var(--icon-action);
+}
+
+.service-head > span:first-child .card-icon,
+.service-head > span:first-child .icon,
+.service-head > span:first-child .tab-icon {
+  width: 21px;
+  height: 21px;
+  flex-basis: 21px;
+}
+
 .vehicle-head-icon {
   width: 28px;
   height: 28px;
@@ -2926,6 +2942,11 @@ button:disabled {
 .service-card-footer,
 .vehicle-stats {
   margin-left: 38px;
+}
+
+.service-card .service-dates,
+.service-card .service-card-footer {
+  margin-left: 0;
 }
 
 .service-dates {
@@ -2968,27 +2989,15 @@ button:disabled {
   box-shadow: 0 12px 24px rgba(59, 214, 124, 0.16);
 }
 
+.service-history-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 15px;
+}
+
 .vehicle-top {
-  grid-template-columns: 28px minmax(0, 1fr) 10px 24px;
+  grid-template-columns: 28px minmax(0, 1fr) 24px;
   align-items: center;
-}
-
-.vehicle-status-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 12%, transparent);
-}
-
-.vehicle-status-dot.overdue {
-  background: var(--red);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--red) 12%, transparent);
-}
-
-.vehicle-status-dot.upcoming {
-  background: var(--orange);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 14%, transparent);
 }
 
 .vehicle-stats {
@@ -3025,7 +3034,7 @@ button:disabled {
 
 .bottom-nav {
   border-top: 1px solid var(--divider);
-  background: color-mix(in srgb, var(--app-bg) 88%, transparent);
+  background: color-mix(in srgb, var(--app-bg) 96%, var(--card));
   backdrop-filter: blur(18px);
 }
 
