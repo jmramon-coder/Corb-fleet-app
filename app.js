@@ -280,6 +280,47 @@ const translations = {
     voiceNotSupported: "Voice dictation is not supported in this browser.",
     filesSelected: "{count} selected",
     commandCenter: "Command center",
+    landingNavProduct: "Product",
+    landingNavPricing: "Pricing",
+    landingLoginCta: "Log in",
+    landingEyebrow: "Fleet maintenance SaaS",
+    landingHeadline: "One place to plan, log, and prove every service.",
+    landingCopy: "CORB gives fleet owners a clean maintenance command center and mechanics a fast mobile workflow for logging work in the yard.",
+    landingPrimaryCta: "Open demo",
+    landingSecondaryCta: "See pricing",
+    landingActiveFleet: "Active fleet",
+    landingVehicles: "Vehicles tracked",
+    landingServices: "Services due",
+    landingProof: "Evidence saved",
+    landingFeaturesTitle: "Built for the work that happens between dispatch and the garage.",
+    landingFeatureSchedules: "Maintenance plans",
+    landingFeatureSchedulesCopy: "Track time, KM, and hybrid service schedules per truck.",
+    landingFeatureMechanics: "Mechanic access",
+    landingFeatureMechanicsCopy: "Use revocable codes so mechanics can log work without managing the fleet.",
+    landingFeatureEvidence: "Proof of work",
+    landingFeatureEvidenceCopy: "Capture notes, parts, photos, videos, and documents on completion.",
+    landingWorkflowTitle: "The workflow we are consolidating",
+    landingWorkflowOne: "Create a fleet and register vehicles.",
+    landingWorkflowTwo: "Schedule recurring maintenance by date or kilometers.",
+    landingWorkflowThree: "Let mechanics log service with notes and evidence.",
+    landingWorkflowFour: "Review history and upcoming work from the vehicle or service view.",
+    landingPricingTitle: "Prototype pricing vision",
+    landingPricingCopy: "Pricing is illustrative while we validate the product shape.",
+    landingStarter: "Starter",
+    landingStarterPrice: "$39",
+    landingStarterCopy: "For small fleets getting organized.",
+    landingPro: "Garage",
+    landingProPrice: "$99",
+    landingProCopy: "For teams with mechanics and recurring service volume.",
+    landingEnterprise: "Fleet Ops",
+    landingEnterprisePrice: "Custom",
+    landingEnterpriseCopy: "For multi-site operations and deeper reporting.",
+    landingIncluded: "Included in the vision",
+    landingIncludedOne: "Fleet, vehicle, and schedule management",
+    landingIncludedTwo: "Mechanic mobile work logging",
+    landingIncludedThree: "Maintenance history and evidence trail",
+    landingVisionTitle: "A practical foundation first.",
+    landingVisionCopy: "This prototype focuses on the workflows that matter most: knowing what is due, logging what was done, and keeping proof attached to the truck.",
     fleetStatus: "Fleet status",
     activeFleetLabel: "Active fleet",
     vehiclesOnline: "{count} vehicles",
@@ -495,6 +536,47 @@ const translations = {
     voiceNotSupported: "La dictée vocale n'est pas prise en charge dans ce navigateur.",
     filesSelected: "{count} sélectionné(s)",
     commandCenter: "Centre de commande",
+    landingNavProduct: "Produit",
+    landingNavPricing: "Prix",
+    landingLoginCta: "Connexion",
+    landingEyebrow: "SaaS d'entretien de flotte",
+    landingHeadline: "Un seul endroit pour planifier, consigner et prouver chaque service.",
+    landingCopy: "CORB donne aux propriétaires une vue claire de l'entretien et aux mécaniciens un flux mobile rapide pour consigner le travail sur le terrain.",
+    landingPrimaryCta: "Ouvrir la démo",
+    landingSecondaryCta: "Voir les prix",
+    landingActiveFleet: "Flotte active",
+    landingVehicles: "Véhicules suivis",
+    landingServices: "Services dus",
+    landingProof: "Preuves sauvegardées",
+    landingFeaturesTitle: "Conçu pour le travail entre la répartition et le garage.",
+    landingFeatureSchedules: "Plans d'entretien",
+    landingFeatureSchedulesCopy: "Suivez les entretiens selon le temps, les KM ou une règle hybride par camion.",
+    landingFeatureMechanics: "Accès mécanicien",
+    landingFeatureMechanicsCopy: "Utilisez des codes révocables pour consigner le travail sans gérer la flotte.",
+    landingFeatureEvidence: "Preuve du travail",
+    landingFeatureEvidenceCopy: "Ajoutez notes, pièces, photos, vidéos et documents à chaque complétion.",
+    landingWorkflowTitle: "Le flux que nous consolidons",
+    landingWorkflowOne: "Créer une flotte et enregistrer les véhicules.",
+    landingWorkflowTwo: "Planifier les entretiens récurrents par date ou kilométrage.",
+    landingWorkflowThree: "Permettre aux mécaniciens de consigner notes et preuves.",
+    landingWorkflowFour: "Revoir l'historique et les travaux à venir par véhicule ou service.",
+    landingPricingTitle: "Vision de prix du prototype",
+    landingPricingCopy: "Les prix sont indicatifs pendant la validation du produit.",
+    landingStarter: "Départ",
+    landingStarterPrice: "39 $",
+    landingStarterCopy: "Pour les petites flottes qui s'organisent.",
+    landingPro: "Garage",
+    landingProPrice: "99 $",
+    landingProCopy: "Pour les équipes avec mécaniciens et volume récurrent.",
+    landingEnterprise: "Opérations",
+    landingEnterprisePrice: "Sur mesure",
+    landingEnterpriseCopy: "Pour les opérations multi-sites et les rapports avancés.",
+    landingIncluded: "Inclus dans la vision",
+    landingIncludedOne: "Gestion de flotte, véhicules et horaires",
+    landingIncludedTwo: "Consignation mobile par les mécaniciens",
+    landingIncludedThree: "Historique d'entretien et preuves",
+    landingVisionTitle: "Une fondation pratique d'abord.",
+    landingVisionCopy: "Ce prototype vise les flux essentiels : savoir ce qui est dû, consigner ce qui est fait et garder les preuves liées au camion.",
     fleetStatus: "État de la flotte",
     activeFleetLabel: "Flotte active",
     vehiclesOnline: "{count} véhicules",
@@ -1433,6 +1515,22 @@ function renderLogin() {
   const ownerMode = state.loginMode !== "mechanic";
   const darkMode = state.theme === "dark";
   const language = state.language === "fr" ? "fr" : "en";
+  const stats = [
+    [t("landingActiveFleet"), "CORB"],
+    [t("landingVehicles"), String(defaultState().vehicles.length)],
+    [t("landingServices"), String(statusCounts().overdue + statusCounts().upcoming)],
+    [t("landingProof"), "PDF + Media"]
+  ];
+  const features = [
+    [icons.calendar, t("landingFeatureSchedules"), t("landingFeatureSchedulesCopy")],
+    [icons.key, t("landingFeatureMechanics"), t("landingFeatureMechanicsCopy")],
+    [icons.camera, t("landingFeatureEvidence"), t("landingFeatureEvidenceCopy")]
+  ];
+  const pricing = [
+    [t("landingStarter"), t("landingStarterPrice"), t("landingStarterCopy")],
+    [t("landingPro"), t("landingProPrice"), t("landingProCopy")],
+    [t("landingEnterprise"), t("landingEnterprisePrice"), t("landingEnterpriseCopy")]
+  ];
   return `
     <main class="login-screen">
       <section class="login-panel">
@@ -1441,6 +1539,11 @@ function renderLogin() {
             <span class="brand-mark" aria-hidden="true"></span>
             <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
           </div>
+          <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
+            <a href="#product">${escapeHtml(t("landingNavProduct"))}</a>
+            <a href="#pricing">${escapeHtml(t("landingNavPricing"))}</a>
+            <a href="#login-panel">${escapeHtml(t("landingLoginCta"))}</a>
+          </nav>
           <div class="login-preferences">
             <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
               <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark" aria-label="${escapeAttr(t("darkMode"))}">
@@ -1456,41 +1559,140 @@ function renderLogin() {
             </div>
           </div>
         </div>
-        <div class="login-hero">
-          <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
-          <h1>${escapeHtml(t("loginHeadline"))}</h1>
-          <p>${escapeHtml(t("loginCopy"))}</p>
-        </div>
-        <div class="auth-switch login-segment" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
-          <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">
-            ${icons.profile}
-            <span>${escapeHtml(t("ownerLogin"))}</span>
-          </button>
-          <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
-            ${icons.garage}
-            <span>${escapeHtml(t("mechanicLogin"))}</span>
-          </button>
-        </div>
-        <form class="login-form" data-login-form>
-          ${ownerMode ? `
-            <div class="form-field">
-              <label for="loginEmail">${escapeHtml(t("email"))}</label>
-              <input id="loginEmail" name="email" type="email" autocomplete="email" value="${escapeAttr(state.user.email)}" required />
+
+        <section class="landing-hero">
+          <div class="landing-hero-copy">
+            <span class="login-kicker">${icons.shieldCheck}${escapeHtml(t("landingEyebrow"))}</span>
+            <h1>${escapeHtml(t("landingHeadline"))}</h1>
+            <p>${escapeHtml(t("landingCopy"))}</p>
+            <div class="landing-cta-row">
+              <a class="primary-btn landing-cta" href="#login-panel">${escapeHtml(t("landingPrimaryCta"))} ${icons.arrowRight}</a>
+              <a class="outline-btn landing-cta" href="#pricing">${escapeHtml(t("landingSecondaryCta"))}</a>
             </div>
-            <div class="form-field">
-              <label for="loginPassword">${escapeHtml(t("password"))}</label>
-              <input id="loginPassword" name="password" type="password" autocomplete="current-password" value="demo" required />
+          </div>
+          <div class="landing-product-shot" aria-label="${escapeAttr(t("services"))}">
+            <div class="phone-preview">
+              <div class="phone-preview-top">
+                <span class="brand-mark" aria-hidden="true"></span>
+                <div><strong>CORB</strong><small>${escapeHtml(t("fleetManager"))}</small></div>
+              </div>
+              <div class="phone-preview-hero">
+                <small>${escapeHtml(t("serviceBay"))}</small>
+                <strong>${escapeHtml(t("welcome"))} Anthony</strong>
+                <span>${escapeHtml(t("services"))}</span>
+              </div>
+              <div class="phone-preview-filter">
+                <span>${escapeHtml(t("overdue"))}<b>2</b></span>
+                <span>${escapeHtml(t("upcoming"))}<b>1</b></span>
+              </div>
+              <div class="phone-preview-card">
+                <div>${icons.wrench}<span><strong>${escapeHtml(t("annualInspection"))}</strong><small>${escapeHtml(t("truckNumber", { number: 2 }))}</small></span></div>
+                <p><span>${escapeHtml(t("nextDue"))}</span><strong>${shortDate(addDays(7))}</strong></p>
+                <button type="button">${escapeHtml(t("logService"))}</button>
+              </div>
             </div>
-          ` : `
-            <div class="form-field">
-              <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
-              <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
-              <small>${escapeHtml(t("accessCodeHint"))}</small>
-            </div>
-          `}
-          ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
-          <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
-        </form>
+          </div>
+        </section>
+
+        <section class="landing-stats" aria-label="${escapeAttr(t("fleetStatus"))}">
+          ${stats.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
+        </section>
+
+        <section class="landing-section" id="product">
+          <div class="landing-section-head">
+            <span>${escapeHtml(t("landingIncluded"))}</span>
+            <h2>${escapeHtml(t("landingFeaturesTitle"))}</h2>
+          </div>
+          <div class="landing-feature-grid">
+            ${features.map(([iconMarkup, title, copy]) => `
+              <article>
+                <span>${iconMarkup}</span>
+                <h3>${escapeHtml(title)}</h3>
+                <p>${escapeHtml(copy)}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="landing-section landing-workflow">
+          <div class="landing-section-head">
+            <span>${escapeHtml(t("commandCenter"))}</span>
+            <h2>${escapeHtml(t("landingWorkflowTitle"))}</h2>
+          </div>
+          <ol>
+            <li>${escapeHtml(t("landingWorkflowOne"))}</li>
+            <li>${escapeHtml(t("landingWorkflowTwo"))}</li>
+            <li>${escapeHtml(t("landingWorkflowThree"))}</li>
+            <li>${escapeHtml(t("landingWorkflowFour"))}</li>
+          </ol>
+        </section>
+
+        <section class="landing-section" id="pricing">
+          <div class="landing-section-head">
+            <span>${escapeHtml(t("landingPricingCopy"))}</span>
+            <h2>${escapeHtml(t("landingPricingTitle"))}</h2>
+          </div>
+          <div class="landing-pricing-grid">
+            ${pricing.map(([name, price, copy], index) => `
+              <article class="${index === 1 ? "featured" : ""}">
+                <h3>${escapeHtml(name)}</h3>
+                <strong>${escapeHtml(price)}${index < 2 ? `<small>/mo</small>` : ""}</strong>
+                <p>${escapeHtml(copy)}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="landing-section landing-vision">
+          <div>
+            <span>${escapeHtml(t("landingIncluded"))}</span>
+            <h2>${escapeHtml(t("landingVisionTitle"))}</h2>
+            <p>${escapeHtml(t("landingVisionCopy"))}</p>
+          </div>
+          <ul>
+            <li>${icons.check}${escapeHtml(t("landingIncludedOne"))}</li>
+            <li>${icons.check}${escapeHtml(t("landingIncludedTwo"))}</li>
+            <li>${icons.check}${escapeHtml(t("landingIncludedThree"))}</li>
+          </ul>
+        </section>
+
+        <section class="login-auth-panel" id="login-panel">
+          <div class="login-hero">
+            <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
+            <h2>${escapeHtml(t("loginHeadline"))}</h2>
+            <p>${escapeHtml(t("loginCopy"))}</p>
+          </div>
+          <div class="auth-switch login-segment" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
+            <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">
+              ${icons.profile}
+              <span>${escapeHtml(t("ownerLogin"))}</span>
+            </button>
+            <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
+              ${icons.garage}
+              <span>${escapeHtml(t("mechanicLogin"))}</span>
+            </button>
+          </div>
+          <form class="login-form" data-login-form>
+            ${ownerMode ? `
+              <div class="form-field">
+                <label for="loginEmail">${escapeHtml(t("email"))}</label>
+                <input id="loginEmail" name="email" type="email" autocomplete="email" value="${escapeAttr(state.user.email)}" required />
+              </div>
+              <div class="form-field">
+                <label for="loginPassword">${escapeHtml(t("password"))}</label>
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" value="demo" required />
+              </div>
+            ` : `
+              <div class="form-field">
+                <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
+                <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
+                <small>${escapeHtml(t("accessCodeHint"))}</small>
+              </div>
+            `}
+            ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
+            <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
+          </form>
+        </section>
       </section>
     </main>
   `;
