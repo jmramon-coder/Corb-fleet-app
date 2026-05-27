@@ -2212,6 +2212,9 @@ function render() {
       ${createActionMenu()}
     </div>
   `;
+  requestAnimationFrame(() => {
+    if (!pageCanHideChrome()) setChromeHidden(false);
+  });
 }
 
 function routeMarkup() {
@@ -2240,16 +2243,25 @@ function escapeAttr(value) {
 }
 
 function setChromeHidden(hidden) {
+  if (hidden && !pageCanHideChrome()) hidden = false;
   if (chromeHidden === hidden) return;
   chromeHidden = hidden;
   document.documentElement.classList.toggle("chrome-hidden", hidden);
+}
+
+function pageCanHideChrome() {
+  const root = document.documentElement;
+  const scrollHeight = Math.max(root.scrollHeight, document.body?.scrollHeight || 0);
+  return scrollHeight - window.innerHeight > 96;
 }
 
 function updateChromeForScroll() {
   const currentY = Math.max(0, window.scrollY);
   const delta = currentY - lastScrollY;
 
-  if (currentY <= 12) {
+  if (!pageCanHideChrome()) {
+    setChromeHidden(false);
+  } else if (currentY <= 12) {
     setChromeHidden(false);
   } else if (delta > 8) {
     setChromeHidden(true);
@@ -2274,7 +2286,9 @@ window.addEventListener(
 window.addEventListener(
   "wheel",
   (event) => {
-    if (window.scrollY <= 12) {
+    if (!pageCanHideChrome()) {
+      setChromeHidden(false);
+    } else if (window.scrollY <= 12) {
       setChromeHidden(false);
     } else if (event.deltaY > 8) {
       setChromeHidden(true);
@@ -2299,7 +2313,9 @@ window.addEventListener(
     const currentTouchY = event.touches[0]?.clientY || touchStartY;
     const touchDelta = touchStartY - currentTouchY;
 
-    if (window.scrollY <= 12) {
+    if (!pageCanHideChrome()) {
+      setChromeHidden(false);
+    } else if (window.scrollY <= 12) {
       setChromeHidden(false);
     } else if (touchDelta > 8) {
       setChromeHidden(true);

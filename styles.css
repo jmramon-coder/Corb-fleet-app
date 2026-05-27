@@ -838,6 +838,7 @@ button:disabled {
 }
 
 .search-wrap {
+  position: static;
   margin: 0 0 10px;
 }
 
@@ -866,6 +867,7 @@ button:disabled {
 }
 
 .filter-row {
+  position: static;
   display: flex;
   gap: 7px;
   margin: 0 calc(var(--page-gutter) * -1);
