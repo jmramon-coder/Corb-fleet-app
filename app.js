@@ -1940,16 +1940,18 @@ function completionModal() {
     <div class="modal-backdrop" data-close-modal role="presentation">
       <section class="completion-modal" role="dialog" aria-modal="true" aria-labelledby="completion-modal-title" data-modal-panel>
         <div class="modal-head">
-          <div>
-            <h2 id="completion-modal-title">${escapeHtml(t("completeNow"))}</h2>
-            <p>${escapeHtml(displayServiceTitle(service))} · ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
+          <div class="modal-head-main">
+            <div>
+              <h2 id="completion-modal-title">${escapeHtml(t("completeNow"))}</h2>
+              <p>${escapeHtml(displayServiceTitle(service))} · ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
+            </div>
+            <div class="modal-context-row">
+              <span>${escapeHtml(t("nextDue"))}</span>
+              <strong>${shortDate(summary.nextDueDate)}</strong>
+              <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
+            </div>
           </div>
           <button class="icon-btn" type="button" data-close-modal-trigger aria-label="${escapeAttr(t("cancel"))}">${icons.x}</button>
-        </div>
-        <div class="completion-context-strip">
-          <span>${escapeHtml(t("nextDue"))}</span>
-          <strong>${shortDate(summary.nextDueDate)}</strong>
-          <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
         </div>
         <form class="completion-form" data-completion-form="${service.id}">
           <section class="mechanic-work-section">

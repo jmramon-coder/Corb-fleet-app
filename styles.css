@@ -1994,31 +1994,24 @@ button:disabled {
 }
 
 .completion-context-strip {
-  display: flex;
-  min-width: 0;
-  min-height: 38px;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--divider);
-  margin: -6px 0 14px;
-  padding: 0 0 12px;
+  display: none;
 }
 
-.completion-context-strip > span:first-child {
+.modal-context-row > span:first-child {
   color: var(--muted-blue);
   font-size: 12px;
   font-weight: 650;
   line-height: 1;
 }
 
-.completion-context-strip strong {
+.modal-context-row strong {
   color: var(--text-blue);
   font-size: 14px;
   font-weight: 760;
   line-height: 1;
 }
 
-.completion-context-strip .due-chip {
+.modal-context-row .due-chip {
   margin-left: auto;
 }
 
@@ -2223,7 +2216,7 @@ button:disabled {
 }
 
 .completion-modal {
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
   min-width: 0;
   min-height: 100svh;
@@ -2255,9 +2248,9 @@ button:disabled {
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  width: 100vw;
-  max-width: 100%;
-  margin: 0 calc(var(--page-gutter) * -1) 18px;
+  width: auto;
+  max-width: none;
+  margin: 0 calc(var(--page-gutter) * -1) 16px;
   background: var(--app-bg);
   padding: calc(16px + env(safe-area-inset-top)) var(--page-gutter) 13px;
 }
@@ -2265,11 +2258,26 @@ button:disabled {
 .modal-head::after {
   content: "";
   position: absolute;
-  right: calc(var(--page-gutter) * -1);
+  right: 0;
   bottom: 0;
-  left: calc(var(--page-gutter) * -1);
+  left: 0;
   height: 1px;
   background: var(--divider);
+}
+
+.modal-head-main {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 12px;
+}
+
+.modal-context-row {
+  display: flex;
+  min-width: 0;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
 }
 
 .modal-head h2 {
