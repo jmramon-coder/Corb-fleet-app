@@ -106,6 +106,8 @@ textarea:focus-visible {
 
 .app-shell {
   min-height: 100svh;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   background: var(--app-bg);
   overflow-x: hidden;
   scrollbar-width: none;
@@ -148,6 +150,8 @@ textarea:focus-visible {
 
 .screen {
   min-height: 100svh;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   overflow-x: hidden;
   padding: 16px var(--page-gutter) 104px;
   scrollbar-width: none;
@@ -273,6 +277,8 @@ textarea:focus-visible {
   min-height: 100svh;
   display: grid;
   align-items: end;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   background:
     radial-gradient(circle at 20% -10%, color-mix(in srgb, var(--blue) 24%, transparent) 0, transparent 32%),
     var(--app-bg);
