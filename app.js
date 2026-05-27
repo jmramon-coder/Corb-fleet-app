@@ -31,6 +31,7 @@ const lucidePaths = {
   camera: `<path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4z"/><circle cx="12" cy="13" r="3"/>`,
   fileText: `<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>`,
   keyRound: `<path d="M2 18a6 6 0 1 0 10.7-3.7L22 5V2h-3l-1 1-1-1-2 2 1 1-1 1-1-1-2.3 2.3A6 6 0 0 0 2 18Z"/><path d="M7 17h.01"/>`,
+  warehouse: `<path d="M22 8.35 12 3 2 8.35"/><path d="M6 10v9"/><path d="M18 10v9"/><path d="M4 19h16"/><path d="M9 19v-6h6v6"/><path d="M9 13h6"/>`,
   moon: `<path d="M12 3a6 6 0 0 0 9 7.4A9 9 0 1 1 12 3Z"/>`,
   sun: `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`,
   shieldCheck: `<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>`
@@ -67,6 +68,7 @@ const icons = {
   camera: icon("camera", "icon"),
   fileText: icon("fileText", "icon"),
   key: icon("keyRound", "icon"),
+  garage: icon("warehouse", "icon"),
   moon: icon("moon", "icon"),
   sun: icon("sun", "icon"),
   shieldCheck: icon("shieldCheck", "icon")
@@ -1292,7 +1294,7 @@ function renderLogin() {
             <span>${escapeHtml(t("ownerLogin"))}</span>
           </button>
           <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
-            ${icons.key}
+            ${icons.garage}
             <span>${escapeHtml(t("mechanicLogin"))}</span>
           </button>
         </div>
