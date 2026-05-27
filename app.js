@@ -578,6 +578,7 @@ function defaultState() {
     activeMechanicAccessId: null,
     activeServiceId: null,
     activeVehicleId: null,
+    activeCompletionId: null,
     createMenuOpen: false,
     completionModalServiceId: null,
     serviceFilter: "all",
@@ -827,6 +828,7 @@ function normalizeState(next) {
   if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
   next.createMenuOpen = false;
   next.completionModalServiceId = null;
+  if (!next.activeCompletionId) next.activeCompletionId = null;
   if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
   if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
@@ -1570,18 +1572,36 @@ function serviceOverviewCard(service, vehicle) {
   const status = planStatus(service);
   const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
   return `
-    <article class="detail-card service-overview-card">
-      <div class="section-card-head">
-        <h3>${icons.calendar} ${escapeHtml(t("maintenanceOverview"))}</h3>
+    <article class="detail-card service-overview-card service-schedule-card">
+      <div class="schedule-card-head">
+        <div>
+          <span class="detail-label">${escapeHtml(t("serviceSchedule"))}</span>
+          <h2>${escapeHtml(scheduleLabel)}</h2>
+        </div>
         <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
       </div>
-      <div class="object-detail-grid">
-        <div><span class="detail-label">${escapeHtml(t("nextDue"))}</span><strong class="date-value">${icons.calendar}${shortDate(summary.nextDueDate)}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("nextDueKm"))}</span><strong class="date-value">${icons.gauge}${summary.nextDueKm ? formatKm(summary.nextDueKm) : t("notRecorded")}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("lastPerformed"))}</span><strong>${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("repeat"))}</span><strong>${escapeHtml(`${scheduleLabel} · ${displayRecurrenceLabel(service.recurrenceLabel)}`)}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("details"))}</span><strong>${escapeHtml(summary.dueText)}</strong></div>
+      <div class="schedule-primary-grid">
+        <div class="schedule-primary-item">
+          ${icons.calendar}
+          <div>
+            <span>${escapeHtml(t("nextDue"))}</span>
+            <strong>${shortDate(summary.nextDueDate)}</strong>
+            <small class="due-inline ${status}">${escapeHtml(relativeDue(summary.nextDueDate))}</small>
+          </div>
+        </div>
+        <div class="schedule-primary-item">
+          ${icons.gauge}
+          <div>
+            <span>${escapeHtml(summary.nextDueKm ? t("nextDueKm") : t("currentKm"))}</span>
+            <strong>${summary.nextDueKm ? formatKm(summary.nextDueKm) : vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong>
+            ${summary.nextDueKm ? `<small>${escapeHtml(relativeKmValue(summary.kmRemaining))}</small>` : ""}
+          </div>
+        </div>
+      </div>
+      <div class="schedule-meta-list">
+        <div><span>${escapeHtml(t("repeat"))}</span><strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
+        <div><span>${escapeHtml(t("lastPerformed"))}</span><strong>${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong></div>
+        <div><span>${escapeHtml(t("currentKm"))}</span><strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
       </div>
     </article>
   `;
@@ -1595,10 +1615,36 @@ function serviceCompletionHistory(service) {
         <h3>${icons.history} ${escapeHtml(t("completedServices"))}</h3>
         <span>${completions.length}</span>
       </div>
-      <div class="list-stack">
-        ${completions.length ? completions.map((completion) => completionCard(completion, { showVehicle: false })).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
+      <div class="completion-line-list">
+        ${completions.length ? completions.map(completionLineCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
       </div>
     </section>
+  `;
+}
+
+function completionLineCard(completion) {
+  const expanded = state.activeCompletionId === completion.id;
+  const attachments = completion.attachmentNames || [];
+  const hasDetails = completion.mechanicNote || completion.partsNumbers || attachments.length;
+  return `
+    <article class="completion-line-card ${expanded ? "expanded" : ""}">
+      <button class="completion-line-main" type="button" data-toggle-completion="${completion.id}" aria-expanded="${expanded}">
+        <div>
+          <strong>${shortDate(completion.completedDate)}</strong>
+          <span>${escapeHtml(completion.completedByName || completion.completedBy)} · ${formatKm(completion.completedKm)}</span>
+        </div>
+        <span class="completion-line-status">${escapeHtml(t("completed"))}</span>
+        ${icons.chevronRight}
+      </button>
+      ${expanded ? `
+        <div class="completion-line-details">
+          ${hasDetails ? "" : `<div><span>${escapeHtml(t("details"))}</span><p>${escapeHtml(t("notRecorded"))}</p></div>`}
+          ${completion.mechanicNote ? `<div><span>${escapeHtml(t("mechanicNote"))}</span><p>${escapeHtml(completion.mechanicNote)}</p></div>` : ""}
+          ${completion.partsNumbers ? `<div><span>${escapeHtml(t("partsNumbers"))}</span><p>${escapeHtml(completion.partsNumbers)}</p></div>` : ""}
+          ${attachments.length ? `<div><span>${escapeHtml(t("photosDocuments"))}</span><ul>${attachments.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ul></div>` : ""}
+        </div>
+      ` : ""}
+    </article>
   `;
 }
 
@@ -2700,6 +2746,7 @@ app.addEventListener("click", (event) => {
   const revokeAccessId = event.target.closest("[data-revoke-access]")?.dataset.revokeAccess;
   const regenerateAccessId = event.target.closest("[data-regenerate-access]")?.dataset.regenerateAccess;
   const copyAccessId = event.target.closest("[data-copy-access]")?.dataset.copyAccess;
+  const toggleCompletionId = event.target.closest("[data-toggle-completion]")?.dataset.toggleCompletion;
   const servicePreset = event.target.closest("[data-service-preset]");
   const toggleCreateMenu = event.target.closest("[data-toggle-create-menu]");
   const closeCreateMenuTrigger = event.target.closest("[data-close-create-menu-trigger]");
@@ -2731,6 +2778,11 @@ app.addEventListener("click", (event) => {
   }
   if (copyAccessId) {
     copyMechanicAccess(copyAccessId);
+    return;
+  }
+  if (toggleCompletionId) {
+    state.activeCompletionId = state.activeCompletionId === toggleCompletionId ? null : toggleCompletionId;
+    render();
     return;
   }
   if (quickNote) {

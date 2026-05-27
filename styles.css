@@ -1932,6 +1932,96 @@ button:disabled {
   margin-bottom: 12px;
 }
 
+.service-schedule-card {
+  display: grid;
+  gap: 14px;
+}
+
+.schedule-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.schedule-card-head h2 {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 780;
+  line-height: 1.08;
+}
+
+.schedule-primary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.schedule-primary-item {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--field-bg) 58%, transparent);
+}
+
+.schedule-primary-item > .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--icon-muted);
+}
+
+.schedule-primary-item span,
+.schedule-primary-item small,
+.schedule-meta-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.schedule-primary-item strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 760;
+}
+
+.schedule-primary-item .due-inline {
+  margin-top: 7px;
+}
+
+.schedule-meta-list {
+  display: grid;
+  border-top: 1px solid var(--divider);
+}
+
+.schedule-meta-list div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 38px;
+  border-bottom: 1px solid color-mix(in srgb, var(--divider) 58%, transparent);
+}
+
+.schedule-meta-list div:last-child {
+  border-bottom: 0;
+}
+
+.schedule-meta-list strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 720;
+  text-align: right;
+}
+
 .service-object-title {
   display: grid;
   gap: 5px;
@@ -1972,6 +2062,100 @@ button:disabled {
   font-size: 14px;
   line-height: 1.14;
   overflow-wrap: anywhere;
+}
+
+.completion-line-list {
+  display: grid;
+  gap: 8px;
+}
+
+.completion-line-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  overflow: hidden;
+}
+
+.completion-line-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 18px;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  color: inherit;
+  text-align: left;
+}
+
+.completion-line-main strong,
+.completion-line-main span {
+  display: block;
+}
+
+.completion-line-main strong {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.completion-line-main div > span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.completion-line-main > .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--icon-muted);
+  transition: transform 160ms ease;
+}
+
+.completion-line-card.expanded .completion-line-main > .icon {
+  transform: rotate(90deg);
+}
+
+.completion-line-status {
+  border: 1px solid color-mix(in srgb, var(--green) 24%, var(--line));
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: color-mix(in srgb, var(--green) 8%, transparent);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 720;
+  white-space: nowrap;
+}
+
+.completion-line-details {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--divider);
+  padding: 12px;
+}
+
+.completion-line-details span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.completion-line-details p {
+  margin: 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.completion-line-details ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: 13px;
 }
 
 .section-card-head,
