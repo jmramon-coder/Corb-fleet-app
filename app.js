@@ -522,8 +522,8 @@ function defaultState() {
     serviceSearch: "",
     profileTab: "account",
     truckTab: "details",
-    theme: "light",
-    language: "en",
+    theme: "dark",
+    language: "fr",
     user: {
       firstName: "Anthony",
       displayName: "Anthony.Corbin",
@@ -737,8 +737,8 @@ function loadState() {
 }
 
 function normalizeState(next) {
-  if (next.theme !== "dark" && next.theme !== "light") next.theme = "light";
-  if (next.language !== "fr" && next.language !== "en") next.language = "en";
+  if (next.theme !== "dark" && next.theme !== "light") next.theme = "dark";
+  if (next.language !== "fr" && next.language !== "en") next.language = "fr";
   next.isAuthenticated = next.isAuthenticated === true;
   if (next.authMode !== "owner" && next.authMode !== "mechanic") next.authMode = null;
   if (next.loginMode !== "owner" && next.loginMode !== "mechanic") next.loginMode = "owner";

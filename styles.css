@@ -3125,10 +3125,11 @@ button:disabled {
 .service-history-btn {
   width: 42px;
   height: 42px;
-  border-color: var(--blue);
+  border-color: rgba(255, 255, 255, 0.74);
   border-radius: 50%;
-  background: var(--blue);
-  color: #fff;
+  background: color-mix(in srgb, var(--card-raised) 56%, transparent);
+  color: var(--icon-action);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
 .vehicle-top {
@@ -3312,7 +3313,6 @@ button:disabled {
 
 .theme-dark .filter-pill.active,
 .theme-dark .nav-tab.active,
-.theme-dark .service-history-btn,
 .theme-dark .service-card-footer .success-btn,
 .theme-dark .primary-btn,
 .theme-dark .success-btn,
@@ -3320,6 +3320,20 @@ button:disabled {
   background: var(--blue);
   border-color: var(--blue);
   color: #071126;
+}
+
+.theme-dark .service-head > span:first-child,
+.theme-dark .vehicle-head-icon {
+  border-color: rgba(127, 160, 255, 0.18);
+  background: rgba(127, 160, 255, 0.08);
+  box-shadow: none;
+}
+
+.theme-dark .service-history-btn {
+  border-color: rgba(127, 160, 255, 0.16);
+  background: rgba(127, 160, 255, 0.08);
+  color: var(--icon-action);
+  box-shadow: none;
 }
 
 .theme-dark .bottom-nav,
