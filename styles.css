@@ -318,6 +318,7 @@ textarea:focus-visible {
 .login-kicker {
   display: inline-flex;
   width: fit-content;
+  max-width: 100%;
   align-items: center;
   gap: 7px;
   border: 1px solid var(--line);
@@ -327,6 +328,7 @@ textarea:focus-visible {
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .login-kicker .icon {
@@ -386,6 +388,11 @@ textarea:focus-visible {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.auth-switch.login-segment button span {
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .auth-switch button .icon,
@@ -3496,6 +3503,26 @@ button:disabled {
 .theme-dark .login-hero h1,
 .theme-dark .login-hero p {
   color: #f6f7f8;
+}
+
+@media (max-width: 360px) {
+  .auth-switch.login-segment {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .auth-switch.login-segment button {
+    min-height: 40px;
+    gap: 5px;
+    padding-inline: 6px;
+    font-size: 12px;
+  }
+
+  .auth-switch.login-segment button .icon {
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
+  }
 }
 
 .primary-btn {
