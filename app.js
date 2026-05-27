@@ -577,6 +577,9 @@ function defaultState() {
     activeServiceId: null,
     activeVehicleId: null,
     activeCompletionId: null,
+    returnRoute: null,
+    returnVehicleId: null,
+    returnTruckTab: null,
     createMenuOpen: false,
     completionModalServiceId: null,
     serviceFilter: "all",
@@ -824,6 +827,11 @@ function normalizeState(next) {
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
   if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || "fleet-1";
   if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
+  if (next.returnRoute !== "truckDetails") {
+    next.returnRoute = null;
+    next.returnVehicleId = null;
+    next.returnTruckTab = null;
+  }
   next.createMenuOpen = false;
   next.completionModalServiceId = null;
   if (!next.activeCompletionId) next.activeCompletionId = null;
@@ -1189,11 +1197,53 @@ function navigate(route, options = {}) {
   state.previousRoute = state.route;
   state.route = route;
   state.createMenuOpen = false;
+  if (!Object.prototype.hasOwnProperty.call(options, "returnRoute")) {
+    state.returnRoute = null;
+    state.returnVehicleId = null;
+    state.returnTruckTab = null;
+  }
   Object.assign(state, options);
   setChromeHidden(false);
   lastScrollY = 0;
   window.scrollTo(0, 0);
   render();
+}
+
+function truckReturnContext(tab = state.truckTab || "schedule") {
+  if (state.route !== "truckDetails" || !state.activeVehicleId) return {};
+  return {
+    returnRoute: "truckDetails",
+    returnVehicleId: state.activeVehicleId,
+    returnTruckTab: tab
+  };
+}
+
+function hasTruckReturnContext() {
+  return state.returnRoute === "truckDetails" && Boolean(state.returnVehicleId);
+}
+
+function backButtonAttributes(defaultRoute) {
+  return hasTruckReturnContext() ? `data-context-back="${escapeAttr(defaultRoute)}"` : `data-route="${escapeAttr(defaultRoute)}"`;
+}
+
+function backLabel(defaultLabel) {
+  if (!hasTruckReturnContext()) return defaultLabel;
+  const vehicle = vehicleById(state.returnVehicleId);
+  return vehicle ? displayVehicleTitle(vehicle) : t("back");
+}
+
+function navigateBack(defaultRoute = "services") {
+  if (hasTruckReturnContext()) {
+    navigate("truckDetails", {
+      activeVehicleId: state.returnVehicleId,
+      truckTab: state.returnTruckTab || "schedule",
+      returnRoute: null,
+      returnVehicleId: null,
+      returnTruckTab: null
+    });
+    return;
+  }
+  navigate(defaultRoute);
 }
 
 function applyInitialUrlRoute() {
@@ -1795,12 +1845,13 @@ function servicePresetBar() {
 function renderAddService() {
   if (!isOwner()) return renderServices();
   const vehicles = vehiclesForActiveFleet();
+  const backAttrs = backButtonAttributes("services");
   return `
     <div class="screen with-actions">
       ${header()}
       <div class="back-row">
-        <button class="icon-btn" type="button" data-route="services" aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
-        <div class="back-title">${escapeHtml(t("addService"))}</div>
+        <button class="icon-btn" type="button" ${backAttrs} aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
+        <div class="back-title">${escapeHtml(backLabel(t("addService")))}</div>
       </div>
       <div class="form-page-head">
         <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
@@ -1826,7 +1877,7 @@ function renderAddService() {
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
       <div class="action-bar">
         <button class="success-btn wide" type="submit" form="addServiceForm" data-submit-add-service ${vehicles.length ? "" : "disabled"}>${escapeHtml(t("addService"))} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
+        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
@@ -1836,14 +1887,16 @@ function renderServiceDetails() {
   const service = maintenancePlanById(state.activeServiceId) || state.maintenancePlans.find((plan) => plan.fleetId === state.activeFleetId && plan.status !== "archived");
   if (!service) return renderServices();
   const vehicle = vehicleById(service.vehicleId);
+  const backAttrs = backButtonAttributes("services");
+  const backText = backLabel(t("services"));
 
   return `
     <div class="screen with-actions">
       ${header()}
       <section class="truck-overview-header service-overview-header">
-        <button class="detail-back-btn" type="button" data-route="services" aria-label="${escapeAttr(t("services"))}">
+        <button class="detail-back-btn" type="button" ${backAttrs} aria-label="${escapeAttr(backText)}">
           ${icons.back}
-          <span>${escapeHtml(t("services"))}</span>
+          <span>${escapeHtml(backText)}</span>
         </button>
         <div class="truck-title-row service-title-row">
           <div class="truck-heading">
@@ -1856,7 +1909,7 @@ function renderServiceDetails() {
       ${serviceCompletionHistory(service)}
       <div class="action-bar">
         <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("logService"))} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
+        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
@@ -2339,7 +2392,12 @@ function addMaintenancePlanFromForm(form) {
     status: "active"
   });
   state.maintenancePlans.unshift(service);
-  navigate("serviceDetails", { activeServiceId: service.id });
+  navigate("serviceDetails", {
+    activeServiceId: service.id,
+    returnRoute: state.returnRoute,
+    returnVehicleId: state.returnVehicleId,
+    returnTruckTab: state.returnTruckTab
+  });
 }
 
 function updateFleetName(form) {
@@ -2764,6 +2822,7 @@ window.addEventListener(
 
 app.addEventListener("click", (event) => {
   const route = event.target.closest("[data-route]")?.dataset.route;
+  const contextBack = event.target.closest("[data-context-back]")?.dataset.contextBack;
   const authMode = event.target.closest("[data-auth-mode]")?.dataset.authMode;
   const serviceId = event.target.closest("[data-open-service]")?.dataset.openService;
   const vehicleId = event.target.closest("[data-open-vehicle]")?.dataset.openVehicle;
@@ -2795,6 +2854,10 @@ app.addEventListener("click", (event) => {
     state.loginMode = authMode;
     state.loginError = "";
     render();
+    return;
+  }
+  if (contextBack) {
+    navigateBack(contextBack);
     return;
   }
   if (logoutTrigger) {
@@ -2866,7 +2929,10 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (serviceId) {
-    navigate("serviceDetails", { activeServiceId: serviceId });
+    navigate("serviceDetails", {
+      activeServiceId: serviceId,
+      ...truckReturnContext("schedule")
+    });
     return;
   }
   if (route) {
@@ -2875,7 +2941,7 @@ app.addEventListener("click", (event) => {
       return;
     }
     state.createMenuOpen = false;
-    navigate(route);
+    navigate(route, route === "addService" ? truckReturnContext("schedule") : {});
     return;
   }
   if (switchFleetId) {
