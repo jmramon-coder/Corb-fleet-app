@@ -2925,7 +2925,7 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (vehicleId) {
-    navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "details" });
+    navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "schedule" });
     return;
   }
   if (serviceId) {
