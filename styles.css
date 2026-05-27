@@ -1158,7 +1158,7 @@ button:disabled {
   gap: 14px;
   margin: 0;
   border-top: 1px solid color-mix(in srgb, var(--divider) 58%, transparent);
-  padding: 13px 18px 12px;
+  padding: 13px 18px 12px 52px;
 }
 
 .date-block {
@@ -3440,12 +3440,13 @@ button:disabled {
 .vehicle-stats {
   grid-template-columns: 1fr;
   gap: 8px;
+  margin-left: 54px;
 }
 
 .vehicle-health-strip {
   display: flex;
   gap: 5px;
-  margin-left: 38px;
+  margin-left: 54px;
 }
 
 .vehicle-health-strip span {
