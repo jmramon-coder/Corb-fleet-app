@@ -281,16 +281,25 @@ textarea:focus-visible {
 
 .login-panel {
   display: grid;
-  gap: 22px;
+  gap: 20px;
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
+}
+
+.login-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
 }
 
 .login-brand {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .login-hero {
@@ -413,38 +422,54 @@ textarea:focus-visible {
 }
 
 .login-preferences {
-  display: grid;
-  grid-template-columns: 0.78fr 1fr;
-  gap: 10px;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
   align-items: center;
 }
 
 .compact-segment {
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  padding: 4px;
+  gap: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 46%, transparent);
+  padding: 2px;
 }
 
 .compact-segment button {
-  min-height: 34px;
-  border-radius: 12px;
-  padding: 0 8px;
-  font-size: 12px;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 999px;
+  padding: 0 5px;
+  font-size: 9px;
   font-weight: 760;
 }
 
 .compact-segment button .icon {
-  width: 16px;
-  height: 16px;
-  flex-basis: 16px;
+  width: 13px;
+  height: 13px;
+  flex-basis: 13px;
 }
 
 .icon-segment button {
   padding: 0;
 }
 
+.icon-segment {
+  width: 50px;
+}
+
+.language-segment {
+  width: 54px;
+}
+
 .language-segment button {
   letter-spacing: 0.02em;
+}
+
+.compact-segment button.active {
+  background: color-mix(in srgb, var(--blue) 16%, transparent);
+  color: var(--blue);
+  box-shadow: none;
 }
 
 .screen-heading {
@@ -3300,11 +3325,11 @@ button:disabled {
 }
 
 .compact-segment {
-  border-radius: 16px;
+  border-radius: 999px;
 }
 
 .compact-segment button {
-  border-radius: 12px;
+  border-radius: 999px;
 }
 
 .theme-dark .login-segment {
@@ -3316,6 +3341,11 @@ button:disabled {
 .theme-dark .login-segment button.active {
   background: var(--blue);
   color: #fff;
+}
+
+.theme-dark .compact-segment button.active {
+  background: rgba(45, 104, 255, 0.18);
+  color: #8eabff;
 }
 
 .primary-btn {

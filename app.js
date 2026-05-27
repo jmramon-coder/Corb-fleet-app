@@ -1279,9 +1279,25 @@ function renderLogin() {
   return `
     <main class="login-screen">
       <section class="login-panel">
-        <div class="login-brand">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+        <div class="login-topbar">
+          <div class="login-brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+          </div>
+          <div class="login-preferences">
+            <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
+              <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark" aria-label="${escapeAttr(t("darkMode"))}">
+                ${icons.moon}
+              </button>
+              <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light" aria-label="${escapeAttr(t("lightMode"))}">
+                ${icons.sun}
+              </button>
+            </div>
+            <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
+              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
+              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
+            </div>
+          </div>
         </div>
         <div class="login-hero">
           <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
@@ -1318,20 +1334,6 @@ function renderLogin() {
           ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
           <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
         </form>
-        <div class="login-preferences">
-          <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
-            <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark" aria-label="${escapeAttr(t("darkMode"))}">
-              ${icons.moon}
-            </button>
-            <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light" aria-label="${escapeAttr(t("lightMode"))}">
-              ${icons.sun}
-            </button>
-          </div>
-          <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
-            <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
-            <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
-          </div>
-        </div>
       </section>
     </main>
   `;
