@@ -47,7 +47,7 @@ html {
 }
 
 html[data-theme="dark"] {
-  background: #090a0c;
+  background: #17191b;
 }
 
 body {
@@ -76,7 +76,7 @@ body::-webkit-scrollbar,
 
 html[data-theme="dark"] body,
 html[data-theme="dark"] #app {
-  background: #090a0c;
+  background: #17191b;
 }
 
 button,
@@ -2785,8 +2785,14 @@ button:disabled {
 /* Automotive cockpit redesign */
 .app-shell {
   background:
-    radial-gradient(circle at 50% -12%, rgba(255, 255, 255, 0.72) 0, transparent 36%),
-    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 88%, #fff) 0%, var(--app-bg) 46%),
+    radial-gradient(circle at 50% 96px, rgba(255, 255, 255, 0.52) 0, transparent 34%),
+    linear-gradient(
+      180deg,
+      var(--app-bg) 0,
+      var(--app-bg) 82px,
+      color-mix(in srgb, var(--app-bg) 88%, #fff) 156px,
+      var(--app-bg) 48%
+    ),
     var(--app-bg);
 }
 
@@ -2794,8 +2800,14 @@ button:disabled {
 .theme-dark .screen,
 .theme-dark .completion-modal {
   background:
-    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0, transparent 34%),
-    linear-gradient(180deg, #1c1f22 0%, var(--app-bg) 44%),
+    radial-gradient(circle at 50% 96px, rgba(255, 255, 255, 0.055) 0, transparent 34%),
+    linear-gradient(
+      180deg,
+      var(--app-bg) 0,
+      var(--app-bg) 82px,
+      #1c1f22 156px,
+      var(--app-bg) 48%
+    ),
     var(--app-bg);
 }
 

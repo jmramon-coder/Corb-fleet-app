@@ -2276,6 +2276,9 @@ function render() {
   saveState();
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.lang = state.language === "fr" ? "fr-CA" : "en";
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", state.theme === "dark" ? "#17191b" : "#d8dde0");
   document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
   app.innerHTML = `
