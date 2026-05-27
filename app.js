@@ -137,7 +137,12 @@ const translations = {
     service: "Service",
     details: "Details",
     schedule: "Schedule",
+    maintenancePlanTab: "Maintenance plan",
     history: "History",
+    addScheduledService: "Add maintenance",
+    doNow: "Do now",
+    logService: "Log service",
+    logServiceTitle: "Log service work",
     editTruck: "Edit truck",
     deleteTruck: "Delete truck",
     technicalDetails: "Technical details",
@@ -334,7 +339,12 @@ const translations = {
     service: "Service",
     details: "Détails",
     schedule: "Horaire",
+    maintenancePlanTab: "Plan d'entretien",
     history: "Historique",
+    addScheduledService: "Ajouter un entretien",
+    doNow: "Faire maintenant",
+    logService: "Consigner",
+    logServiceTitle: "Consigner l'intervention",
     editTruck: "Modifier le camion",
     deleteTruck: "Supprimer le camion",
     technicalDetails: "Détails techniques",
@@ -1410,8 +1420,9 @@ function serviceCard(service) {
   const summary = dueSummaryForPlan(service);
   const status = planStatus(service);
   const dueChipLabel = status === "ok" ? t("ok") : relativeDue(summary.nextDueDate);
+  const actionLabel = status === "ok" ? t("logService") : t("doNow");
   return `
-    <article class="service-card click-card status-${status}" data-complete-service="${service.id}">
+    <article class="service-card click-card status-${status}" data-open-service="${service.id}">
       <div class="service-card-body">
         <div class="service-head">
           <span>${icons.wrench}</span>
@@ -1439,7 +1450,7 @@ function serviceCard(service) {
         </div>
         <div class="service-card-footer">
           <button class="success-btn wide" type="button" data-complete-service="${service.id}">
-            ${escapeHtml(t("completeNow"))}
+            ${escapeHtml(actionLabel)}
             ${icons.check}
           </button>
         </div>
@@ -1667,7 +1678,7 @@ function renderAddService() {
               label: t("selectTruck"),
               name: "vehicleId",
               required: true,
-              options: vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}">${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")
+              options: vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}" ${vehicle.id === state.activeVehicleId ? "selected" : ""}>${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")
             })}
             ${formField({ label: t("serviceTitle"), name: "title", value: t("oilChange"), required: true })}
             <div class="form-grid two">
@@ -1709,7 +1720,7 @@ function renderServiceDetails() {
       ${serviceOverviewCard(service, vehicle)}
       ${serviceCompletionHistory(service)}
       <div class="action-bar">
-        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button>
+        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("logService"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
@@ -1750,7 +1761,10 @@ function renderTruckDetails() {
       ${state.truckTab === "schedule" ? truckScheduleSummary(counts) : ""}
       ${truckTabContent(vehicle)}
       <div class="action-bar single-action">
-        <button class="primary-btn wide" type="button" data-route="services">${escapeHtml(t("service"))} ${icons.wrench}</button>
+        <button class="primary-btn wide" type="button" data-route="${state.truckTab === "schedule" ? "addService" : "services"}">
+          ${escapeHtml(state.truckTab === "schedule" ? t("addScheduledService") : t("service"))}
+          ${state.truckTab === "schedule" ? icons.plus : icons.wrench}
+        </button>
       </div>
     </div>
   `;
@@ -1779,7 +1793,7 @@ function truckTabs() {
   return appTabs({
     items: [
       { key: "details", label: t("details") },
-      { key: "schedule", label: t("schedule") },
+      { key: "schedule", label: t("maintenancePlanTab") },
       { key: "history", label: t("history") }
     ],
     active: state.truckTab,
@@ -1958,7 +1972,7 @@ function completionModal() {
         <div class="modal-head">
           <div class="modal-head-main">
             <div>
-              <h2 id="completion-modal-title">${escapeHtml(t("completeNow"))}</h2>
+              <h2 id="completion-modal-title">${escapeHtml(t("logServiceTitle"))}</h2>
               <p>${escapeHtml(displayServiceTitle(service))} · ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
             </div>
             <div class="modal-context-row">
@@ -2007,7 +2021,7 @@ function completionModal() {
         </form>
         <div class="modal-actions">
           <button class="outline-btn wide" type="button" data-close-modal-trigger>${escapeHtml(t("cancel"))}</button>
-          <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("confirmCompletion"))} ${icons.check}</button>
+          <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("logService"))} ${icons.check}</button>
         </div>
       </section>
     </div>
@@ -2493,17 +2507,17 @@ app.addEventListener("click", (event) => {
     render();
     return;
   }
+  if (completeId) {
+    state.completionModalServiceId = completeId;
+    render();
+    return;
+  }
   if (vehicleId) {
     navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: "details" });
     return;
   }
   if (serviceId) {
     navigate("serviceDetails", { activeServiceId: serviceId });
-    return;
-  }
-  if (completeId) {
-    state.completionModalServiceId = completeId;
-    render();
     return;
   }
   if (route) {
