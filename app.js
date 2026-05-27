@@ -67,6 +67,7 @@ const icons = {
   video: icon("video", "icon"),
   camera: icon("camera", "icon"),
   fileText: icon("fileText", "icon"),
+  clipboard: icon("clipboardList", "icon"),
   key: icon("keyRound", "icon"),
   garage: icon("warehouse", "icon"),
   moon: icon("moon", "icon"),
@@ -1561,7 +1562,7 @@ function renderLanding() {
   ];
   const features = [
     [icons.calendar, t("landingFeatureSchedules"), t("landingFeatureSchedulesCopy")],
-    [icons.key, t("landingFeatureMechanics"), t("landingFeatureMechanicsCopy")],
+    [icons.garage, t("landingFeatureMechanics"), t("landingFeatureMechanicsCopy")],
     [icons.camera, t("landingFeatureEvidence"), t("landingFeatureEvidenceCopy")]
   ];
   const pricing = [
@@ -2237,7 +2238,7 @@ function renderProfile() {
             <span class="avatar mechanic-avatar" aria-hidden="true">${icons.garage}</span>
             <div class="account-main">
               <div class="account-name">${escapeHtml(mechanicDisplayName())}</div>
-              <div class="account-email">${icons.key}${escapeHtml(t("signedInWithCode"))}</div>
+              <div class="account-email">${icons.garage}${escapeHtml(t("signedInWithCode"))}</div>
             </div>
           </div>
           <div class="profile-grid">
@@ -2348,7 +2349,7 @@ function renderMechanicAccessPanel() {
     <section class="profile-card access-card">
       <div class="section-title-row access-title-row">
         <div>
-          <h3>${icons.key} ${escapeHtml(t("mechanicAccess"))}</h3>
+          <h3>${icons.garage} ${escapeHtml(t("mechanicAccess"))}</h3>
           <p>${escapeHtml(t("mechanicAccessCopy"))}</p>
         </div>
       </div>
@@ -2364,7 +2365,7 @@ function renderMechanicAccessPanel() {
               <span>${escapeHtml(access.active ? t("active") : t("revoked"))}</span>
             </div>
             <div class="access-actions">
-              <button class="plain-icon-btn" type="button" data-copy-access="${access.id}" aria-label="${escapeAttr(t("copy"))}">${icons.key}</button>
+              <button class="plain-icon-btn" type="button" data-copy-access="${access.id}" aria-label="${escapeAttr(t("copy"))}">${icons.clipboard}</button>
               <button class="plain-icon-btn" type="button" data-regenerate-access="${access.id}" aria-label="${escapeAttr(t("regenerate"))}">${icons.history}</button>
               <button class="plain-icon-btn danger-icon" type="button" data-revoke-access="${access.id}" aria-label="${escapeAttr(t("revoke"))}" ${access.active ? "" : "disabled"}>${icons.trash}</button>
             </div>
