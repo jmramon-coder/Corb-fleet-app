@@ -140,7 +140,6 @@ const translations = {
     maintenancePlanTab: "Maintenance plan",
     history: "History",
     addScheduledService: "Add maintenance",
-    doNow: "Do now",
     logService: "Log service",
     logServiceTitle: "Log service work",
     editTruck: "Edit truck",
@@ -356,7 +355,6 @@ const translations = {
     maintenancePlanTab: "Plan d'entretien",
     history: "Historique",
     addScheduledService: "Ajouter un entretien",
-    doNow: "Faire maintenant",
     logService: "Consigner",
     logServiceTitle: "Consigner l'intervention",
     editTruck: "Modifier le camion",
@@ -1508,7 +1506,6 @@ function serviceCard(service) {
   const summary = dueSummaryForPlan(service);
   const status = planStatus(service);
   const dueChipLabel = status === "ok" ? t("ok") : relativeDue(summary.nextDueDate);
-  const actionLabel = status === "ok" ? t("logService") : t("doNow");
   return `
     <article class="service-card click-card status-${status}" data-open-service="${service.id}">
       <div class="service-card-body">
@@ -1538,7 +1535,7 @@ function serviceCard(service) {
         </div>
         <div class="service-card-footer">
           <button class="success-btn wide" type="button" data-complete-service="${service.id}">
-            ${escapeHtml(actionLabel)}
+            ${escapeHtml(t("logService"))}
             ${icons.check}
           </button>
         </div>
