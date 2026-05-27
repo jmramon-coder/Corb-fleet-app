@@ -1325,14 +1325,16 @@ function renderServices() {
             { iconMarkup: icons.gauge, label: t("garage"), value: t("vehiclesOnline", { count: vehicles.length }) }
           ]
         })}
-        <div>
-          <div class="search-wrap">
-            <label class="search-box">
-              ${icons.search}
-              <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="${escapeAttr(t("searchServices"))}" data-service-search />
-            </label>
+        <div class="services-list-zone">
+          <div class="services-controls">
+            <div class="search-wrap">
+              <label class="search-box">
+                ${icons.search}
+                <input value="${escapeAttr(state.serviceSearch)}" placeholder="" aria-label="${escapeAttr(t("searchServices"))}" data-service-search />
+              </label>
+            </div>
+            ${filterRow()}
           </div>
-          ${filterRow()}
           <div class="list-stack">
             ${services.length ? services.map(serviceCard).join("") : `<div class="ghost-note">${escapeHtml(t("noServicesMatch"))}</div>`}
           </div>
