@@ -244,6 +244,40 @@ async function run() {
     assert(capture.preview.includes("e2e-photo.jpg"), "Capture preview did not show selected file");
     assert(capture.voiceBars === 5, "Voice button waveform is missing");
 
+    const voice = await evaluate(client, `(() => {
+      class FakeSpeechRecognition {
+        constructor() {
+          this.listeners = {};
+          window.__fakeRecognition = this;
+        }
+        addEventListener(type, listener) {
+          this.listeners[type] = listener;
+        }
+        start() {
+          this.started = true;
+        }
+        stop() {
+          this.listeners.result?.({
+            results: [[{ transcript: 'Voice captured note' }]],
+            resultIndex: 0
+          });
+          this.listeners.end?.();
+        }
+      }
+      window.SpeechRecognition = FakeSpeechRecognition;
+      window.webkitSpeechRecognition = FakeSpeechRecognition;
+      const button = document.querySelector('[data-start-voice]');
+      button.click();
+      const listening = button.classList.contains('listening');
+      button.click();
+      return {
+        listening,
+        note: document.querySelector('textarea[name="mechanicNote"]').value
+      };
+    })()`);
+    assert(voice.listening, "Voice button did not enter listening state");
+    assert(voice.note.includes("Voice captured note"), "Voice transcript was not inserted on stop");
+
     await evaluate(client, `document.querySelector('textarea[name="mechanicNote"]').value='E2E mechanic note'; document.querySelector('[data-submit-completion]')?.click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
     const completion = await evaluate(client, `(() => {

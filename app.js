@@ -2515,27 +2515,33 @@ function startVoiceNote(serviceId) {
 
   if (!textarea || !Recognition) {
     resetVoiceButton(button, status, t("voiceUseKeyboard"));
+    textarea?.focus();
     return;
   }
 
   const recognition = new Recognition();
   recognition.lang = state.language === "fr" ? "fr-CA" : "en-US";
   recognition.interimResults = true;
-  recognition.continuous = false;
-  activeVoiceRecognition = { recognition, serviceId, manualStop: false, finalTranscript: "", hadError: false };
+  recognition.continuous = true;
+  activeVoiceRecognition = { recognition, serviceId, manualStop: false, latestTranscript: "", finalTranscript: "", hadError: false };
 
   if (status) status.textContent = t("voiceListening");
   button?.classList.add("listening");
   button?.setAttribute("aria-pressed", "true");
 
   recognition.addEventListener("result", (event) => {
+    const latestTranscript = Array.from(event.results)
+      .map((result) => result[0]?.transcript || "")
+      .join(" ")
+      .trim();
     const finalTranscript = Array.from(event.results)
       .filter((result) => result.isFinal)
       .map((result) => result[0]?.transcript || "")
       .join(" ")
       .trim();
-    if (finalTranscript && activeVoiceRecognition?.serviceId === serviceId) {
-      activeVoiceRecognition.finalTranscript = finalTranscript;
+    if (activeVoiceRecognition?.serviceId === serviceId) {
+      if (latestTranscript) activeVoiceRecognition.latestTranscript = latestTranscript;
+      if (finalTranscript) activeVoiceRecognition.finalTranscript = finalTranscript;
     }
   });
 
@@ -2552,9 +2558,10 @@ function startVoiceNote(serviceId) {
       return;
     }
 
-    const { finalTranscript, hadError, manualStop } = activeVoiceRecognition;
-    if (finalTranscript) {
-      appendMechanicNote(finalTranscript);
+    const { finalTranscript, latestTranscript, hadError, manualStop } = activeVoiceRecognition;
+    const transcript = finalTranscript || latestTranscript;
+    if (transcript) {
+      appendMechanicNote(transcript);
       resetVoiceButton(button, status, t("voiceSaved"));
       button?.classList.add("saved");
       window.setTimeout(() => {
