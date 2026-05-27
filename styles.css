@@ -1930,39 +1930,33 @@ button:disabled {
   padding-bottom: 76px;
 }
 
-.completion-summary-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
+.completion-context-strip {
+  display: flex;
+  min-width: 0;
+  min-height: 38px;
   align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--card) 86%, var(--app-bg));
-  margin-bottom: 12px;
-  padding: 14px;
+  gap: 8px;
+  border-bottom: 1px solid var(--divider);
+  margin: -6px 0 14px;
+  padding: 0 0 12px;
 }
 
-.completion-summary-card .due-chip {
-  grid-row: 1 / span 2;
-  grid-column: 2;
-  align-self: center;
-}
-
-.completion-summary-card > div > span {
-  display: block;
+.completion-context-strip > span:first-child {
   color: var(--muted-blue);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
-  line-height: 1.2;
+  line-height: 1;
 }
 
-.completion-summary-card strong {
-  display: block;
-  margin-top: 4px;
+.completion-context-strip strong {
   color: var(--text-blue);
-  font-size: 13px;
-  line-height: 1.15;
-  overflow-wrap: anywhere;
+  font-size: 14px;
+  font-weight: 760;
+  line-height: 1;
+}
+
+.completion-context-strip .due-chip {
+  margin-left: auto;
 }
 
 .form-section-row {
@@ -3264,10 +3258,10 @@ button:disabled {
 }
 
 .outline-btn {
-  border-color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(16, 17, 19, 0.08);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
-  color: var(--text-blue);
+  background: color-mix(in srgb, var(--card-raised) 46%, transparent);
+  color: var(--muted-blue);
 }
 
 .theme-dark .cockpit-hero,
@@ -3285,7 +3279,6 @@ button:disabled {
 .theme-dark .cockpit-meta span,
 .theme-dark .auth-switch,
 .theme-dark .login-form,
-.theme-dark .completion-summary-card,
 .theme-dark .capture-card,
 .theme-dark .icon-btn,
 .theme-dark .plain-icon-btn {

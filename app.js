@@ -1931,17 +1931,11 @@ function completionModal() {
           </div>
           <button class="icon-btn" type="button" data-close-modal-trigger aria-label="${escapeAttr(t("cancel"))}">${icons.x}</button>
         </div>
-        <article class="completion-summary-card">
-          <div>
-            <span>${escapeHtml(t("workSnapshot"))}</span>
-            <strong>${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</strong>
-          </div>
-          <div>
-            <span>${escapeHtml(t("nextDue"))}</span>
-            <strong>${shortDate(summary.nextDueDate)}</strong>
-          </div>
+        <div class="completion-context-strip">
+          <span>${escapeHtml(t("nextDue"))}</span>
+          <strong>${shortDate(summary.nextDueDate)}</strong>
           <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
-        </article>
+        </div>
         <form class="completion-form" data-completion-form="${service.id}">
           <section class="form-card mechanic-work-card">
             <div class="form-section-row">
