@@ -308,6 +308,14 @@ textarea:focus-visible {
   min-width: 0;
 }
 
+.brand-link {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+}
+
 .login-hero {
   display: grid;
   gap: 10px;
@@ -4049,18 +4057,20 @@ button:disabled {
 
 .landing-login-button {
   display: inline-flex;
-  min-height: 31px;
+  width: 34px;
+  height: 34px;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: var(--blue);
   color: #fff;
-  padding: 0 13px;
-  font-size: 12px;
-  font-weight: 780;
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
+  padding: 0;
+}
+
+.landing-login-button .icon {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.9;
 }
 
 .landing-hero {
@@ -4123,19 +4133,20 @@ button:disabled {
   display: grid;
   gap: 12px;
   width: min(100%, 330px);
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 34px;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: 30px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.18)),
-    color-mix(in srgb, var(--card) 86%, var(--app-bg));
-  padding: 18px;
-  box-shadow: var(--shadow-strong);
+    linear-gradient(145deg, color-mix(in srgb, var(--card-raised) 74%, transparent), transparent 44%),
+    color-mix(in srgb, var(--app-bg) 82%, var(--card));
+  padding: 16px;
+  box-shadow: none;
 }
 
 .phone-preview-top {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 2px 2px 4px;
 }
 
 .phone-preview-top .brand-mark {
@@ -4167,12 +4178,26 @@ button:disabled {
 }
 
 .phone-preview-hero {
-  border: 1px solid var(--line);
-  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: 22px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.55), transparent),
-    color-mix(in srgb, var(--card-raised) 40%, transparent);
-  padding: 18px;
+    radial-gradient(circle at 115% 120%, color-mix(in srgb, var(--blue) 12%, transparent) 0 28%, transparent 29%),
+    color-mix(in srgb, var(--card-raised) 72%, transparent);
+  padding: 17px;
+}
+
+.phone-preview-hero-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.phone-preview-hero-head .tab-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--blue);
+  stroke-width: 1.8;
 }
 
 .phone-preview-hero strong {
@@ -4192,9 +4217,9 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--card-raised) 42%, transparent);
+  background: color-mix(in srgb, var(--card-raised) 76%, transparent);
   color: var(--text-blue);
   padding: 8px 10px;
   font-size: 12px;
@@ -4216,36 +4241,82 @@ button:disabled {
 .phone-preview-card {
   display: grid;
   gap: 12px;
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--card-raised) 48%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--card-raised) 82%, transparent);
   padding: 14px;
 }
 
-.phone-preview-card div {
+.phone-preview-card-head {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.phone-preview-card .card-icon {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 7px;
+.phone-preview-card-head > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+
+.phone-preview-card-head > .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--muted-blue);
+}
+
+.phone-preview-service-icon {
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--blue) 8%, var(--card-raised));
   color: var(--blue);
 }
 
-.phone-preview-card p {
-  display: grid;
-  gap: 4px;
-  margin: 0;
+.phone-preview-card .card-icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
 }
 
-.phone-preview-card p strong {
+.phone-preview-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.phone-preview-meta p {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 7px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--line) 64%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--app-bg) 42%, transparent);
+  margin: 0;
+  padding: 10px;
+}
+
+.phone-preview-meta p .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--muted-blue);
+  stroke-width: 1.8;
+}
+
+.phone-preview-meta p span,
+.phone-preview-meta p strong {
+  grid-column: 2;
+}
+
+.phone-preview-meta p strong {
   color: var(--text-blue);
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1.12;
 }
 
 .phone-preview-card button {
@@ -4390,6 +4461,20 @@ button:disabled {
   box-shadow: none;
 }
 
+.auth-screen {
+  align-items: center;
+}
+
+.auth-page-panel {
+  width: min(100%, 440px);
+  max-width: 440px;
+}
+
+.auth-topbar {
+  position: relative;
+  top: auto;
+}
+
 .theme-dark .login-topbar,
 .theme-dark .landing-stats div,
 .theme-dark .landing-section,
@@ -4403,6 +4488,25 @@ button:disabled {
   border-color: rgba(255, 255, 255, 0.1);
   background-color: color-mix(in srgb, var(--card) 88%, transparent);
   box-shadow: none;
+}
+
+.theme-dark .phone-preview {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), transparent 42%),
+    #191b1e;
+}
+
+.theme-dark .phone-preview-hero,
+.theme-dark .phone-preview-card,
+.theme-dark .phone-preview-filter span,
+.theme-dark .phone-preview-meta p {
+  background-color: #202327;
+}
+
+.theme-dark .phone-preview-service-icon {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #24272c;
+  color: #9aa8bf;
 }
 
 .theme-dark .landing-pricing-grid article.featured {

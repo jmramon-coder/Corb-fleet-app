@@ -644,7 +644,7 @@ function uid(prefix) {
 
 function defaultState() {
   return {
-    route: "login",
+    route: "landing",
     previousRoute: "services",
     isAuthenticated: false,
     authMode: null,
@@ -1328,6 +1328,7 @@ function applyInitialUrlRoute() {
   const params = new URLSearchParams(window.location.search);
   const route = params.get("route");
   const allowedRoutes = new Set([
+    "landing",
     "login",
     "services",
     "vehicles",
@@ -1507,9 +1508,50 @@ function cockpitHero({ title, subtitle, eyebrow = t("commandCenter"), meta = [] 
   `;
 }
 
-function renderLogin() {
+function loginAuthPanel() {
   const ownerMode = state.loginMode !== "mechanic";
-  const darkMode = state.theme === "dark";
+  return `
+    <section class="login-auth-panel" id="login-panel">
+      <div class="login-hero">
+        <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
+        <h2>${escapeHtml(t("loginHeadline"))}</h2>
+        <p>${escapeHtml(t("loginCopy"))}</p>
+      </div>
+      <div class="auth-switch login-segment" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
+        <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">
+          ${icons.profile}
+          <span>${escapeHtml(t("ownerLogin"))}</span>
+        </button>
+        <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
+          ${icons.garage}
+          <span>${escapeHtml(t("mechanicLogin"))}</span>
+        </button>
+      </div>
+      <form class="login-form" data-login-form>
+        ${ownerMode ? `
+          <div class="form-field">
+            <label for="loginEmail">${escapeHtml(t("email"))}</label>
+            <input id="loginEmail" name="email" type="email" autocomplete="email" value="${escapeAttr(state.user.email)}" required />
+          </div>
+          <div class="form-field">
+            <label for="loginPassword">${escapeHtml(t("password"))}</label>
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" value="demo" required />
+          </div>
+        ` : `
+          <div class="form-field">
+            <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
+            <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
+            <small>${escapeHtml(t("accessCodeHint"))}</small>
+          </div>
+        `}
+        ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
+        <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
+      </form>
+    </section>
+  `;
+}
+
+function renderLanding() {
   const language = state.language === "fr" ? "fr" : "en";
   const stats = [
     [t("landingActiveFleet"), "CORB"],
@@ -1531,28 +1573,22 @@ function renderLogin() {
     <main class="login-screen">
       <section class="login-panel">
         <div class="login-topbar">
-          <div class="login-brand">
+          <button class="login-brand brand-link" type="button" data-route="landing" aria-label="CORB">
             <span class="brand-mark" aria-hidden="true"></span>
             <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
-          </div>
+          </button>
           <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
             <a href="#product">${escapeHtml(t("landingNavProduct"))}</a>
             <a href="#pricing">${escapeHtml(t("landingNavPricing"))}</a>
           </nav>
           <div class="login-preferences">
-            <div class="login-segment compact-segment icon-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
-              <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark" aria-label="${escapeAttr(t("darkMode"))}">
-                ${icons.moon}
-              </button>
-              <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light" aria-label="${escapeAttr(t("lightMode"))}">
-                ${icons.sun}
-              </button>
-            </div>
             <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
               <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
               <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
             </div>
-            <a class="landing-login-button" href="#login-panel">${escapeHtml(t("landingLoginCta"))}</a>
+            <button class="landing-login-button" type="button" data-route="login" aria-label="${escapeAttr(t("landingLoginCta"))}">
+              ${icons.profile}
+            </button>
           </div>
         </div>
 
@@ -1562,7 +1598,7 @@ function renderLogin() {
             <h1>${escapeHtml(t("landingHeadline"))}</h1>
             <p>${escapeHtml(t("landingCopy"))}</p>
             <div class="landing-cta-row">
-              <a class="primary-btn landing-cta" href="#login-panel">${escapeHtml(t("landingPrimaryCta"))} ${icons.arrowRight}</a>
+              <button class="primary-btn landing-cta" type="button" data-route="login">${escapeHtml(t("landingPrimaryCta"))} ${icons.arrowRight}</button>
               <a class="outline-btn landing-cta" href="#pricing">${escapeHtml(t("landingSecondaryCta"))}</a>
             </div>
           </div>
@@ -1573,7 +1609,10 @@ function renderLogin() {
                 <div><strong>CORB</strong><small>${escapeHtml(t("fleetManager"))}</small></div>
               </div>
               <div class="phone-preview-hero">
-                <small>${escapeHtml(t("serviceBay"))}</small>
+                <div class="phone-preview-hero-head">
+                  <small>${escapeHtml(t("serviceBay"))}</small>
+                  ${icons.truck}
+                </div>
                 <strong>${escapeHtml(t("welcome"))} Anthony</strong>
                 <span>${escapeHtml(t("services"))}</span>
               </div>
@@ -1582,8 +1621,15 @@ function renderLogin() {
                 <span>${escapeHtml(t("upcoming"))}<b>1</b></span>
               </div>
               <div class="phone-preview-card">
-                <div>${icons.wrench}<span><strong>${escapeHtml(t("annualInspection"))}</strong><small>${escapeHtml(t("truckNumber", { number: 2 }))}</small></span></div>
-                <p><span>${escapeHtml(t("nextDue"))}</span><strong>${shortDate(addDays(7))}</strong></p>
+                <div class="phone-preview-card-head">
+                  <span class="phone-preview-service-icon">${icons.wrench}</span>
+                  <span><strong>${escapeHtml(t("annualInspection"))}</strong><small>${escapeHtml(t("truckNumber", { number: 2 }))}</small></span>
+                  ${icons.chevronRight}
+                </div>
+                <div class="phone-preview-meta">
+                  <p>${icons.calendar}<span>${escapeHtml(t("nextDue"))}</span><strong>${shortDate(addDays(7))}</strong></p>
+                  <p>${icons.history}<span>${escapeHtml(t("lastPerformed"))}</span><strong>${shortDate(addDays(-12))}</strong></p>
+                </div>
                 <button type="button">${escapeHtml(t("logService"))}</button>
               </div>
             </div>
@@ -1638,44 +1684,29 @@ function renderLogin() {
             `).join("")}
           </div>
         </section>
+      </section>
+    </main>
+  `;
+}
 
-        <section class="login-auth-panel" id="login-panel">
-          <div class="login-hero">
-            <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
-            <h2>${escapeHtml(t("loginHeadline"))}</h2>
-            <p>${escapeHtml(t("loginCopy"))}</p>
+function renderLogin() {
+  const language = state.language === "fr" ? "fr" : "en";
+  return `
+    <main class="login-screen auth-screen">
+      <section class="login-panel auth-page-panel">
+        <div class="login-topbar auth-topbar">
+          <button class="login-brand brand-link" type="button" data-route="landing" aria-label="CORB">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+          </button>
+          <div class="login-preferences">
+            <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
+              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
+              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
+            </div>
           </div>
-          <div class="auth-switch login-segment" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
-            <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">
-              ${icons.profile}
-              <span>${escapeHtml(t("ownerLogin"))}</span>
-            </button>
-            <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
-              ${icons.garage}
-              <span>${escapeHtml(t("mechanicLogin"))}</span>
-            </button>
-          </div>
-          <form class="login-form" data-login-form>
-            ${ownerMode ? `
-              <div class="form-field">
-                <label for="loginEmail">${escapeHtml(t("email"))}</label>
-                <input id="loginEmail" name="email" type="email" autocomplete="email" value="${escapeAttr(state.user.email)}" required />
-              </div>
-              <div class="form-field">
-                <label for="loginPassword">${escapeHtml(t("password"))}</label>
-                <input id="loginPassword" name="password" type="password" autocomplete="current-password" value="demo" required />
-              </div>
-            ` : `
-              <div class="form-field">
-                <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
-                <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
-                <small>${escapeHtml(t("accessCodeHint"))}</small>
-              </div>
-            `}
-            ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
-            <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
-          </form>
-        </section>
+        </div>
+        ${loginAuthPanel()}
       </section>
     </main>
   `;
@@ -2892,7 +2923,11 @@ function render() {
 }
 
 function routeMarkup() {
-  if (!state.isAuthenticated || state.route === "login") return renderLogin();
+  if (!state.isAuthenticated) return state.route === "login" ? renderLogin() : renderLanding();
+  if (state.route === "login" || state.route === "landing") {
+    state.route = "services";
+    return renderServices();
+  }
   if (isMechanic() && ["addVehicle", "addService"].includes(state.route)) {
     state.route = state.route === "addVehicle" ? "vehicles" : "services";
   }
