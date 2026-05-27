@@ -3092,6 +3092,29 @@ button:disabled {
   white-space: nowrap;
 }
 
+.services-content > .cockpit-hero,
+.vehicles-content > .cockpit-hero {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  margin: 0 0 18px;
+  padding: 0;
+  box-shadow: none;
+}
+
+.services-content > .cockpit-hero::before,
+.vehicles-content > .cockpit-hero::before {
+  display: none;
+}
+
+.services-content > .cockpit-hero .cockpit-meta span,
+.vehicles-content > .cockpit-hero .cockpit-meta span {
+  border-color: color-mix(in srgb, var(--divider) 70%, transparent);
+  background: color-mix(in srgb, var(--card) 34%, transparent);
+  box-shadow: none;
+}
+
 .metric-grid {
   gap: 10px;
 }
@@ -3648,6 +3671,11 @@ button:disabled {
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.12), transparent 38%),
     linear-gradient(180deg, #35393d 0%, #25282b 100%);
+}
+
+.theme-dark .services-content > .cockpit-hero,
+.theme-dark .vehicles-content > .cockpit-hero {
+  background: transparent;
 }
 
 .theme-dark .cockpit-hero h1,
