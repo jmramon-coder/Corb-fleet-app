@@ -1307,35 +1307,6 @@ function renderLogin() {
   `;
 }
 
-function renderDashboard() {
-  const vehicles = vehiclesForActiveFleet();
-  const hasVehicles = vehicles.length > 0;
-  const firstUpcoming = state.maintenancePlans.find((service) => service.fleetId === state.activeFleetId && service.status !== "archived" && planStatus(service) === "upcoming");
-
-  return `
-    <div class="screen">
-      ${header()}
-      <section class="dashboard-content">
-        ${cockpitHero({
-          title: `${t("welcome")} ${state.user.firstName}`,
-          subtitle: t("fleetStatus"),
-          meta: [
-            { iconMarkup: icons.truck, label: t("activeFleetLabel"), value: activeFleet()?.name || "CORB" },
-            { iconMarkup: icons.wrench, label: t("serviceBay"), value: t("maintenanceQueue", { count: state.maintenancePlans.length }) }
-          ]
-        })}
-        ${metricCards()}
-        ${
-          hasVehicles
-            ? `<div class="list-stack">${firstUpcoming ? serviceCard(firstUpcoming) : vehicleCard(vehicles[0])}</div>`
-            : emptyVehicleCard()
-        }
-      </section>
-      ${bottomNav("dashboard")}
-    </div>
-  `;
-}
-
 function renderServices() {
   const services = visibleServices();
   const vehicles = vehiclesForActiveFleet();

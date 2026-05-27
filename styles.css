@@ -542,8 +542,7 @@ textarea:focus-visible {
 .primary-btn,
 .success-btn,
 .outline-btn,
-.danger-btn,
-.secondary-detail-btn {
+.danger-btn {
   display: inline-flex;
   min-height: 44px;
   align-items: center;
@@ -573,8 +572,7 @@ textarea:focus-visible {
 .primary-btn.wide,
 .success-btn.wide,
 .outline-btn.wide,
-.danger-btn.wide,
-.secondary-detail-btn.wide {
+.danger-btn.wide {
   width: 100%;
 }
 
@@ -595,23 +593,10 @@ textarea:focus-visible {
   font-weight: 650;
 }
 
-.secondary-detail-btn {
-  border: 1.5px solid rgba(36, 81, 230, 0.78);
-  background: #fff;
-  color: var(--blue);
-  font-weight: 650;
-}
-
-.secondary-detail-btn .icon {
-  margin-left: auto;
-}
-
 .primary-btn:active,
 .success-btn:active,
 .outline-btn:active,
 .danger-btn:active,
-.secondary-detail-btn:active,
-.create-fab:active,
 .capture-card:active {
   transform: scale(0.985);
 }
@@ -1467,32 +1452,6 @@ button:disabled {
   color: rgba(255, 65, 72, 0.78);
 }
 
-.create-fab {
-  position: fixed;
-  right: var(--page-gutter);
-  bottom: calc(82px + env(safe-area-inset-bottom));
-  z-index: 28;
-  display: inline-flex;
-  width: 54px;
-  height: 54px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--blue) 62%, transparent);
-  border-radius: 18px;
-  background: var(--blue);
-  color: #fff;
-  box-shadow: 0 14px 34px rgba(37, 82, 229, 0.3);
-  transition:
-    transform 220ms ease,
-    opacity 180ms ease;
-}
-
-.create-fab .icon {
-  width: 24px;
-  height: 24px;
-  stroke-width: 1.9;
-}
-
 .create-menu-backdrop {
   position: fixed;
   z-index: 70;
@@ -1939,10 +1898,6 @@ button:disabled {
   color: var(--icon-action);
   font-size: 12px;
   font-weight: 700;
-}
-
-.completion-form-card {
-  margin-top: 12px;
 }
 
 .completion-form {
@@ -3234,10 +3189,6 @@ button:disabled {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 
-.create-fab {
-  display: none;
-}
-
 .login-screen {
   align-items: center;
   background:
@@ -3282,7 +3233,6 @@ button:disabled {
 
 .auth-switch,
 .login-form,
-.completion-summary-card,
 .capture-card {
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 26px;
@@ -3355,8 +3305,7 @@ button:disabled {
 .theme-dark .nav-tab.active,
 .theme-dark .service-card-footer .success-btn,
 .theme-dark .primary-btn,
-.theme-dark .success-btn,
-.theme-dark .create-fab {
+.theme-dark .success-btn {
   background: var(--blue);
   border-color: var(--blue);
   color: #fff;
@@ -3381,10 +3330,6 @@ button:disabled {
   background: rgba(23, 25, 27, 0.96);
 }
 
-.desktop-only {
-  display: none;
-}
-
 @media (min-width: 1024px) {
   .app-shell {
     display: grid;
@@ -3400,7 +3345,6 @@ button:disabled {
     margin-bottom: 44px;
   }
 
-  .dashboard-content,
   .vehicles-content,
   .services-content {
     display: grid;
@@ -3409,13 +3353,11 @@ button:disabled {
     align-items: start;
   }
 
-  .dashboard-content .screen-heading,
   .vehicles-content .screen-heading,
   .services-content .screen-heading {
     grid-column: 1 / -1;
   }
 
-  .dashboard-content .metric-grid,
   .services-content .metric-grid {
     margin: 0;
   }
