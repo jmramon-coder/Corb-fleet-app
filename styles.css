@@ -1116,47 +1116,70 @@ button:disabled {
 }
 
 .service-card-footer {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: 1fr;
   align-items: center;
+  gap: 0;
+}
+
+.service-history-btn {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--card-raised) 48%, transparent);
+  color: var(--muted-blue);
+}
+
+.service-history-btn .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.date-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
 }
 
-.service-card-footer > span,
-.service-details-link {
+.due-inline {
   display: inline-flex;
-  min-height: 38px;
+  min-height: 18px;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border-radius: 14px;
-  font-size: 12px;
-  font-weight: 760;
-  line-height: 1;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 75%, transparent);
+  padding: 0 7px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
-.service-card-footer > span {
-  justify-content: flex-start;
-  border: 0;
-  background: transparent;
-  color: var(--muted-blue);
+.due-inline.overdue {
+  border-color: rgba(255, 95, 99, 0.2);
+  background: rgba(255, 95, 99, 0.08);
+  color: var(--red);
 }
 
-.service-card-footer .icon {
-  width: 15px;
-  height: 15px;
+.due-inline.upcoming {
+  border-color: rgba(247, 185, 85, 0.22);
+  background: rgba(247, 185, 85, 0.08);
+  color: var(--orange);
+}
+
+.due-inline.ok {
+  border-color: rgba(59, 214, 124, 0.2);
+  background: rgba(59, 214, 124, 0.08);
   color: var(--green);
 }
 
-.service-details-link {
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--card-raised) 48%, transparent);
-  color: var(--muted-blue);
-  padding: 0 10px;
-}
-
-.service-details-link .icon {
-  margin-left: auto;
-  color: var(--icon-muted);
+.service-card-footer .success-btn {
+  min-height: 44px;
+  border-radius: 16px;
 }
 
 .completion-card .service-card-body {
@@ -2851,30 +2874,14 @@ button:disabled {
   position: relative;
 }
 
-.status-rail {
-  position: absolute;
-  inset: 14px auto 14px 0;
-  width: 4px;
-  border-radius: 0 999px 999px 0;
-  background: var(--green);
-}
-
-.status-overdue .status-rail {
-  background: var(--red);
-}
-
-.status-upcoming .status-rail {
-  background: var(--orange);
-}
-
 .service-card-body,
 .vehicle-card-body {
   gap: 16px;
-  padding: 18px 18px 18px 20px;
+  padding: 18px;
 }
 
 .service-head {
-  grid-template-columns: 28px minmax(0, 1fr) auto 24px;
+  grid-template-columns: 28px minmax(0, 1fr) 34px;
   gap: 10px;
   align-items: center;
 }
@@ -2951,6 +2958,14 @@ button:disabled {
   border-color: rgba(59, 214, 124, 0.28);
   border-radius: 16px;
   background: color-mix(in srgb, var(--green) 13%, transparent);
+}
+
+.service-card-footer .success-btn {
+  min-height: 44px;
+  border-color: rgba(59, 214, 124, 0.3);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--green) 86%, #fff) 0%, var(--green) 100%);
+  color: #04170b;
+  box-shadow: 0 12px 24px rgba(59, 214, 124, 0.16);
 }
 
 .vehicle-top {

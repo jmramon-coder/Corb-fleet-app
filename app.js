@@ -1398,7 +1398,6 @@ function serviceCard(service) {
   const dueChipLabel = status === "ok" ? t("ok") : status === "overdue" ? relativeDue(summary.nextDueDate) : dueDays === 0 ? t("dueToday") : t("dueIn", { time: relativeDue(summary.nextDueDate) });
   return `
     <article class="service-card click-card status-${status}" data-complete-service="${service.id}">
-      <span class="status-rail" aria-hidden="true"></span>
       <div class="service-card-body">
         <div class="service-head">
           <span>${icons.wrench}</span>
@@ -1409,12 +1408,16 @@ function serviceCard(service) {
               ${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}
             </button>
           </div>
-          <span class="due-chip ${status}">${escapeHtml(dueChipLabel)}</span>
-          <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
+          <button class="service-history-btn" type="button" data-open-service="${service.id}" aria-label="${escapeAttr(t("serviceDetailsHistory"))}">
+            ${icons.history}
+          </button>
         </div>
         <div class="service-dates">
           <div class="date-block">
-            <span>${escapeHtml(t("nextDue"))}</span>
+            <span class="date-label-row">
+              ${escapeHtml(t("nextDue"))}
+              <small class="due-inline ${status}">${escapeHtml(dueChipLabel)}</small>
+            </span>
             <strong class="date-value">${icons.calendar}${formatDate(summary.nextDueDate)}</strong>
           </div>
           <div class="date-block">
@@ -1423,10 +1426,9 @@ function serviceCard(service) {
           </div>
         </div>
         <div class="service-card-footer">
-          <span>${icons.check}${escapeHtml(t("tapCardToComplete"))}</span>
-          <button class="service-details-link" type="button" data-open-service="${service.id}">
-            ${escapeHtml(t("serviceDetailsHistory"))}
-            ${icons.chevronRight}
+          <button class="success-btn wide" type="button" data-complete-service="${service.id}">
+            ${escapeHtml(t("completeNow"))}
+            ${icons.check}
           </button>
         </div>
       </div>
