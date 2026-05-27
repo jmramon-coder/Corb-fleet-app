@@ -1236,7 +1236,7 @@ button:disabled {
   display: grid;
   gap: 8px;
   margin: 0;
-  padding: 0 18px 16px;
+  padding: 8px 18px 16px;
 }
 
 .service-actions .success-btn {
@@ -1285,6 +1285,10 @@ button:disabled {
   letter-spacing: 0;
   text-transform: none;
   white-space: nowrap;
+}
+
+.service-date-next .due-inline {
+  margin-left: 24px;
 }
 
 .due-inline.overdue {
