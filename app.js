@@ -272,7 +272,6 @@ const translations = {
     voiceNote: "Voice note",
     tapToDictate: "Tap to dictate",
     tapToStopDictation: "Tap to stop",
-    tapToAddVoice: "Add to note",
     voiceListening: "Listening...",
     voiceReady: "Voice ready",
     voiceSaved: "Added to note",
@@ -489,7 +488,6 @@ const translations = {
     voiceNote: "Note vocale",
     tapToDictate: "Dicter",
     tapToStopDictation: "Arrêter",
-    tapToAddVoice: "Ajouter à la note",
     voiceListening: "Écoute...",
     voiceReady: "Voix prête",
     voiceSaved: "Ajouté à la note",
@@ -2214,7 +2212,7 @@ function completionModal() {
                     <span class="voice-wave" aria-hidden="true">
                       <i></i><i></i><i></i><i></i><i></i>
                     </span>
-                    <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
+                    <span class="visually-hidden" data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
                   </button>
                 </div>
               </div>
@@ -2486,9 +2484,8 @@ function appendMechanicNote(note) {
 
 function resetVoiceButton(button, status, label = t("tapToDictate")) {
   if (status) status.textContent = label;
-  button?.classList.remove("listening", "has-transcript");
+  button?.classList.remove("listening", "saved");
   button?.setAttribute("aria-pressed", "false");
-  if (button) delete button.dataset.voiceTranscript;
 }
 
 function stopActiveVoiceRecognition() {
@@ -2508,15 +2505,6 @@ function startVoiceNote(serviceId) {
   const button = app.querySelector(`[data-start-voice="${CSS.escape(serviceId)}"]`);
   const status = button?.querySelector("[data-voice-status]");
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (button?.dataset.voiceTranscript) {
-    appendMechanicNote(button.dataset.voiceTranscript);
-    resetVoiceButton(button, status, t("voiceSaved"));
-    window.setTimeout(() => {
-      if (!button.classList.contains("listening") && !button.dataset.voiceTranscript) resetVoiceButton(button, status);
-    }, 1200);
-    return;
-  }
 
   if (activeVoiceRecognition?.serviceId === serviceId) {
     stopActiveVoiceRecognition();
@@ -2566,11 +2554,12 @@ function startVoiceNote(serviceId) {
 
     const { finalTranscript, hadError, manualStop } = activeVoiceRecognition;
     if (finalTranscript) {
-      button?.classList.remove("listening");
-      button?.classList.add("has-transcript");
-      button?.setAttribute("aria-pressed", "false");
-      if (button) button.dataset.voiceTranscript = finalTranscript;
-      if (status) status.textContent = t("tapToAddVoice");
+      appendMechanicNote(finalTranscript);
+      resetVoiceButton(button, status, t("voiceSaved"));
+      button?.classList.add("saved");
+      window.setTimeout(() => {
+        if (!button.classList.contains("listening")) resetVoiceButton(button, status);
+      }, 900);
     } else if (!hadError && manualStop) {
       resetVoiceButton(button, status, t("voiceReady"));
     } else if (!hadError) {

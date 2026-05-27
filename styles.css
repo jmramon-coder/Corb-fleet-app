@@ -2237,7 +2237,7 @@ button:disabled {
 }
 
 .note-input-shell textarea {
-  padding-bottom: 64px;
+  padding-bottom: 56px;
 }
 
 .voice-btn {
@@ -2245,27 +2245,17 @@ button:disabled {
   right: 10px;
   bottom: 10px;
   display: grid;
-  grid-template-columns: 18px auto minmax(0, 1fr);
-  min-height: 40px;
+  grid-template-columns: 16px auto;
+  min-height: 38px;
   min-width: 0;
-  width: min(212px, calc(100% - 20px));
+  width: 82px;
   align-items: center;
   gap: 8px;
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 999px;
   background: color-mix(in srgb, var(--card-raised) 66%, transparent);
   color: var(--muted-blue);
-  padding: 0 12px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.voice-btn [data-voice-status] {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
+  padding: 0 11px;
 }
 
 .voice-btn .icon {
@@ -2328,7 +2318,7 @@ button:disabled {
   animation-delay: 360ms;
 }
 
-.voice-btn.has-transcript {
+.voice-btn.saved {
   border-color: color-mix(in srgb, var(--green) 38%, var(--line));
   background: color-mix(in srgb, var(--green) 10%, var(--card));
   color: var(--green);
