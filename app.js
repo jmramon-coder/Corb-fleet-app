@@ -1344,26 +1344,6 @@ function formField({ label, name, id = name, type = "text", value = "", required
   `;
 }
 
-function metricCards(counts = statusCounts(), options = {}) {
-  const overdueLabel = options.compact ? t("overdue") : t("overdueTasks");
-  const upcomingLabel = options.compact ? t("upcoming") : t("upcomingTasks");
-
-  return `
-    <div class="metric-grid">
-      <article class="metric-card">
-        <span class="metric-rule red"></span>
-        <span class="metric-label">${overdueLabel}</span>
-        <strong class="metric-value">${counts.overdue}</strong>
-      </article>
-      <article class="metric-card">
-        <span class="metric-rule yellow"></span>
-        <span class="metric-label">${upcomingLabel}</span>
-        <strong class="metric-value">${counts.upcoming}</strong>
-      </article>
-    </div>
-  `;
-}
-
 function emptyVehicleCard() {
   return `
     <article class="empty-card">

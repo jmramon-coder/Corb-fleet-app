@@ -1130,32 +1130,6 @@ button:disabled {
   color: var(--icon-muted);
 }
 
-.calendar-badge {
-  display: inline-flex;
-  min-width: 48px;
-  min-height: 34px;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border-radius: 9px;
-  background: var(--orange);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.calendar-badge .icon {
-  width: 17px;
-  height: 17px;
-}
-
-.calendar-badge.soft {
-  min-width: 38px;
-  min-height: 28px;
-  background: transparent;
-  color: var(--blue);
-}
-
 .service-dates {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1235,20 +1209,11 @@ button:disabled {
   margin-top: 0;
 }
 
-.service-actions,
 .service-card-footer {
   display: grid;
   gap: 8px;
   margin: 0;
   padding: 8px 18px 16px;
-}
-
-.service-actions .success-btn {
-  min-height: 38px;
-  border-color: rgba(23, 195, 70, 0.24);
-  background: rgba(23, 195, 70, 0.1);
-  color: var(--green);
-  box-shadow: none;
 }
 
 .service-card-footer {
@@ -1927,7 +1892,6 @@ button:disabled {
   gap: 18px;
 }
 
-.service-object-card,
 .service-overview-card {
   margin-bottom: 12px;
 }
@@ -2020,48 +1984,6 @@ button:disabled {
   font-size: 13px;
   font-weight: 720;
   text-align: right;
-}
-
-.service-object-title {
-  display: grid;
-  gap: 5px;
-  margin: -10px 0 18px;
-}
-
-.service-object-title h2 {
-  margin: 0;
-  color: var(--text-blue);
-  font-size: 19px;
-  line-height: 1.1;
-}
-
-.service-object-title span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted-blue);
-  font-size: 13px;
-}
-
-.service-object-title .tab-icon {
-  width: 18px;
-  height: 18px;
-  flex-basis: 18px;
-}
-
-.object-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.object-detail-grid strong {
-  display: block;
-  margin-top: 6px;
-  color: var(--text-blue);
-  font-size: 14px;
-  line-height: 1.14;
-  overflow-wrap: anywhere;
 }
 
 .completion-line-list {
@@ -3632,7 +3554,6 @@ button:disabled {
 .service-dates,
 .completion-record-grid,
 .completion-note-block,
-.service-actions,
 .service-card-footer,
 .vehicle-stats {
   margin-left: 38px;
@@ -3696,13 +3617,6 @@ button:disabled {
 .date-value {
   font-size: 12px;
   font-weight: 680;
-}
-
-.service-actions .success-btn {
-  min-height: 42px;
-  border-color: rgba(59, 214, 124, 0.28);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--green) 13%, transparent);
 }
 
 .service-card-footer .success-btn {

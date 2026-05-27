@@ -4,6 +4,8 @@
   "private": true,
   "description": "A self-contained fleet manager SaaS prototype for tracking vehicles and maintenance services.",
   "scripts": {
-    "start": "python3 -m http.server 4173 --bind 127.0.0.1"
+    "start": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "test": "node --check app.js && npm run test:e2e",
+    "test:e2e": "node scripts/e2e-smoke.js"
   }
 }
