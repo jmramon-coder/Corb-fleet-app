@@ -1,35 +1,35 @@
 :root {
-  --app-bg: #eef1f4;
-  --card: #fbfcfd;
+  --app-bg: #d8dde0;
+  --card: #eef0f2;
   --card-raised: #ffffff;
-  --blue: #1f5eff;
-  --blue-2: #6d91ff;
-  --blue-soft: rgba(31, 94, 255, 0.11);
-  --blue-softer: rgba(31, 94, 255, 0.06);
-  --text-blue: #111827;
-  --muted-blue: #667085;
-  --border-blue: rgba(31, 94, 255, 0.2);
+  --blue: #111214;
+  --blue-2: #3a3c40;
+  --blue-soft: rgba(17, 18, 20, 0.1);
+  --blue-softer: rgba(17, 18, 20, 0.05);
+  --text-blue: #101113;
+  --muted-blue: #636970;
+  --border-blue: rgba(17, 18, 20, 0.16);
   --red: #e5484d;
   --red-soft: #ffecee;
   --orange: #f59f00;
   --orange-soft: #fff2df;
   --green: #18a957;
   --green-2: #65d887;
-  --line: rgba(15, 23, 42, 0.1);
-  --divider: rgba(15, 23, 42, 0.12);
-  --nav-muted: #64748b;
+  --line: rgba(255, 255, 255, 0.72);
+  --divider: rgba(16, 17, 19, 0.1);
+  --nav-muted: #697078;
   --nav-active-bg: #ffffff;
   --nav-active-fg: #111827;
   --profile-ink: #111827;
   --profile-muted: #667085;
   --icon-muted: #7a8493;
-  --icon-action: #1f5eff;
+  --icon-action: #111214;
   --ink: #111827;
   --shadow: none;
-  --shadow-strong: 0 18px 48px rgba(15, 23, 42, 0.1);
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
+  --shadow-strong: 0 22px 46px rgba(27, 31, 35, 0.12);
+  --radius-sm: 14px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
   --page-gutter: 18px;
   --desktop-gutter: 32px;
   --brand-text-offset: 36px;
@@ -112,25 +112,25 @@ textarea:focus-visible {
 }
 
 .theme-dark {
-  --app-bg: #090a0c;
-  --card: #121417;
-  --card-raised: #191c20;
-  --blue: #6b8cff;
-  --blue-2: #a5b8ff;
-  --blue-soft: rgba(107, 140, 255, 0.16);
-  --blue-softer: rgba(107, 140, 255, 0.08);
+  --app-bg: #17191b;
+  --card: #202326;
+  --card-raised: #292c30;
+  --blue: #f2f3f5;
+  --blue-2: #c7ccd3;
+  --blue-soft: rgba(242, 243, 245, 0.12);
+  --blue-softer: rgba(242, 243, 245, 0.06);
   --text-blue: #f5f7fb;
   --muted-blue: #98a2b3;
-  --border-blue: rgba(107, 140, 255, 0.25);
-  --line: rgba(255, 255, 255, 0.1);
-  --divider: rgba(255, 255, 255, 0.13);
-  --nav-muted: #89919f;
-  --nav-active-bg: #191c20;
+  --border-blue: rgba(242, 243, 245, 0.18);
+  --line: rgba(255, 255, 255, 0.11);
+  --divider: rgba(255, 255, 255, 0.12);
+  --nav-muted: #9097a1;
+  --nav-active-bg: #f2f3f5;
   --nav-active-fg: #ffffff;
   --profile-ink: #f4f6fb;
   --profile-muted: #98a2b3;
   --icon-muted: #8b93a3;
-  --icon-action: #9aafff;
+  --icon-action: #f2f3f5;
   --ink: #f8fafc;
   --red: #ff5f63;
   --orange: #f7b955;
@@ -2619,7 +2619,8 @@ button:disabled {
 /* Automotive cockpit redesign */
 .app-shell {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 88%, var(--card-raised)) 0%, var(--app-bg) 42%),
+    radial-gradient(circle at 50% -12%, rgba(255, 255, 255, 0.72) 0, transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 88%, #fff) 0%, var(--app-bg) 46%),
     var(--app-bg);
 }
 
@@ -2627,15 +2628,15 @@ button:disabled {
 .theme-dark .screen,
 .theme-dark .completion-modal {
   background:
-    radial-gradient(circle at 16% -10%, rgba(107, 140, 255, 0.14) 0, transparent 30%),
-    radial-gradient(circle at 95% 8%, rgba(59, 214, 124, 0.07) 0, transparent 26%),
+    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.08) 0, transparent 34%),
+    linear-gradient(180deg, #1c1f22 0%, var(--app-bg) 44%),
     var(--app-bg);
 }
 
 .brand-header {
-  min-height: 44px;
-  max-height: 48px;
-  margin-bottom: 22px;
+  min-height: 48px;
+  max-height: 52px;
+  margin-bottom: 24px;
 }
 
 .brand {
@@ -2644,15 +2645,14 @@ button:disabled {
 
 .brand-mark {
   position: relative;
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 38%),
-    linear-gradient(135deg, var(--blue), var(--blue-2));
+    linear-gradient(145deg, #25272b, #0d0e10);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
-    0 10px 26px rgba(31, 94, 255, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 12px 24px rgba(17, 18, 20, 0.18);
 }
 
 .brand-mark::after {
@@ -2667,7 +2667,7 @@ button:disabled {
 .brand-name strong {
   color: var(--text-blue);
   font-size: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .brand-name span {
@@ -2678,8 +2678,12 @@ button:disabled {
 
 .icon-btn,
 .plain-icon-btn {
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--card) 76%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--card-raised) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    0 10px 22px rgba(17, 18, 20, 0.08);
+  color: var(--text-blue);
 }
 
 .cockpit-hero {
@@ -2687,29 +2691,32 @@ button:disabled {
   display: grid;
   gap: 16px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 32px;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--card-raised) 94%, var(--blue-softer)), color-mix(in srgb, var(--card) 88%, var(--app-bg))),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.18)),
+    linear-gradient(180deg, color-mix(in srgb, var(--card) 72%, #fff), color-mix(in srgb, var(--card) 88%, var(--app-bg))),
     var(--card);
   margin: 0 0 16px;
-  padding: 18px;
+  padding: 20px;
   box-shadow: var(--shadow-strong);
 }
 
 .cockpit-hero::before {
   content: "";
   position: absolute;
-  right: -54px;
-  bottom: -78px;
-  width: 180px;
-  height: 180px;
-  border: 1px solid color-mix(in srgb, var(--blue) 22%, transparent);
-  border-radius: 50%;
+  right: -40px;
+  bottom: -68px;
+  width: 190px;
+  height: 124px;
+  border: 0;
+  border-radius: 45% 55% 28px 28px;
   background:
-    radial-gradient(circle, transparent 45%, color-mix(in srgb, var(--blue) 10%, transparent) 46%, transparent 48%),
-    conic-gradient(from 225deg, transparent 0 26%, color-mix(in srgb, var(--blue) 38%, transparent) 26% 74%, transparent 74% 100%);
-  opacity: 0.78;
+    radial-gradient(circle at 30% 78%, color-mix(in srgb, var(--text-blue) 16%, transparent) 0 15px, transparent 16px),
+    radial-gradient(circle at 72% 78%, color-mix(in srgb, var(--text-blue) 16%, transparent) 0 15px, transparent 16px),
+    linear-gradient(165deg, transparent 0 22%, color-mix(in srgb, var(--text-blue) 10%, transparent) 23% 54%, transparent 55%),
+    color-mix(in srgb, var(--text-blue) 6%, transparent);
+  opacity: 0.82;
 }
 
 .cockpit-hero-copy,
@@ -2722,10 +2729,10 @@ button:disabled {
   display: inline-flex;
   width: fit-content;
   align-items: center;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.66);
   border-radius: 999px;
   background: color-mix(in srgb, var(--card) 72%, transparent);
-  color: var(--muted-blue);
+  color: var(--text-blue);
   padding: 6px 9px;
   font-size: 11px;
   font-weight: 800;
@@ -2737,9 +2744,10 @@ button:disabled {
   max-width: 330px;
   margin: 12px 0 0;
   color: var(--text-blue);
-  font-size: 30px;
-  font-weight: 780;
-  line-height: 0.98;
+  font-size: 34px;
+  font-weight: 760;
+  line-height: 0.96;
+  letter-spacing: -0.01em;
 }
 
 .cockpit-hero p {
@@ -2762,10 +2770,11 @@ button:disabled {
   grid-template-columns: 20px minmax(0, 1fr);
   column-gap: 8px;
   align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card) 74%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
   padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 
 .cockpit-meta .tab-icon,
@@ -2807,10 +2816,10 @@ button:disabled {
   min-height: 104px;
   align-content: end;
   overflow: hidden;
-  border-color: var(--line);
-  border-radius: 22px;
+  border-color: rgba(255, 255, 255, 0.68);
+  border-radius: 24px;
   background:
-    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--blue) 8%, transparent), transparent 42%),
+    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--text-blue) 6%, transparent), transparent 42%),
     var(--card);
   padding: 16px;
   text-align: left;
@@ -2858,10 +2867,11 @@ button:disabled {
 }
 
 .search-box {
-  min-height: 48px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--card) 84%, var(--app-bg));
+  min-height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
 }
 
 .filter-row {
@@ -2870,18 +2880,21 @@ button:disabled {
 }
 
 .filter-pill {
-  min-height: 34px;
-  border-color: var(--line);
-  background: color-mix(in srgb, var(--card) 74%, transparent);
-  color: var(--muted-blue);
-  padding-inline: 12px 8px;
+  min-height: 40px;
+  border-color: rgba(255, 255, 255, 0.74);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
+  color: var(--text-blue);
+  padding-inline: 14px 9px;
   font-weight: 760;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 
 .filter-pill.active {
   background: var(--text-blue);
   border-color: var(--text-blue);
   color: var(--app-bg);
+  box-shadow: 0 12px 22px rgba(17, 18, 20, 0.14);
 }
 
 .theme-dark .filter-pill.active {
@@ -2902,11 +2915,14 @@ button:disabled {
 .technical-card,
 .form-card,
 .service-preset-panel {
-  border-color: var(--line);
-  border-radius: 24px;
+  border-color: rgba(255, 255, 255, 0.74);
+  border-radius: 30px;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--card-raised) 82%, transparent), var(--card)),
+    linear-gradient(180deg, color-mix(in srgb, var(--card-raised) 72%, transparent), color-mix(in srgb, var(--card) 92%, var(--app-bg))),
     var(--card);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.48),
+    0 16px 34px rgba(17, 18, 20, 0.08);
 }
 
 .service-card,
@@ -2916,7 +2932,7 @@ button:disabled {
 
 .service-card-body,
 .vehicle-card-body {
-  gap: 16px;
+  gap: 17px;
   padding: 18px;
 }
 
@@ -2927,29 +2943,31 @@ button:disabled {
 }
 
 .service-head > span:first-child {
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: color-mix(in srgb, var(--card-raised) 80%, transparent);
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card-raised) 68%, transparent);
   color: var(--icon-action);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 
 .service-head > span:first-child .card-icon,
 .service-head > span:first-child .icon,
 .service-head > span:first-child .tab-icon {
-  width: 21px;
-  height: 21px;
-  flex-basis: 21px;
+  width: 23px;
+  height: 23px;
+  flex-basis: 23px;
 }
 
 .vehicle-head-icon {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--card-raised) 80%, transparent);
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 17px;
+  background: color-mix(in srgb, var(--card-raised) 68%, transparent);
   color: var(--icon-action);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 
 .service-card-title,
@@ -2995,10 +3013,11 @@ button:disabled {
 
 .date-block,
 .vehicle-stat {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--card-raised) 54%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card-raised) 46%, transparent);
   padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
 }
 
 .date-block span,
@@ -3029,22 +3048,27 @@ button:disabled {
 }
 
 .service-card-footer .success-btn {
-  min-height: 44px;
-  border-color: rgba(59, 214, 124, 0.3);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--green) 86%, #fff) 0%, var(--green) 100%);
-  color: #04170b;
-  box-shadow: 0 12px 24px rgba(59, 214, 124, 0.16);
+  min-height: 46px;
+  border-color: var(--text-blue);
+  border-radius: 999px;
+  background: var(--text-blue);
+  color: var(--app-bg);
+  box-shadow: 0 14px 24px rgba(17, 18, 20, 0.16);
 }
 
 .service-history-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 15px;
+  width: 42px;
+  height: 42px;
+  border-color: var(--text-blue);
+  border-radius: 50%;
+  background: var(--text-blue);
+  color: var(--app-bg);
 }
 
 .vehicle-top {
-  grid-template-columns: 28px minmax(0, 1fr) 24px;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
   align-items: center;
+  gap: 12px;
 }
 
 .vehicle-stats {
@@ -3081,8 +3105,8 @@ button:disabled {
 
 .bottom-nav {
   border-top: 1px solid var(--divider);
-  background: color-mix(in srgb, var(--app-bg) 96%, var(--card));
-  backdrop-filter: blur(18px);
+  background: color-mix(in srgb, var(--app-bg) 90%, rgba(255, 255, 255, 0.42));
+  backdrop-filter: blur(20px);
 }
 
 .nav-tab {
@@ -3093,22 +3117,24 @@ button:disabled {
 }
 
 .nav-tab.active {
-  border-color: var(--line);
-  box-shadow: var(--shadow-strong);
+  border-color: rgba(255, 255, 255, 0.72);
+  background: var(--text-blue);
+  color: var(--app-bg);
+  box-shadow: 0 12px 24px rgba(17, 18, 20, 0.14);
 }
 
 .create-fab {
-  border-radius: 20px;
-  background:
-    linear-gradient(145deg, var(--blue-2), var(--blue));
-  box-shadow: 0 18px 36px rgba(31, 94, 255, 0.34);
+  border-radius: 50%;
+  background: var(--text-blue);
+  color: var(--app-bg);
+  box-shadow: 0 18px 36px rgba(17, 18, 20, 0.22);
 }
 
 .login-screen {
   align-items: center;
   background:
-    radial-gradient(circle at 50% -6%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 34%),
-    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 94%, var(--card-raised)), var(--app-bg));
+    radial-gradient(circle at 50% -6%, rgba(255, 255, 255, 0.7), transparent 34%),
+    linear-gradient(180deg, color-mix(in srgb, var(--app-bg) 90%, #fff), var(--app-bg));
 }
 
 .login-panel {
@@ -3118,10 +3144,10 @@ button:disabled {
 .login-hero {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 32px;
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--card-raised) 86%, var(--blue-softer)), var(--card));
+    linear-gradient(145deg, rgba(255, 255, 255, 0.66), color-mix(in srgb, var(--card) 90%, var(--app-bg)));
   margin-top: 10px;
   padding: 22px;
   box-shadow: var(--shadow-strong);
@@ -3135,7 +3161,7 @@ button:disabled {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: conic-gradient(from 230deg, transparent 0 24%, rgba(107, 140, 255, 0.4) 24% 68%, transparent 68%);
+  background: conic-gradient(from 230deg, transparent 0 24%, color-mix(in srgb, var(--text-blue) 16%, transparent) 24% 68%, transparent 68%);
   opacity: 0.62;
 }
 
@@ -3150,17 +3176,89 @@ button:disabled {
 .login-form,
 .completion-summary-card,
 .capture-card {
-  border-radius: 22px;
-  background: color-mix(in srgb, var(--card) 88%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 26px;
+  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
 }
 
 .primary-btn {
-  border-radius: 16px;
+  border-color: var(--text-blue);
+  border-radius: 999px;
+  background: var(--text-blue);
+  color: var(--app-bg);
+  box-shadow: 0 14px 26px rgba(17, 18, 20, 0.16);
 }
 
 .success-btn {
-  border-radius: 16px;
-  color: #04170b;
+  border-radius: 999px;
+  background: var(--text-blue);
+  color: var(--app-bg);
+}
+
+.outline-btn {
+  border-color: rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-raised) 58%, transparent);
+  color: var(--text-blue);
+}
+
+.theme-dark .cockpit-hero,
+.theme-dark .service-card,
+.theme-dark .vehicle-card,
+.theme-dark .profile-card,
+.theme-dark .detail-card,
+.theme-dark .technical-card,
+.theme-dark .form-card,
+.theme-dark .service-preset-panel,
+.theme-dark .search-box,
+.theme-dark .filter-pill,
+.theme-dark .date-block,
+.theme-dark .vehicle-stat,
+.theme-dark .cockpit-meta span,
+.theme-dark .auth-switch,
+.theme-dark .login-form,
+.theme-dark .completion-summary-card,
+.theme-dark .capture-card,
+.theme-dark .icon-btn,
+.theme-dark .plain-icon-btn {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: color-mix(in srgb, var(--card) 88%, transparent);
+  box-shadow: none;
+}
+
+.theme-dark .cockpit-hero {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), transparent 38%),
+    linear-gradient(180deg, #35393d 0%, #25282b 100%);
+}
+
+.theme-dark .cockpit-hero h1,
+.theme-dark .cockpit-hero p,
+.theme-dark .cockpit-meta strong,
+.theme-dark .cockpit-eyebrow {
+  color: #f6f7f8;
+}
+
+.theme-dark .cockpit-meta small {
+  color: #c1c7cf;
+}
+
+.theme-dark .filter-pill.active,
+.theme-dark .nav-tab.active,
+.theme-dark .service-history-btn,
+.theme-dark .service-card-footer .success-btn,
+.theme-dark .primary-btn,
+.theme-dark .success-btn,
+.theme-dark .create-fab {
+  background: #f2f3f5;
+  border-color: #f2f3f5;
+  color: #17191b;
+}
+
+.theme-dark .bottom-nav,
+.theme-dark .action-bar {
+  background: rgba(23, 25, 27, 0.96);
 }
 
 .desktop-only {
