@@ -1,6 +1,11 @@
 const STORAGE_KEY = "corb-fleet-manager-state-v2";
 const OLD_STORAGE_KEY = "fleetops-manager-state";
 
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+if (window.location.hash === "#pricing" || window.location.hash === "#product") {
+  history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+}
+
 const today = new Date();
 const todayIso = isoDate(today);
 
@@ -285,28 +290,26 @@ const translations = {
     landingNavPricing: "Pricing",
     landingLoginCta: "Log in",
     landingEyebrow: "Fleet maintenance SaaS",
-    landingHeadline: "One place to plan, log, and prove every service.",
-    landingCopy: "CORB gives fleet owners a clean maintenance command center and mechanics a fast mobile workflow for logging work in the yard.",
+    landingHeadline: "Keep trucks moving. Catch maintenance before it becomes downtime.",
+    landingCopy: "CORB helps small fleets stay ahead of service work, reduce surprise repairs, and keep a clean record of every job completed in the garage.",
     landingPrimaryCta: "Log in",
     landingSecondaryCta: "See pricing",
-    landingActiveFleet: "Active fleet",
-    landingVehicles: "Vehicles tracked",
-    landingServices: "Services due",
-    landingProof: "Evidence saved",
-    landingFeaturesTitle: "Built for the work that happens between dispatch and the garage.",
-    landingFeatureSchedules: "Maintenance plans",
-    landingFeatureSchedulesCopy: "Track time, KM, and hybrid service schedules per truck.",
-    landingFeatureMechanics: "Mechanic access",
-    landingFeatureMechanicsCopy: "Use revocable codes so mechanics can log work without managing the fleet.",
-    landingFeatureEvidence: "Proof of work",
-    landingFeatureEvidenceCopy: "Capture notes, parts, photos, videos, and documents on completion.",
+    landingFeaturesTitle: "The maintenance layer between your trucks and costly downtime.",
+    landingFeatureDowntime: "Less downtime",
+    landingFeatureDowntimeCopy: "Know what is due before a truck is pulled from the road unexpectedly.",
+    landingFeatureBreakage: "Fewer surprise breakdowns",
+    landingFeatureBreakageCopy: "Follow mileage and time-based service plans so small issues do not become expensive repairs.",
+    landingFeatureProof: "Clean service proof",
+    landingFeatureProofCopy: "Keep mechanic notes, parts, photos, videos, and documents attached to the right vehicle.",
+    landingFeatureSpeed: "Faster garage handoffs",
+    landingFeatureSpeedCopy: "Give mechanics a simple mobile flow to log work without needing a full fleet admin account.",
     landingWorkflowTitle: "How CORB works",
     landingWorkflowOne: "Create a fleet and register vehicles.",
     landingWorkflowTwo: "Schedule recurring maintenance by date or kilometers.",
     landingWorkflowThree: "Let mechanics log service with notes and evidence.",
     landingWorkflowFour: "Review history and upcoming work from the vehicle or service view.",
-    landingPricingTitle: "Simple pricing for growing fleets",
-    landingPricingCopy: "Start small, then add mechanics and reporting as your operation grows.",
+    landingPricingTitle: "Pricing that scales with your fleet",
+    landingPricingCopy: "Choose the level of control your operation needs today.",
     landingStarter: "Starter",
     landingStarterPrice: "$39",
     landingStarterCopy: "For small fleets getting organized.",
@@ -320,6 +323,7 @@ const translations = {
     landingIncludedOne: "Fleet, vehicle, and schedule management",
     landingIncludedTwo: "Mechanic mobile work logging",
     landingIncludedThree: "Maintenance history and evidence trail",
+    landingFooterCopy: "Built for owners who want fewer surprises in the yard and cleaner proof after every service.",
     fleetStatus: "Fleet status",
     activeFleetLabel: "Active fleet",
     vehiclesOnline: "{count} vehicles",
@@ -539,28 +543,26 @@ const translations = {
     landingNavPricing: "Prix",
     landingLoginCta: "Connexion",
     landingEyebrow: "SaaS d'entretien de flotte",
-    landingHeadline: "Un seul endroit pour planifier, consigner et prouver chaque service.",
-    landingCopy: "CORB donne aux propriétaires une vue claire de l'entretien et aux mécaniciens un flux mobile rapide pour consigner le travail sur le terrain.",
+    landingHeadline: "Gardez vos camions actifs. Prévenez l'entretien avant l'arrêt.",
+    landingCopy: "CORB aide les petites flottes à devancer les entretiens, réduire les bris imprévus et garder une preuve claire de chaque travail fait au garage.",
     landingPrimaryCta: "Connexion",
     landingSecondaryCta: "Voir les prix",
-    landingActiveFleet: "Flotte active",
-    landingVehicles: "Véhicules suivis",
-    landingServices: "Services dus",
-    landingProof: "Preuves sauvegardées",
-    landingFeaturesTitle: "Conçu pour le travail entre la répartition et le garage.",
-    landingFeatureSchedules: "Plans d'entretien",
-    landingFeatureSchedulesCopy: "Suivez les entretiens selon le temps, les KM ou une règle hybride par camion.",
-    landingFeatureMechanics: "Accès mécanicien",
-    landingFeatureMechanicsCopy: "Utilisez des codes révocables pour consigner le travail sans gérer la flotte.",
-    landingFeatureEvidence: "Preuve du travail",
-    landingFeatureEvidenceCopy: "Ajoutez notes, pièces, photos, vidéos et documents à chaque complétion.",
+    landingFeaturesTitle: "La couche d'entretien entre vos camions et les arrêts coûteux.",
+    landingFeatureDowntime: "Moins d'arrêts",
+    landingFeatureDowntimeCopy: "Voyez ce qui arrive à échéance avant qu'un camion soit immobilisé par surprise.",
+    landingFeatureBreakage: "Moins de bris imprévus",
+    landingFeatureBreakageCopy: "Suivez les plans par kilométrage et par temps pour éviter que les petits problèmes deviennent coûteux.",
+    landingFeatureProof: "Preuves de service claires",
+    landingFeatureProofCopy: "Gardez notes, pièces, photos, vidéos et documents liés au bon véhicule.",
+    landingFeatureSpeed: "Passage au garage plus rapide",
+    landingFeatureSpeedCopy: "Donnez aux mécaniciens un flux mobile simple sans leur créer un compte administrateur complet.",
     landingWorkflowTitle: "Comment CORB fonctionne",
     landingWorkflowOne: "Créer une flotte et enregistrer les véhicules.",
     landingWorkflowTwo: "Planifier les entretiens récurrents par date ou kilométrage.",
     landingWorkflowThree: "Permettre aux mécaniciens de consigner notes et preuves.",
     landingWorkflowFour: "Revoir l'historique et les travaux à venir par véhicule ou service.",
-    landingPricingTitle: "Des prix simples pour les flottes en croissance",
-    landingPricingCopy: "Commencez petit, puis ajoutez mécaniciens et rapports avec votre opération.",
+    landingPricingTitle: "Des prix qui suivent votre flotte",
+    landingPricingCopy: "Choisissez le niveau de contrôle dont votre opération a besoin aujourd'hui.",
     landingStarter: "Départ",
     landingStarterPrice: "39 $",
     landingStarterCopy: "Pour les petites flottes qui s'organisent.",
@@ -574,6 +576,7 @@ const translations = {
     landingIncludedOne: "Gestion de flotte, véhicules et horaires",
     landingIncludedTwo: "Consignation mobile par les mécaniciens",
     landingIncludedThree: "Historique d'entretien et preuves",
+    landingFooterCopy: "Conçu pour les propriétaires qui veulent moins de surprises dans la cour et de meilleures preuves après chaque service.",
     fleetStatus: "État de la flotte",
     activeFleetLabel: "Flotte active",
     vehiclesOnline: "{count} véhicules",
@@ -594,6 +597,22 @@ let scrollTicking = false;
 let touchStartY = 0;
 let activeVoiceRecognition = null;
 applyInitialUrlRoute();
+let shouldResetLandingScroll = !state.isAuthenticated && state.route !== "login";
+if (shouldResetLandingScroll && window.location.hash) {
+  history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+}
+
+function resetLandingScrollPosition() {
+  if (!app.querySelector(".landing-hero")) return;
+  if (window.location.hash) {
+    history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+  }
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener("load", () => {
+  if (!state.isAuthenticated && state.route !== "login") setTimeout(resetLandingScrollPosition, 0);
+});
 
 function isoDate(date) {
   return date.toISOString().slice(0, 10);
@@ -1554,16 +1573,11 @@ function loginAuthPanel() {
 
 function renderLanding() {
   const language = state.language === "fr" ? "fr" : "en";
-  const stats = [
-    [t("landingActiveFleet"), "CORB"],
-    [t("landingVehicles"), String(defaultState().vehicles.length)],
-    [t("landingServices"), String(statusCounts().overdue + statusCounts().upcoming)],
-    [t("landingProof"), "PDF + Media"]
-  ];
-  const features = [
-    [icons.calendar, t("landingFeatureSchedules"), t("landingFeatureSchedulesCopy")],
-    [icons.garage, t("landingFeatureMechanics"), t("landingFeatureMechanicsCopy")],
-    [icons.camera, t("landingFeatureEvidence"), t("landingFeatureEvidenceCopy")]
+  const outcomes = [
+    [icons.truck, t("landingFeatureDowntime"), t("landingFeatureDowntimeCopy")],
+    [icons.wrench, t("landingFeatureBreakage"), t("landingFeatureBreakageCopy")],
+    [icons.camera, t("landingFeatureProof"), t("landingFeatureProofCopy")],
+    [icons.garage, t("landingFeatureSpeed"), t("landingFeatureSpeedCopy")]
   ];
   const pricing = [
     [t("landingStarter"), t("landingStarterPrice"), t("landingStarterCopy")],
@@ -1579,8 +1593,8 @@ function renderLanding() {
             <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
           </button>
           <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
-            <a href="#product">${escapeHtml(t("landingNavProduct"))}</a>
-            <a href="#pricing">${escapeHtml(t("landingNavPricing"))}</a>
+            <button type="button" data-scroll-target="product">${escapeHtml(t("landingNavProduct"))}</button>
+            <button type="button" data-scroll-target="pricing">${escapeHtml(t("landingNavPricing"))}</button>
           </nav>
           <div class="login-preferences">
             <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
@@ -1600,54 +1614,18 @@ function renderLanding() {
             <p>${escapeHtml(t("landingCopy"))}</p>
             <div class="landing-cta-row">
               <button class="primary-btn landing-cta" type="button" data-route="login">${escapeHtml(t("landingPrimaryCta"))} ${icons.arrowRight}</button>
-              <a class="outline-btn landing-cta" href="#pricing">${escapeHtml(t("landingSecondaryCta"))}</a>
-            </div>
-          </div>
-          <div class="landing-product-shot" aria-label="${escapeAttr(t("services"))}">
-            <div class="phone-preview">
-              <div class="phone-preview-top">
-                <span class="brand-mark" aria-hidden="true"></span>
-                <div><strong>CORB</strong><small>${escapeHtml(t("fleetManager"))}</small></div>
-              </div>
-              <div class="phone-preview-hero">
-                <div class="phone-preview-hero-head">
-                  <small>${escapeHtml(t("serviceBay"))}</small>
-                  ${icons.truck}
-                </div>
-                <strong>${escapeHtml(t("welcome"))} Anthony</strong>
-                <span>${escapeHtml(t("services"))}</span>
-              </div>
-              <div class="phone-preview-filter">
-                <span>${escapeHtml(t("overdue"))}<b>2</b></span>
-                <span>${escapeHtml(t("upcoming"))}<b>1</b></span>
-              </div>
-              <div class="phone-preview-card">
-                <div class="phone-preview-card-head">
-                  <span class="phone-preview-service-icon">${icons.wrench}</span>
-                  <span><strong>${escapeHtml(t("annualInspection"))}</strong><small>${escapeHtml(t("truckNumber", { number: 2 }))}</small></span>
-                  ${icons.chevronRight}
-                </div>
-                <div class="phone-preview-meta">
-                  <p>${icons.calendar}<span>${escapeHtml(t("nextDue"))}</span><strong>${shortDate(addDays(7))}</strong></p>
-                  <p>${icons.history}<span>${escapeHtml(t("lastPerformed"))}</span><strong>${shortDate(addDays(-12))}</strong></p>
-                </div>
-                <button type="button">${escapeHtml(t("logService"))}</button>
-              </div>
+              <button class="outline-btn landing-cta" type="button" data-scroll-target="pricing">${escapeHtml(t("landingSecondaryCta"))}</button>
             </div>
           </div>
         </section>
 
-        <section class="landing-stats" aria-label="${escapeAttr(t("fleetStatus"))}">
-          ${stats.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("")}
-        </section>
-
-        <section class="landing-section landing-product-section" id="product">
+        <section class="landing-section landing-product-section" data-section="product">
           <div class="landing-section-head">
             <span>${escapeHtml(t("landingIncluded"))}</span>
             <h2>${escapeHtml(t("landingFeaturesTitle"))}</h2>
           </div>
           <div class="landing-feature-grid">
-            ${features.map(([iconMarkup, title, copy]) => `
+            ${outcomes.map(([iconMarkup, title, copy]) => `
               <article>
                 <span>${iconMarkup}</span>
                 <h3>${escapeHtml(title)}</h3>
@@ -1657,7 +1635,7 @@ function renderLanding() {
           </div>
         </section>
 
-        <section class="landing-section" id="pricing">
+        <section class="landing-section" data-section="pricing">
           <div class="landing-section-head">
             <span>${escapeHtml(t("landingPricingCopy"))}</span>
             <h2>${escapeHtml(t("landingPricingTitle"))}</h2>
@@ -1674,6 +1652,14 @@ function renderLanding() {
             `).join("")}
           </div>
         </section>
+
+        <footer class="landing-footer">
+          <div class="login-brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+          </div>
+          <p>${escapeHtml(t("landingFooterCopy"))}</p>
+        </footer>
       </section>
     </main>
   `;
@@ -2893,6 +2879,7 @@ function formatFileSize(bytes) {
 
 function render() {
   saveState();
+  const renderingLanding = !state.isAuthenticated && state.route !== "login";
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.lang = state.language === "fr" ? "fr-CA" : "en";
   document
@@ -2909,6 +2896,11 @@ function render() {
   `;
   requestAnimationFrame(() => {
     if (!pageCanHideChrome()) setChromeHidden(false);
+    if (shouldResetLandingScroll && renderingLanding) {
+      resetLandingScrollPosition();
+      setTimeout(resetLandingScrollPosition, 80);
+      shouldResetLandingScroll = false;
+    }
   });
 }
 
@@ -3059,11 +3051,16 @@ app.addEventListener("click", (event) => {
   const closeModalTrigger = event.target.closest("[data-close-modal-trigger]");
   const backdropClose = event.target.matches("[data-close-modal]");
   const logoutTrigger = event.target.closest("[data-logout]");
+  const scrollTarget = event.target.closest("[data-scroll-target]")?.dataset.scrollTarget;
 
   if (authMode === "owner" || authMode === "mechanic") {
     state.loginMode = authMode;
     state.loginError = "";
     render();
+    return;
+  }
+  if (scrollTarget) {
+    app.querySelector(`[data-section="${CSS.escape(scrollTarget)}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
   }
   if (contextBack) {
