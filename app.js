@@ -25,7 +25,14 @@ const lucidePaths = {
   mail: `<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 6L2 7"/>`,
   folder: `<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>`,
   history: `<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>`,
-  logOut: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>`
+  logOut: `<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>`,
+  mic: `<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/><path d="M8 22h8"/>`,
+  video: `<path d="m16 13 5 3V8l-5 3"/><rect width="14" height="12" x="2" y="6" rx="2"/>`,
+  camera: `<path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4z"/><circle cx="12" cy="13" r="3"/>`,
+  fileText: `<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>`,
+  keyRound: `<path d="M2 18a6 6 0 1 0 10.7-3.7L22 5V2h-3l-1 1-1-1-2 2 1 1-1 1-1-1-2.3 2.3A6 6 0 0 0 2 18Z"/><path d="M7 17h.01"/>`,
+  moon: `<path d="M12 3a6 6 0 0 0 9 7.4A9 9 0 1 1 12 3Z"/>`,
+  shieldCheck: `<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>`
 };
 
 function icon(name, className = "icon") {
@@ -53,7 +60,14 @@ const icons = {
   mail: icon("mail", "icon"),
   folder: icon("folder", "icon"),
   history: icon("history", "icon"),
-  logout: icon("logOut", "icon")
+  logout: icon("logOut", "icon"),
+  mic: icon("mic", "icon"),
+  video: icon("video", "icon"),
+  camera: icon("camera", "icon"),
+  fileText: icon("fileText", "icon"),
+  key: icon("keyRound", "icon"),
+  moon: icon("moon", "icon"),
+  shieldCheck: icon("shieldCheck", "icon")
 };
 
 const translations = {
@@ -197,7 +211,43 @@ const translations = {
     repeat: "Repeat",
     completeNow: "Complete",
     confirmCompletion: "Complete",
-    cancel: "Cancel"
+    cancel: "Cancel",
+    loginHeadline: "Fleet work, ready when the shift starts.",
+    loginCopy: "Sign in as an owner or use a mechanic access code to complete work in the yard.",
+    ownerLogin: "Owner",
+    mechanicLogin: "Mechanic",
+    email: "Email",
+    password: "Password",
+    signIn: "Sign in",
+    accessCode: "Access code",
+    accessCodeHint: "Demo mechanic code: 2468",
+    continueToFleet: "Continue",
+    invalidAccessCode: "That access code does not match an active fleet.",
+    signedInAsMechanic: "Mechanic mode",
+    quickServiceSetup: "Fast setup",
+    oilPreset: "Oil",
+    brakesPreset: "Brakes",
+    inspectionPreset: "Inspection",
+    servicePresetHint: "Tap a preset, then adjust only what changed.",
+    workSnapshot: "Work snapshot",
+    quickNotes: "Quick notes",
+    noteCompleted: "Completed, no issue found.",
+    noteFollowUp: "Follow-up required.",
+    notePartsChanged: "Parts replaced.",
+    noteVehicleSafe: "Vehicle safe to return.",
+    captureEvidence: "Capture evidence",
+    photoCapture: "Photo",
+    photoCaptureHint: "Camera or gallery",
+    videoCapture: "Video",
+    videoCaptureHint: "Short clip",
+    documentCapture: "Document",
+    documentCaptureHint: "Invoice or report",
+    voiceNote: "Voice note",
+    tapToDictate: "Tap to dictate",
+    voiceListening: "Listening...",
+    voiceReady: "Voice ready",
+    voiceNotSupported: "Voice dictation is not supported in this browser.",
+    filesSelected: "{count} selected"
   },
   fr: {
     fleetManager: "Gestion de flotte",
@@ -339,7 +389,43 @@ const translations = {
     repeat: "Répétition",
     completeNow: "Compléter",
     confirmCompletion: "Compléter",
-    cancel: "Annuler"
+    cancel: "Annuler",
+    loginHeadline: "La flotte prête dès le début du quart.",
+    loginCopy: "Connectez-vous comme propriétaire ou utilisez un code mécanicien pour compléter les travaux.",
+    ownerLogin: "Propriétaire",
+    mechanicLogin: "Mécanicien",
+    email: "Courriel",
+    password: "Mot de passe",
+    signIn: "Connexion",
+    accessCode: "Code d'accès",
+    accessCodeHint: "Code mécanicien démo : 2468",
+    continueToFleet: "Continuer",
+    invalidAccessCode: "Ce code ne correspond à aucune flotte active.",
+    signedInAsMechanic: "Mode mécanicien",
+    quickServiceSetup: "Configuration rapide",
+    oilPreset: "Huile",
+    brakesPreset: "Freins",
+    inspectionPreset: "Inspection",
+    servicePresetHint: "Touchez un choix, puis ajustez seulement ce qui a changé.",
+    workSnapshot: "Résumé du travail",
+    quickNotes: "Notes rapides",
+    noteCompleted: "Complété, aucun problème trouvé.",
+    noteFollowUp: "Suivi requis.",
+    notePartsChanged: "Pièces remplacées.",
+    noteVehicleSafe: "Véhicule prêt à retourner.",
+    captureEvidence: "Preuves",
+    photoCapture: "Photo",
+    photoCaptureHint: "Caméra ou galerie",
+    videoCapture: "Vidéo",
+    videoCaptureHint: "Court clip",
+    documentCapture: "Document",
+    documentCaptureHint: "Facture ou rapport",
+    voiceNote: "Note vocale",
+    tapToDictate: "Dicter",
+    voiceListening: "Écoute...",
+    voiceReady: "Voix prête",
+    voiceNotSupported: "La dictée vocale n'est pas prise en charge dans ce navigateur.",
+    filesSelected: "{count} sélectionné(s)"
   }
 };
 
@@ -401,8 +487,12 @@ function uid(prefix) {
 
 function defaultState() {
   return {
-    route: "services",
+    route: "login",
     previousRoute: "services",
+    isAuthenticated: false,
+    authMode: null,
+    loginMode: "owner",
+    loginError: "",
     activeFleetId: "fleet-1",
     activeServiceId: null,
     activeVehicleId: null,
@@ -629,6 +719,10 @@ function loadState() {
 function normalizeState(next) {
   if (next.theme !== "dark" && next.theme !== "light") next.theme = "light";
   if (next.language !== "fr" && next.language !== "en") next.language = "en";
+  next.isAuthenticated = next.isAuthenticated === true;
+  if (next.authMode !== "owner" && next.authMode !== "mechanic") next.authMode = null;
+  if (next.loginMode !== "owner" && next.loginMode !== "mechanic") next.loginMode = "owner";
+  next.loginError = "";
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
   if (!next.activeFleetId) next.activeFleetId = "fleet-1";
@@ -958,6 +1052,7 @@ function applyInitialUrlRoute() {
   const params = new URLSearchParams(window.location.search);
   const route = params.get("route");
   const allowedRoutes = new Set([
+    "login",
     "services",
     "vehicles",
     "profile",
@@ -975,6 +1070,8 @@ function applyInitialUrlRoute() {
   if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
   if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
+  if (params.get("auth") === "1") state.isAuthenticated = true;
+  if (params.get("loginMode") === "mechanic" || params.get("loginMode") === "owner") state.loginMode = params.get("loginMode");
   if (params.get("completionModal")) state.completionModalServiceId = params.get("completionModal");
   if (params.get("createMenu") === "1") state.createMenuOpen = true;
 }
@@ -1118,6 +1215,53 @@ function emptyVehicleCard() {
         </button>
       </div>
     </article>
+  `;
+}
+
+function renderLogin() {
+  const ownerMode = state.loginMode !== "mechanic";
+  return `
+    <main class="login-screen">
+      <section class="login-panel">
+        <div class="login-brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+        </div>
+        <div class="login-hero">
+          <span class="login-kicker">${icons.shieldCheck}${escapeHtml(ownerMode ? t("ownerLogin") : t("signedInAsMechanic"))}</span>
+          <h1>${escapeHtml(t("loginHeadline"))}</h1>
+          <p>${escapeHtml(t("loginCopy"))}</p>
+        </div>
+        <div class="auth-switch" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
+          <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">${escapeHtml(t("ownerLogin"))}</button>
+          <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">${escapeHtml(t("mechanicLogin"))}</button>
+        </div>
+        <form class="login-form" data-login-form>
+          ${ownerMode ? `
+            <div class="form-field">
+              <label for="loginEmail">${escapeHtml(t("email"))}</label>
+              <input id="loginEmail" name="email" type="email" autocomplete="email" value="${escapeAttr(state.user.email)}" required />
+            </div>
+            <div class="form-field">
+              <label for="loginPassword">${escapeHtml(t("password"))}</label>
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" value="demo" required />
+            </div>
+          ` : `
+            <div class="form-field">
+              <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
+              <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
+              <small>${escapeHtml(t("accessCodeHint"))}</small>
+            </div>
+          `}
+          ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
+          <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
+        </form>
+        <div class="login-footer-actions">
+          <button type="button" data-toggle-theme>${icons.moon}<span>${escapeHtml(t("darkMode"))}</span></button>
+          <button type="button" data-language="${state.language === "fr" ? "en" : "fr"}">${escapeHtml(state.language === "fr" ? t("english") : t("french"))}</button>
+        </div>
+      </section>
+    </main>
   `;
 }
 
@@ -1382,6 +1526,37 @@ function renderAddVehicle() {
   `;
 }
 
+function servicePresetBar() {
+  const presets = [
+    { key: "oil", label: t("oilPreset"), title: t("oilChange"), days: 30, km: 10000, icon: icons.wrench },
+    { key: "brakes", label: t("brakesPreset"), title: t("brakeInspection"), days: 60, km: 0, icon: icons.gauge },
+    { key: "inspection", label: t("inspectionPreset"), title: t("annualInspection"), days: 365, km: 0, icon: icons.services }
+  ];
+
+  return `
+    <section class="service-preset-panel">
+      <div>
+        <h2>${escapeHtml(t("quickServiceSetup"))}</h2>
+        <p>${escapeHtml(t("servicePresetHint"))}</p>
+      </div>
+      <div class="preset-grid">
+        ${presets.map((preset) => `
+          <button
+            type="button"
+            data-service-preset
+            data-title="${escapeAttr(preset.title)}"
+            data-days="${preset.days}"
+            data-km="${preset.km}"
+          >
+            ${preset.icon}
+            <span>${escapeHtml(preset.label)}</span>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderAddService() {
   const vehicles = vehiclesForActiveFleet();
   return `
@@ -1396,6 +1571,7 @@ function renderAddService() {
       </div>
       ${vehicles.length ? `
         <form class="mobile-form" data-add-service-form>
+          ${servicePresetBar()}
           ${formSection(t("maintenanceSetup"), `
             ${formField({
               label: t("selectTruck"),
@@ -1571,7 +1747,7 @@ function profileContent() {
     <article class="profile-card security-card">
       <h2 class="security-title">${icons.lock} ${escapeHtml(t("security"))}</h2>
       <button class="outline-btn wide" type="button">${escapeHtml(t("changePassword"))}</button>
-      <button class="danger-btn wide" type="button">${escapeHtml(t("logout"))} ${icons.logout}</button>
+      <button class="danger-btn wide" type="button" data-logout>${escapeHtml(t("logout"))} ${icons.logout}</button>
     </article>
   `;
 }
@@ -1642,11 +1818,30 @@ function renderSettingsPanel() {
   `;
 }
 
+function quickNoteButtons() {
+  return [t("noteCompleted"), t("noteFollowUp"), t("notePartsChanged"), t("noteVehicleSafe")]
+    .map((note) => `<button type="button" data-quick-note="${escapeAttr(note)}">${escapeHtml(note)}</button>`)
+    .join("");
+}
+
+function captureInput({ name, label, hint, iconMarkup, accept, capture = "" }) {
+  const captureAttr = capture ? `capture="${escapeAttr(capture)}"` : "";
+  return `
+    <label class="capture-card">
+      <input class="visually-hidden" type="file" name="${escapeAttr(name)}" accept="${escapeAttr(accept)}" ${captureAttr} ${name === "photos" ? "multiple" : ""} data-capture-input />
+      <span>${iconMarkup}</span>
+      <strong>${escapeHtml(label)}</strong>
+      <small data-capture-status>${escapeHtml(hint)}</small>
+    </label>
+  `;
+}
+
 function completionModal() {
   const service = maintenancePlanById(state.completionModalServiceId);
   if (!service) return "";
   const vehicle = vehicleById(service.vehicleId);
   const summary = dueSummaryForPlan(service);
+  const status = planStatus(service);
 
   return `
     <div class="modal-backdrop" data-close-modal role="presentation">
@@ -1658,20 +1853,47 @@ function completionModal() {
           </div>
           <button class="icon-btn" type="button" data-close-modal-trigger aria-label="${escapeAttr(t("cancel"))}">${icons.x}</button>
         </div>
+        <article class="completion-summary-card">
+          <div>
+            <span>${escapeHtml(t("workSnapshot"))}</span>
+            <strong>${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</strong>
+          </div>
+          <div>
+            <span>${escapeHtml(t("nextDue"))}</span>
+            <strong>${shortDate(summary.nextDueDate)}</strong>
+          </div>
+          <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
+        </article>
         <form class="completion-form" data-completion-form="${service.id}">
-          <section class="form-card">
-            <h2 class="form-section-title">${escapeHtml(t("completionWork"))}</h2>
+          <section class="form-card mechanic-work-card">
+            <div class="form-section-row">
+              <h2 class="form-section-title">${escapeHtml(t("completionWork"))}</h2>
+              <button class="voice-btn" type="button" data-start-voice="${service.id}">
+                ${icons.mic}
+                <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
+              </button>
+            </div>
             <div class="form-stack">
               ${formField({ label: t("currentKm"), name: "completedKm", type: "number", inputmode: "numeric", value: vehicle?.kilometers || summary.lastPerformedKm || 0, attrs: 'min="0"' })}
               <div class="form-field">
                 <label for="mechanicNote">${escapeHtml(t("mechanicNote"))}<span>${escapeHtml(t("optional"))}</span></label>
-                <textarea id="mechanicNote" name="mechanicNote" rows="4" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
+                <textarea id="mechanicNote" name="mechanicNote" rows="5" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
+              </div>
+              <div class="quick-note-panel">
+                <span>${escapeHtml(t("quickNotes"))}</span>
+                <div>${quickNoteButtons()}</div>
               </div>
               ${formField({ label: t("partsNumbers"), name: "partsNumbers", value: "", hint: t("partsNumbersPlaceholder") })}
-              <div class="form-field">
-                <label for="attachments">${escapeHtml(t("photosDocuments"))}<span>${escapeHtml(t("optional"))}</span></label>
-                <input id="attachments" name="attachments" type="file" multiple />
-                <small>${escapeHtml(t("photosDocumentsHint"))}</small>
+              <div class="capture-section">
+                <div class="capture-head">
+                  <strong>${escapeHtml(t("captureEvidence"))}</strong>
+                  <span>${escapeHtml(t("optional"))}</span>
+                </div>
+                <div class="capture-grid">
+                  ${captureInput({ name: "photos", label: t("photoCapture"), hint: t("photoCaptureHint"), iconMarkup: icons.camera, accept: "image/*", capture: "environment" })}
+                  ${captureInput({ name: "video", label: t("videoCapture"), hint: t("videoCaptureHint"), iconMarkup: icons.video, accept: "video/*", capture: "environment" })}
+                  ${captureInput({ name: "documents", label: t("documentCapture"), hint: t("documentCaptureHint"), iconMarkup: icons.fileText, accept: "image/*,.pdf,.doc,.docx" })}
+                </div>
               </div>
             </div>
           </section>
@@ -1718,7 +1940,10 @@ function completionFormValues(serviceId) {
   const form = app.querySelector(`[data-completion-form="${CSS.escape(serviceId)}"]`);
   if (!form) return {};
   const data = new FormData(form);
-  const files = form.elements.attachments?.files ? Array.from(form.elements.attachments.files) : [];
+  const files = ["photos", "video", "documents"].flatMap((name) => {
+    const field = form.elements[name];
+    return field?.files ? Array.from(field.files) : [];
+  });
   return {
     completedKm: Number(data.get("completedKm") || 0),
     mechanicNote: String(data.get("mechanicNote") || "").trim(),
@@ -1807,6 +2032,95 @@ function createFleetFromForm(form) {
   render();
 }
 
+function loginFromForm(form) {
+  const data = new FormData(form);
+  state.loginError = "";
+
+  if (state.loginMode === "mechanic") {
+    const code = String(data.get("accessCode") || "").trim();
+    const access = state.mechanicAccessCodes.find((item) => item.active && item.code === code);
+    if (!access) {
+      state.loginError = t("invalidAccessCode");
+      render();
+      return;
+    }
+    state.activeFleetId = access.fleetId;
+    state.authMode = "mechanic";
+    state.user = {
+      ...state.user,
+      firstName: t("mechanic"),
+      displayName: t("mechanic"),
+      role: "Mechanic"
+    };
+  } else {
+    const email = String(data.get("email") || state.user.email).trim();
+    state.authMode = "owner";
+    state.user = {
+      ...state.user,
+      email,
+      firstName: "Anthony",
+      displayName: email === "Anthony_1997@gmail.com" ? "Anthony.Corbin" : email.split("@")[0] || "Anthony.Corbin"
+    };
+  }
+
+  state.isAuthenticated = true;
+  navigate("services");
+}
+
+function logout() {
+  state.isAuthenticated = false;
+  state.authMode = null;
+  state.route = "login";
+  state.previousRoute = "services";
+  state.createMenuOpen = false;
+  state.completionModalServiceId = null;
+  render();
+}
+
+function appendMechanicNote(note) {
+  const textarea = app.querySelector("[data-completion-form] textarea[name='mechanicNote']");
+  if (!textarea) return;
+  const existing = textarea.value.trim();
+  textarea.value = existing ? `${existing}\n${note}` : note;
+  textarea.focus();
+}
+
+function startVoiceNote(serviceId) {
+  const form = app.querySelector(`[data-completion-form="${CSS.escape(serviceId)}"]`);
+  const textarea = form?.querySelector("textarea[name='mechanicNote']");
+  const status = app.querySelector("[data-voice-status]");
+  const button = app.querySelector(`[data-start-voice="${CSS.escape(serviceId)}"]`);
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!textarea || !Recognition) {
+    if (status) status.textContent = t("voiceNotSupported");
+    return;
+  }
+
+  const recognition = new Recognition();
+  recognition.lang = state.language === "fr" ? "fr-CA" : "en-US";
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  if (status) status.textContent = t("voiceListening");
+  button?.classList.add("listening");
+
+  recognition.addEventListener("result", (event) => {
+    const transcript = Array.from(event.results)
+      .map((result) => result[0]?.transcript || "")
+      .join(" ")
+      .trim();
+    if (transcript) appendMechanicNote(transcript);
+  });
+
+  recognition.addEventListener("end", () => {
+    if (status) status.textContent = t("voiceReady");
+    button?.classList.remove("listening");
+  });
+
+  recognition.start();
+}
+
 function render() {
   saveState();
   document.documentElement.dataset.theme = state.theme;
@@ -1823,6 +2137,7 @@ function render() {
 }
 
 function routeMarkup() {
+  if (!state.isAuthenticated || state.route === "login") return renderLogin();
   if (state.route === "services") return renderServices();
   if (state.route === "vehicles") return renderVehicles();
   if (state.route === "profile") return renderProfile();
@@ -1921,15 +2236,19 @@ window.addEventListener(
 
 app.addEventListener("click", (event) => {
   const route = event.target.closest("[data-route]")?.dataset.route;
+  const authMode = event.target.closest("[data-auth-mode]")?.dataset.authMode;
   const serviceId = event.target.closest("[data-open-service]")?.dataset.openService;
   const vehicleId = event.target.closest("[data-open-vehicle]")?.dataset.openVehicle;
-  const completeId = event.target.closest("[data-complete-service]")?.dataset.completeMaintenancePlan;
+  const completeId = event.target.closest("[data-complete-service]")?.dataset.completeService;
   const submitCompletionId = event.target.closest("[data-submit-completion]")?.dataset.submitCompletion;
+  const quickNote = event.target.closest("[data-quick-note]")?.dataset.quickNote;
+  const voiceServiceId = event.target.closest("[data-start-voice]")?.dataset.startVoice;
   const filter = event.target.closest("[data-filter]")?.dataset.filter;
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const switchFleetId = event.target.closest("[data-switch-fleet]")?.dataset.switchFleet;
+  const servicePreset = event.target.closest("[data-service-preset]");
   const toggleCreateMenu = event.target.closest("[data-toggle-create-menu]");
   const closeCreateMenuTrigger = event.target.closest("[data-close-create-menu-trigger]");
   const closeCreateMenuBackdrop = event.target.matches("[data-close-create-menu]");
@@ -1937,7 +2256,35 @@ app.addEventListener("click", (event) => {
   const language = event.target.closest("[data-language]")?.dataset.language;
   const closeModalTrigger = event.target.closest("[data-close-modal-trigger]");
   const backdropClose = event.target.matches("[data-close-modal]");
+  const logoutTrigger = event.target.closest("[data-logout]");
 
+  if (authMode === "owner" || authMode === "mechanic") {
+    state.loginMode = authMode;
+    state.loginError = "";
+    render();
+    return;
+  }
+  if (logoutTrigger) {
+    logout();
+    return;
+  }
+  if (quickNote) {
+    appendMechanicNote(quickNote);
+    return;
+  }
+  if (voiceServiceId) {
+    startVoiceNote(voiceServiceId);
+    return;
+  }
+  if (servicePreset) {
+    const form = app.querySelector("[data-add-service-form]");
+    if (form) {
+      form.elements.title.value = servicePreset.dataset.title || "";
+      form.elements.intervalDays.value = servicePreset.dataset.days || "0";
+      form.elements.intervalKm.value = servicePreset.dataset.km || "0";
+    }
+    return;
+  }
   if (submitCompletionId) {
     completeMaintenancePlan(submitCompletionId, completionFormValues(submitCompletionId));
     state.completionModalServiceId = null;
@@ -2017,6 +2364,13 @@ app.addEventListener("input", (event) => {
   }
 });
 
+app.addEventListener("change", (event) => {
+  if (!event.target.matches("[data-capture-input]")) return;
+  const status = event.target.closest(".capture-card")?.querySelector("[data-capture-status]");
+  const count = event.target.files?.length || 0;
+  if (status && count) status.textContent = t("filesSelected", { count });
+});
+
 app.addEventListener("click", (event) => {
   if (event.target.closest("[data-submit-add-vehicle]")) {
     const form = app.querySelector("[data-add-vehicle-form]");
@@ -2029,6 +2383,10 @@ app.addEventListener("click", (event) => {
 });
 
 app.addEventListener("submit", (event) => {
+  if (event.target.matches("[data-login-form]")) {
+    event.preventDefault();
+    if (event.target.reportValidity()) loginFromForm(event.target);
+  }
   if (event.target.matches("[data-add-vehicle-form]")) {
     event.preventDefault();
     addVehicleFromForm(event.target);
