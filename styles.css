@@ -40,7 +40,10 @@
 }
 
 html {
+  width: 100%;
   background: var(--app-bg);
+  overflow-x: hidden;
+  scrollbar-width: none;
 }
 
 html[data-theme="dark"] {
@@ -49,12 +52,26 @@ html[data-theme="dark"] {
 
 body {
   margin: 0;
+  width: 100%;
   min-width: 320px;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
   background: var(--app-bg);
   color: var(--text-blue);
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.app-shell::-webkit-scrollbar,
+.screen::-webkit-scrollbar,
+.completion-modal::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 html[data-theme="dark"] body,
@@ -90,6 +107,8 @@ textarea:focus-visible {
 .app-shell {
   min-height: 100svh;
   background: var(--app-bg);
+  overflow-x: hidden;
+  scrollbar-width: none;
 }
 
 .theme-dark {
@@ -131,10 +150,11 @@ textarea:focus-visible {
   min-height: 100svh;
   overflow-x: hidden;
   padding: 16px var(--page-gutter) 104px;
+  scrollbar-width: none;
 }
 
 .screen.with-actions {
-  padding-bottom: 100px;
+  padding-bottom: calc(102px + env(safe-area-inset-bottom));
 }
 
 .brand-header {
@@ -1574,7 +1594,7 @@ button:disabled {
 .mobile-form {
   display: grid;
   gap: 12px;
-  padding: 0;
+  padding: 0 0 6px;
 }
 
 .form-card {
@@ -1659,7 +1679,7 @@ button:disabled {
 .form-field textarea {
   min-height: 112px;
   padding-top: 13px;
-  resize: vertical;
+  resize: none;
 }
 
 .form-field select {
@@ -1695,24 +1715,42 @@ button:disabled {
   right: 0;
   bottom: 0;
   z-index: 30;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 104px;
+  display: flex;
+  align-items: center;
   gap: 10px;
   border-top: 1px solid var(--divider);
-  background: color-mix(in srgb, var(--app-bg) 94%, var(--card));
-  padding: 10px var(--page-gutter) calc(12px + env(safe-area-inset-bottom));
-  box-shadow: 0 -12px 28px rgba(0, 0, 0, 0.04);
-  backdrop-filter: blur(14px);
+  background: var(--app-bg);
+  padding: 8px var(--page-gutter) calc(10px + env(safe-area-inset-bottom));
+  box-shadow: 0 -1px 0 var(--divider), 0 -14px 28px rgba(0, 0, 0, 0.04);
+  backdrop-filter: none;
 }
 
 .action-bar.single-action {
-  grid-template-columns: 1fr;
+  display: block;
+}
+
+.action-bar > * {
+  min-width: 0;
+}
+
+.action-bar > :first-child {
+  flex: 1 1 0;
+  width: auto;
+}
+
+.action-bar > .outline-btn {
+  flex: 0 0 104px;
+  width: auto;
+}
+
+.action-bar.single-action > * {
+  width: 100%;
 }
 
 .theme-dark .action-bar {
-  background: rgba(17, 18, 20, 0.94);
+  background: var(--app-bg);
   border-color: var(--divider);
-  box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 -1px 0 var(--divider), 0 -16px 30px rgba(0, 0, 0, 0.28);
 }
 
 .action-bar .primary-btn,
@@ -2087,6 +2125,7 @@ button:disabled {
   background: var(--app-bg);
   padding: calc(18px + env(safe-area-inset-top)) var(--page-gutter) calc(18px + env(safe-area-inset-bottom));
   box-shadow: none;
+  scrollbar-width: none;
 }
 
 .modal-head {
@@ -2120,7 +2159,8 @@ button:disabled {
   margin: 24px calc(var(--page-gutter) * -1) calc((18px + env(safe-area-inset-bottom)) * -1);
   border-top: 1px solid var(--divider);
   background: var(--app-bg);
-  padding: 12px var(--page-gutter) calc(12px + env(safe-area-inset-bottom));
+  padding: 10px var(--page-gutter) calc(10px + env(safe-area-inset-bottom));
+  box-shadow: 0 -1px 0 var(--divider);
 }
 
 .app-tabs {
