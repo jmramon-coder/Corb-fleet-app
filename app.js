@@ -81,23 +81,22 @@ const translations = {
     noVehicleYet: "No vehicle yet",
     emptyVehicleCopy: "Add your first vehicle to start tracking maintenance schedules and service history",
     addVehicle: "Add vehicle",
-    addService: "Add service",
+    addService: "Add maintenance",
     create: "Create",
     createNew: "Create new",
     createVehicle: "Create vehicle",
-    createService: "Create service",
-    serviceTitle: "Service title",
+    createService: "Add maintenance",
+    serviceTitle: "Maintenance name",
     selectTruck: "Select truck",
-    scheduleType: "Schedule type",
-    intervalDays: "Interval days",
-    intervalKm: "Interval KM",
-    dueDate: "Due date",
-    dueKm: "Due KM",
+    intervalDays: "Repeat days",
+    intervalKm: "Repeat KM",
+    dueDate: "First due date",
+    dueKm: "First due KM",
     kilometers: "Kilometers",
     year: "Year",
     engineSerial: "Engine serial",
     filters: "Filters",
-    noVehicleForService: "Create a vehicle before adding a service.",
+    noVehicleForService: "Create a vehicle before adding maintenance.",
     unknownVehicle: "Unknown vehicle",
     nextDue: "Next due",
     lastPerformed: "Last performed",
@@ -188,11 +187,9 @@ const translations = {
     mechanicAccessCode: "Mechanic access code",
     scheduleRule: "Schedule rule",
     serviceSchedule: "Service schedule",
-    identification: "Identification",
-    story: "Story",
-    serviceIdentification: "Service identification",
-    upcomingService: "Upcoming service",
-    completedServices: "Completed services",
+    completedServices: "Completed work",
+    maintenanceOverview: "Maintenance overview",
+    repeat: "Repeat",
     completeNow: "Complete",
     confirmCompletion: "Complete",
     cancel: "Cancel"
@@ -221,23 +218,22 @@ const translations = {
     noVehicleYet: "Aucun véhicule",
     emptyVehicleCopy: "Ajoutez votre premier véhicule pour suivre les entretiens et l'historique des services",
     addVehicle: "Ajouter un véhicule",
-    addService: "Ajouter un service",
+    addService: "Ajouter un entretien",
     create: "Créer",
     createNew: "Créer",
     createVehicle: "Créer un véhicule",
-    createService: "Créer un service",
-    serviceTitle: "Titre du service",
+    createService: "Ajouter un entretien",
+    serviceTitle: "Nom de l'entretien",
     selectTruck: "Choisir un camion",
-    scheduleType: "Type d'horaire",
-    intervalDays: "Intervalle en jours",
-    intervalKm: "Intervalle en KM",
-    dueDate: "Date d'échéance",
-    dueKm: "KM d'échéance",
+    intervalDays: "Répétition en jours",
+    intervalKm: "Répétition en KM",
+    dueDate: "Première échéance",
+    dueKm: "Premier KM d'échéance",
     kilometers: "Kilométrage",
     year: "Année",
     engineSerial: "Série moteur",
     filters: "Filtres",
-    noVehicleForService: "Créez un véhicule avant d'ajouter un service.",
+    noVehicleForService: "Créez un véhicule avant d'ajouter un entretien.",
     unknownVehicle: "Véhicule inconnu",
     nextDue: "Prochaine échéance",
     lastPerformed: "Dernier service",
@@ -328,11 +324,9 @@ const translations = {
     mechanicAccessCode: "Code d'accès mécanicien",
     scheduleRule: "Règle de planification",
     serviceSchedule: "Horaire de service",
-    identification: "Identification",
-    story: "Historique",
-    serviceIdentification: "Identification du service",
-    upcomingService: "Service à venir",
-    completedServices: "Services complétés",
+    completedServices: "Travaux complétés",
+    maintenanceOverview: "Aperçu de l'entretien",
+    repeat: "Répétition",
     completeNow: "Compléter",
     confirmCompletion: "Compléter",
     cancel: "Annuler"
@@ -407,7 +401,6 @@ function defaultState() {
     serviceFilter: "all",
     serviceSearch: "",
     profileTab: "account",
-    serviceTab: "identification",
     truckTab: "details",
     theme: "light",
     language: "en",
@@ -632,7 +625,6 @@ function normalizeState(next) {
   if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || "fleet-1";
   next.createMenuOpen = false;
   next.completionModalServiceId = null;
-  if (!["identification", "schedule", "story"].includes(next.serviceTab)) next.serviceTab = "identification";
   if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
   if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
@@ -970,7 +962,6 @@ function applyInitialUrlRoute() {
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
-  if (["identification", "schedule", "story"].includes(params.get("serviceTab"))) state.serviceTab = params.get("serviceTab");
   if (["details", "schedule", "history"].includes(params.get("truckTab"))) state.truckTab = params.get("truckTab");
   if (params.get("theme") === "dark" || params.get("theme") === "light") state.theme = params.get("theme");
   if (params.get("language") === "fr" || params.get("language") === "en") state.language = params.get("language");
@@ -1204,34 +1195,22 @@ function serviceCard(service) {
   `;
 }
 
-function serviceIdentityCard(service, vehicle) {
-  const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
-  const summary = dueSummaryForPlan(service);
-  return `
-    <article class="detail-card service-object-card">
-      <div class="object-detail-grid">
-        <div><span class="detail-label">${escapeHtml(t("scheduleRule"))}</span><strong>${escapeHtml(scheduleLabel)}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("serviceSchedule"))}</span><strong>${escapeHtml(displayRecurrenceLabel(service.recurrenceLabel))}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("lastPerformed"))}</span><strong>${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong></div>
-      </div>
-    </article>
-  `;
-}
-
-function upcomingServiceCard(service, vehicle) {
+function serviceOverviewCard(service, vehicle) {
   const summary = dueSummaryForPlan(service);
   const status = planStatus(service);
+  const scheduleLabel = service.scheduleType === "hybrid" ? t("timeAndKmBased") : service.scheduleType === "km" ? t("kmBased") : t("timeBased");
   return `
-    <article class="detail-card upcoming-service-card">
+    <article class="detail-card service-overview-card">
       <div class="section-card-head">
-        <h3>${icons.calendar} ${escapeHtml(t("upcomingService"))}</h3>
+        <h3>${icons.calendar} ${escapeHtml(t("maintenanceOverview"))}</h3>
         <span class="due-chip ${status}">${escapeHtml(status === "ok" ? t("ok") : status === "overdue" ? t("overdue") : t("upcoming"))}</span>
       </div>
       <div class="object-detail-grid">
         <div><span class="detail-label">${escapeHtml(t("nextDue"))}</span><strong class="date-value">${icons.calendar}${shortDate(summary.nextDueDate)}</strong></div>
         <div><span class="detail-label">${escapeHtml(t("nextDueKm"))}</span><strong class="date-value">${icons.gauge}${summary.nextDueKm ? formatKm(summary.nextDueKm) : t("notRecorded")}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong class="date-value">${icons.gauge}${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("lastPerformed"))}</span><strong>${summary.lastPerformedDate ? shortDate(summary.lastPerformedDate) : t("noCompletionYet")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("currentKm"))}</span><strong>${vehicle ? formatKm(vehicle.kilometers) : t("notRecorded")}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("repeat"))}</span><strong>${escapeHtml(`${scheduleLabel} · ${displayRecurrenceLabel(service.recurrenceLabel)}`)}</strong></div>
         <div><span class="detail-label">${escapeHtml(t("details"))}</span><strong>${escapeHtml(summary.dueText)}</strong></div>
       </div>
     </article>
@@ -1379,17 +1358,9 @@ function renderAddService() {
             </select>
           </label>
           <label>${escapeHtml(t("serviceTitle"))} <input name="title" autocomplete="off" value="${escapeAttr(t("oilChange"))}" required /></label>
-          <label>${escapeHtml(t("scheduleType"))}
-            <select name="scheduleType">
-              <option value="hybrid">${escapeHtml(t("timeAndKmBased"))}</option>
-              <option value="time">${escapeHtml(t("timeBased"))}</option>
-              <option value="km">${escapeHtml(t("kmBased"))}</option>
-            </select>
-          </label>
           <label>${escapeHtml(t("intervalDays"))} <input name="intervalDays" type="number" inputmode="numeric" min="0" value="30" /></label>
           <label>${escapeHtml(t("intervalKm"))} <input name="intervalKm" type="number" inputmode="numeric" min="0" value="10000" /></label>
           <label>${escapeHtml(t("dueDate"))} <input name="dueDate" type="date" value="${escapeAttr(addDays(30))}" required /></label>
-          <label>${escapeHtml(t("dueKm"))} <input name="dueKm" type="number" inputmode="numeric" min="0" value="${escapeAttr(defaultKm)}" /></label>
         </form>
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
       <div class="action-bar">
@@ -1419,34 +1390,15 @@ function renderServiceDetails() {
             <p>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
           </div>
         </div>
-        ${serviceTabs()}
       </section>
-      ${serviceTabContent(service, vehicle)}
+      ${serviceOverviewCard(service, vehicle)}
+      ${serviceCompletionHistory(service)}
       <div class="action-bar">
         <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("completeNow"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
-}
-
-function serviceTabs() {
-  return appTabs({
-    items: [
-      { key: "identification", label: t("identification") },
-      { key: "schedule", label: t("schedule") },
-      { key: "story", label: t("story") }
-    ],
-    active: state.serviceTab,
-    dataAttribute: "data-service-tab",
-    className: "truck-tabs full-bleed-tabs"
-  });
-}
-
-function serviceTabContent(service, vehicle) {
-  if (state.serviceTab === "schedule") return upcomingServiceCard(service, vehicle);
-  if (state.serviceTab === "story") return serviceCompletionHistory(service);
-  return serviceIdentityCard(service, vehicle);
 }
 
 function renderTruckDetails() {
@@ -1739,10 +1691,10 @@ function addMaintenancePlanFromForm(form) {
   const data = Object.fromEntries(new FormData(form).entries());
   const vehicle = vehicleById(data.vehicleId);
   if (!vehicle) return;
-  const scheduleType = data.scheduleType || "hybrid";
   const intervalDays = Number(data.intervalDays || 0);
   const intervalKm = Number(data.intervalKm || 0);
-  const dueKm = Number(data.dueKm || 0);
+  const scheduleType = intervalDays > 0 && intervalKm > 0 ? "hybrid" : intervalKm > 0 ? "km" : "time";
+  const dueKm = intervalKm > 0 ? Number(vehicle.kilometers || 0) + intervalKm : 0;
   const service = normalizeMaintenancePlan({
     id: uid("service"),
     fleetId: vehicle.fleetId || state.activeFleetId,
@@ -1750,7 +1702,7 @@ function addMaintenancePlanFromForm(form) {
     title: data.title || t("oilChange"),
     scheduleType,
     recurrenceType: scheduleType,
-    recurrenceLabel: intervalDays ? `Every ${intervalDays} days` : "",
+    recurrenceLabel: intervalDays ? `Every ${intervalDays} days` : intervalKm ? `Every ${intervalKm.toLocaleString(dateLocale())} km` : "",
     intervalDays: scheduleType === "km" ? 0 : intervalDays,
     intervalKm: scheduleType === "time" ? null : intervalKm,
     dueDate: data.dueDate || todayIso,
@@ -1760,7 +1712,7 @@ function addMaintenancePlanFromForm(form) {
     status: "active"
   });
   state.maintenancePlans.unshift(service);
-  navigate("serviceDetails", { activeServiceId: service.id, serviceTab: "identification" });
+  navigate("serviceDetails", { activeServiceId: service.id });
 }
 
 function updateFleetName(form) {
@@ -1914,7 +1866,6 @@ app.addEventListener("click", (event) => {
   const submitCompletionId = event.target.closest("[data-submit-completion]")?.dataset.submitCompletion;
   const filter = event.target.closest("[data-filter]")?.dataset.filter;
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
-  const serviceTab = event.target.closest("[data-service-tab]")?.dataset.serviceTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const switchFleetId = event.target.closest("[data-switch-fleet]")?.dataset.switchFleet;
@@ -1957,7 +1908,7 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (serviceId) {
-    navigate("serviceDetails", { activeServiceId: serviceId, serviceTab: "identification" });
+    navigate("serviceDetails", { activeServiceId: serviceId });
     return;
   }
   if (route) {
@@ -1976,10 +1927,6 @@ app.addEventListener("click", (event) => {
   }
   if (profileTab) {
     state.profileTab = profileTab;
-    render();
-  }
-  if (serviceTab) {
-    state.serviceTab = serviceTab;
     render();
   }
   if (truckTab) {
