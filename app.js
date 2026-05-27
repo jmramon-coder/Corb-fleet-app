@@ -252,8 +252,13 @@ const translations = {
     documentCaptureHint: "Invoice or report",
     voiceNote: "Voice note",
     tapToDictate: "Tap to dictate",
+    tapToStopDictation: "Tap to stop",
     voiceListening: "Listening...",
     voiceReady: "Voice ready",
+    voiceSaved: "Added to note",
+    voiceNoSpeech: "No speech detected",
+    voiceDenied: "Microphone blocked",
+    voiceUseKeyboard: "Use keyboard mic",
     voiceNotSupported: "Voice dictation is not supported in this browser.",
     filesSelected: "{count} selected",
     commandCenter: "Command center",
@@ -444,8 +449,13 @@ const translations = {
     documentCaptureHint: "Facture ou rapport",
     voiceNote: "Note vocale",
     tapToDictate: "Dicter",
+    tapToStopDictation: "Arrêter",
     voiceListening: "Écoute...",
     voiceReady: "Voix prête",
+    voiceSaved: "Ajouté à la note",
+    voiceNoSpeech: "Aucune voix détectée",
+    voiceDenied: "Micro bloqué",
+    voiceUseKeyboard: "Micro du clavier",
     voiceNotSupported: "La dictée vocale n'est pas prise en charge dans ce navigateur.",
     filesSelected: "{count} sélectionné(s)",
     commandCenter: "Centre de commande",
@@ -467,6 +477,7 @@ let chromeHidden = false;
 let lastScrollY = window.scrollY;
 let scrollTicking = false;
 let touchStartY = 0;
+let activeVoiceRecognition = null;
 applyInitialUrlRoute();
 
 function isoDate(date) {
@@ -1951,7 +1962,7 @@ function completionModal() {
                 <label for="mechanicNote">${escapeHtml(t("mechanicNote"))}<span>${escapeHtml(t("optional"))}</span></label>
                 <div class="note-input-shell">
                   <textarea id="mechanicNote" name="mechanicNote" rows="5" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
-                  <button class="voice-btn" type="button" data-start-voice="${service.id}">
+                  <button class="voice-btn" type="button" data-start-voice="${service.id}" aria-pressed="false">
                     ${icons.mic}
                     <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
                   </button>
@@ -2163,40 +2174,100 @@ function appendMechanicNote(note) {
   textarea.focus();
 }
 
+function resetVoiceButton(button, status, label = t("tapToDictate")) {
+  if (status) status.textContent = label;
+  button?.classList.remove("listening");
+  button?.setAttribute("aria-pressed", "false");
+}
+
+function stopActiveVoiceRecognition() {
+  if (!activeVoiceRecognition) return;
+  const { recognition } = activeVoiceRecognition;
+  activeVoiceRecognition.manualStop = true;
+  try {
+    recognition.stop();
+  } catch {
+    activeVoiceRecognition = null;
+  }
+}
+
 function startVoiceNote(serviceId) {
   const form = app.querySelector(`[data-completion-form="${CSS.escape(serviceId)}"]`);
   const textarea = form?.querySelector("textarea[name='mechanicNote']");
-  const status = app.querySelector("[data-voice-status]");
   const button = app.querySelector(`[data-start-voice="${CSS.escape(serviceId)}"]`);
+  const status = button?.querySelector("[data-voice-status]");
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  if (activeVoiceRecognition?.serviceId === serviceId) {
+    stopActiveVoiceRecognition();
+    return;
+  }
+
+  stopActiveVoiceRecognition();
+
   if (!textarea || !Recognition) {
-    if (status) status.textContent = t("voiceNotSupported");
+    resetVoiceButton(button, status, t("voiceUseKeyboard"));
     return;
   }
 
   const recognition = new Recognition();
   recognition.lang = state.language === "fr" ? "fr-CA" : "en-US";
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.continuous = false;
+  activeVoiceRecognition = { recognition, serviceId, manualStop: false, finalTranscript: "", hadError: false };
 
-  if (status) status.textContent = t("voiceListening");
+  if (status) status.textContent = t("tapToStopDictation");
   button?.classList.add("listening");
+  button?.setAttribute("aria-pressed", "true");
 
   recognition.addEventListener("result", (event) => {
-    const transcript = Array.from(event.results)
+    const transcript = Array.from(event.results).slice(event.resultIndex)
       .map((result) => result[0]?.transcript || "")
       .join(" ")
       .trim();
-    if (transcript) appendMechanicNote(transcript);
+    if (transcript && status) status.textContent = transcript;
+
+    const finalTranscript = Array.from(event.results)
+      .filter((result) => result.isFinal)
+      .map((result) => result[0]?.transcript || "")
+      .join(" ")
+      .trim();
+    if (finalTranscript && activeVoiceRecognition?.serviceId === serviceId) {
+      activeVoiceRecognition.finalTranscript = finalTranscript;
+    }
+  });
+
+  recognition.addEventListener("error", (event) => {
+    if (!activeVoiceRecognition || activeVoiceRecognition.serviceId !== serviceId) return;
+    activeVoiceRecognition.hadError = true;
+    const denied = event.error === "not-allowed" || event.error === "service-not-allowed";
+    resetVoiceButton(button, status, denied ? t("voiceDenied") : t("voiceNoSpeech"));
   });
 
   recognition.addEventListener("end", () => {
-    if (status) status.textContent = t("voiceReady");
-    button?.classList.remove("listening");
+    if (!activeVoiceRecognition || activeVoiceRecognition.serviceId !== serviceId) {
+      resetVoiceButton(button, status);
+      return;
+    }
+
+    const { finalTranscript, hadError, manualStop } = activeVoiceRecognition;
+    if (finalTranscript) {
+      appendMechanicNote(finalTranscript);
+      resetVoiceButton(button, status, t("voiceSaved"));
+    } else if (!hadError && manualStop) {
+      resetVoiceButton(button, status, t("voiceReady"));
+    } else if (!hadError) {
+      resetVoiceButton(button, status, t("voiceNoSpeech"));
+    }
+    activeVoiceRecognition = null;
   });
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch {
+    activeVoiceRecognition = null;
+    resetVoiceButton(button, status, t("voiceUseKeyboard"));
+  }
 }
 
 function render() {
