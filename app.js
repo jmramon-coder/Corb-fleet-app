@@ -32,6 +32,7 @@ const lucidePaths = {
   fileText: `<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>`,
   keyRound: `<path d="M2 18a6 6 0 1 0 10.7-3.7L22 5V2h-3l-1 1-1-1-2 2 1 1-1 1-1-1-2.3 2.3A6 6 0 0 0 2 18Z"/><path d="M7 17h.01"/>`,
   moon: `<path d="M12 3a6 6 0 0 0 9 7.4A9 9 0 1 1 12 3Z"/>`,
+  sun: `<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>`,
   shieldCheck: `<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>`
 };
 
@@ -67,6 +68,7 @@ const icons = {
   fileText: icon("fileText", "icon"),
   key: icon("keyRound", "icon"),
   moon: icon("moon", "icon"),
+  sun: icon("sun", "icon"),
   shieldCheck: icon("shieldCheck", "icon")
 };
 
@@ -164,6 +166,9 @@ const translations = {
     appearance: "Appearance",
     appearanceCopy: "Choose the visual mode that feels best for your workspace.",
     darkMode: "Dark mode",
+    lightMode: "Light mode",
+    dark: "Dark",
+    light: "Light",
     on: "On",
     off: "Off",
     language: "Language",
@@ -353,6 +358,9 @@ const translations = {
     appearance: "Apparence",
     appearanceCopy: "Choisissez le mode visuel le plus confortable pour votre espace de travail.",
     darkMode: "Mode sombre",
+    lightMode: "Mode clair",
+    dark: "Sombre",
+    light: "Clair",
     on: "Activé",
     off: "Désactivé",
     language: "Langue",
@@ -1264,6 +1272,8 @@ function cockpitHero({ title, subtitle, eyebrow = t("commandCenter"), meta = [] 
 
 function renderLogin() {
   const ownerMode = state.loginMode !== "mechanic";
+  const darkMode = state.theme === "dark";
+  const language = state.language === "fr" ? "fr" : "en";
   return `
     <main class="login-screen">
       <section class="login-panel">
@@ -1276,9 +1286,15 @@ function renderLogin() {
           <h1>${escapeHtml(t("loginHeadline"))}</h1>
           <p>${escapeHtml(t("loginCopy"))}</p>
         </div>
-        <div class="auth-switch" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
-          <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">${escapeHtml(t("ownerLogin"))}</button>
-          <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">${escapeHtml(t("mechanicLogin"))}</button>
+        <div class="auth-switch login-segment" role="tablist" aria-label="${escapeAttr(t("signIn"))}">
+          <button class="${ownerMode ? "active" : ""}" type="button" data-auth-mode="owner">
+            ${icons.profile}
+            <span>${escapeHtml(t("ownerLogin"))}</span>
+          </button>
+          <button class="${!ownerMode ? "active" : ""}" type="button" data-auth-mode="mechanic">
+            ${icons.key}
+            <span>${escapeHtml(t("mechanicLogin"))}</span>
+          </button>
         </div>
         <form class="login-form" data-login-form>
           ${ownerMode ? `
@@ -1300,9 +1316,27 @@ function renderLogin() {
           ${state.loginError ? `<p class="login-error" role="alert">${escapeHtml(state.loginError)}</p>` : ""}
           <button class="primary-btn wide auth-submit" type="submit">${escapeHtml(ownerMode ? t("signIn") : t("continueToFleet"))} ${icons.arrowRight}</button>
         </form>
-        <div class="login-footer-actions">
-          <button type="button" data-toggle-theme>${icons.moon}<span>${escapeHtml(t("darkMode"))}</span></button>
-          <button type="button" data-language="${state.language === "fr" ? "en" : "fr"}">${escapeHtml(state.language === "fr" ? t("english") : t("french"))}</button>
+        <div class="login-preferences">
+          <div class="login-pref">
+            <span>${escapeHtml(t("appearance"))}</span>
+            <div class="login-segment compact-segment" role="group" aria-label="${escapeAttr(t("appearance"))}">
+              <button class="${darkMode ? "active" : ""}" type="button" data-theme-choice="dark">
+                ${icons.moon}
+                <span>${escapeHtml(t("dark"))}</span>
+              </button>
+              <button class="${!darkMode ? "active" : ""}" type="button" data-theme-choice="light">
+                ${icons.sun}
+                <span>${escapeHtml(t("light"))}</span>
+              </button>
+            </div>
+          </div>
+          <div class="login-pref">
+            <span>${escapeHtml(t("language"))}</span>
+            <div class="login-segment compact-segment" role="group" aria-label="${escapeAttr(t("language"))}">
+              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr">${escapeHtml(t("french"))}</button>
+              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en">${escapeHtml(t("english"))}</button>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -2303,6 +2337,7 @@ app.addEventListener("click", (event) => {
   const closeCreateMenuTrigger = event.target.closest("[data-close-create-menu-trigger]");
   const closeCreateMenuBackdrop = event.target.matches("[data-close-create-menu]");
   const toggleTheme = event.target.closest("[data-toggle-theme]");
+  const themeChoice = event.target.closest("[data-theme-choice]")?.dataset.themeChoice;
   const language = event.target.closest("[data-language]")?.dataset.language;
   const closeModalTrigger = event.target.closest("[data-close-modal-trigger]");
   const backdropClose = event.target.matches("[data-close-modal]");
@@ -2393,6 +2428,10 @@ app.addEventListener("click", (event) => {
   }
   if (toggleTheme) {
     state.theme = state.theme === "dark" ? "light" : "dark";
+    render();
+  }
+  if (themeChoice === "dark" || themeChoice === "light") {
+    state.theme = themeChoice;
     render();
   }
   if (language === "en" || language === "fr") {
