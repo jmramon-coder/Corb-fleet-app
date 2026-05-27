@@ -3702,9 +3702,9 @@ button:disabled {
 
 .theme-dark .vehicle-head-icon,
 .theme-dark .service-card:not(.completion-card) .service-head > span:first-child {
-  border-color: rgba(45, 104, 255, 0.22);
-  background: rgba(45, 104, 255, 0.1);
-  color: var(--icon-action);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.045);
+  color: #aeb4bf;
   box-shadow: none;
 }
 
