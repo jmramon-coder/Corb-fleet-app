@@ -1592,7 +1592,7 @@ function renderAddVehicle() {
       <div class="form-page-head">
         <h1 class="form-title">${escapeHtml(t("addVehicle"))}</h1>
       </div>
-      <form class="mobile-form" data-add-vehicle-form>
+      <form id="addVehicleForm" class="mobile-form" data-add-vehicle-form>
         ${formSection(t("vehicleIdentity"), `
           ${formField({ label: t("title"), name: "title", required: true })}
           ${formField({ label: t("unitNumber"), name: "unitNumber", required: true })}
@@ -1609,7 +1609,7 @@ function renderAddVehicle() {
         `)}
       </form>
       <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="unused" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
+        <button class="success-btn wide" type="submit" form="addVehicleForm" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="vehicles">${escapeHtml(t("back"))}</button>
       </div>
     </div>
@@ -1660,7 +1660,7 @@ function renderAddService() {
         <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
       </div>
       ${vehicles.length ? `
-        <form class="mobile-form" data-add-service-form>
+        <form id="addServiceForm" class="mobile-form" data-add-service-form>
           ${servicePresetBar()}
           ${formSection(t("maintenanceSetup"), `
             ${formField({
@@ -1679,7 +1679,7 @@ function renderAddService() {
         </form>
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
       <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="unused" data-submit-add-service ${vehicles.length ? "" : "disabled"}>${escapeHtml(t("addService"))} ${icons.check}</button>
+        <button class="success-btn wide" type="submit" form="addServiceForm" data-submit-add-service ${vehicles.length ? "" : "disabled"}>${escapeHtml(t("addService"))} ${icons.check}</button>
         <button class="outline-btn wide" type="button" data-route="services">${escapeHtml(t("back"))}</button>
       </div>
     </div>
@@ -2560,17 +2560,6 @@ app.addEventListener("change", (event) => {
   const status = event.target.closest(".capture-card")?.querySelector("[data-capture-status]");
   const count = event.target.files?.length || 0;
   if (status && count) status.textContent = t("filesSelected", { count });
-});
-
-app.addEventListener("click", (event) => {
-  if (event.target.closest("[data-submit-add-vehicle]")) {
-    const form = app.querySelector("[data-add-vehicle-form]");
-    if (form.reportValidity()) addVehicleFromForm(form);
-  }
-  if (event.target.closest("[data-submit-add-service]")) {
-    const form = app.querySelector("[data-add-service-form]");
-    if (form?.reportValidity()) addMaintenancePlanFromForm(form);
-  }
 });
 
 app.addEventListener("submit", (event) => {

@@ -3722,6 +3722,121 @@ button:disabled {
   background: rgba(23, 25, 27, 0.96);
 }
 
+/* Mobile form system */
+.form-page-head {
+  margin: 18px 0 18px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 760;
+  letter-spacing: 0;
+}
+
+.mobile-form {
+  gap: 20px;
+  padding-bottom: 18px;
+}
+
+.completion-form {
+  gap: 20px;
+}
+
+.mobile-form .form-card,
+.completion-form .mechanic-work-section {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.form-section-title {
+  color: var(--text-blue);
+  font-size: 16px;
+  font-weight: 760;
+  letter-spacing: 0;
+}
+
+.form-stack,
+.completion-form .form-stack,
+.fleet-name-form {
+  gap: 14px;
+}
+
+.form-grid {
+  gap: 12px;
+}
+
+.form-field {
+  gap: 8px;
+}
+
+.form-field label {
+  color: var(--muted-blue);
+  font-size: 13px;
+  font-weight: 680;
+  line-height: 1.15;
+}
+
+.form-field label span,
+.form-field small {
+  color: var(--profile-muted);
+  font-size: 12px;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  min-height: 54px;
+  border-color: var(--divider);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card-raised) 36%, transparent);
+  padding-inline: 15px;
+}
+
+.form-field textarea {
+  min-height: 128px;
+  padding-top: 14px;
+}
+
+.form-field input:focus-visible,
+.form-field select:focus-visible,
+.form-field textarea:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 76%, var(--divider));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 18%, transparent);
+}
+
+.theme-dark .form-field input,
+.theme-dark .form-field select,
+.theme-dark .form-field textarea,
+.theme-dark .completion-form .form-field input,
+.theme-dark .completion-form .form-field textarea {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.service-preset-panel {
+  border-color: var(--divider);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card) 34%, transparent);
+  padding: 14px;
+  box-shadow: none;
+}
+
+.preset-grid button,
+.quick-note-panel button,
+.capture-card {
+  border-color: var(--divider);
+  background: color-mix(in srgb, var(--card-raised) 28%, transparent);
+  box-shadow: none;
+}
+
+.action-bar,
+.modal-actions {
+  box-shadow: 0 -1px 0 var(--divider);
+}
+
 @media (min-width: 1024px) {
   .app-shell {
     display: grid;
