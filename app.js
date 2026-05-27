@@ -1117,11 +1117,12 @@ function bottomNav(active) {
     <div class="nav-scrim" aria-hidden="true"></div>
     <nav class="bottom-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
       ${navButton("services", t("services"), icons.services, active)}
+      <button class="nav-tab create-nav-tab" type="button" data-toggle-create-menu aria-label="${escapeAttr(t("createNew"))}">
+        ${icons.plus}
+        <span>${escapeHtml(t("createNew"))}</span>
+      </button>
       ${navButton("vehicles", t("vehicles"), icons.truck, active)}
     </nav>
-    <button class="create-fab" type="button" data-toggle-create-menu aria-label="${escapeAttr(t("createNew"))}">
-      ${icons.plus}
-    </button>
   `;
 }
 
