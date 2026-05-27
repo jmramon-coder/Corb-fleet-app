@@ -272,6 +272,7 @@ const translations = {
     voiceNote: "Voice note",
     tapToDictate: "Tap to dictate",
     tapToStopDictation: "Tap to stop",
+    tapToAddVoice: "Add to note",
     voiceListening: "Listening...",
     voiceReady: "Voice ready",
     voiceSaved: "Added to note",
@@ -488,6 +489,7 @@ const translations = {
     voiceNote: "Note vocale",
     tapToDictate: "Dicter",
     tapToStopDictation: "Arrêter",
+    tapToAddVoice: "Ajouter à la note",
     voiceListening: "Écoute...",
     voiceReady: "Voix prête",
     voiceSaved: "Ajouté à la note",
@@ -2167,6 +2169,7 @@ function captureInput({ name, label, hint, iconMarkup, accept, capture = "" }) {
       <span>${iconMarkup}</span>
       <strong>${escapeHtml(label)}</strong>
       <small data-capture-status>${escapeHtml(hint)}</small>
+      <div class="capture-preview" data-capture-preview aria-live="polite"></div>
     </label>
   `;
 }
@@ -2208,6 +2211,9 @@ function completionModal() {
                   <textarea id="mechanicNote" name="mechanicNote" rows="5" placeholder="${escapeAttr(t("mechanicNotePlaceholder"))}"></textarea>
                   <button class="voice-btn" type="button" data-start-voice="${service.id}" aria-pressed="false">
                     ${icons.mic}
+                    <span class="voice-wave" aria-hidden="true">
+                      <i></i><i></i><i></i><i></i><i></i>
+                    </span>
                     <span data-voice-status>${escapeHtml(t("tapToDictate"))}</span>
                   </button>
                 </div>
@@ -2480,8 +2486,9 @@ function appendMechanicNote(note) {
 
 function resetVoiceButton(button, status, label = t("tapToDictate")) {
   if (status) status.textContent = label;
-  button?.classList.remove("listening");
+  button?.classList.remove("listening", "has-transcript");
   button?.setAttribute("aria-pressed", "false");
+  if (button) delete button.dataset.voiceTranscript;
 }
 
 function stopActiveVoiceRecognition() {
@@ -2502,6 +2509,15 @@ function startVoiceNote(serviceId) {
   const status = button?.querySelector("[data-voice-status]");
   const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  if (button?.dataset.voiceTranscript) {
+    appendMechanicNote(button.dataset.voiceTranscript);
+    resetVoiceButton(button, status, t("voiceSaved"));
+    window.setTimeout(() => {
+      if (!button.classList.contains("listening") && !button.dataset.voiceTranscript) resetVoiceButton(button, status);
+    }, 1200);
+    return;
+  }
+
   if (activeVoiceRecognition?.serviceId === serviceId) {
     stopActiveVoiceRecognition();
     return;
@@ -2520,17 +2536,11 @@ function startVoiceNote(serviceId) {
   recognition.continuous = false;
   activeVoiceRecognition = { recognition, serviceId, manualStop: false, finalTranscript: "", hadError: false };
 
-  if (status) status.textContent = t("tapToStopDictation");
+  if (status) status.textContent = t("voiceListening");
   button?.classList.add("listening");
   button?.setAttribute("aria-pressed", "true");
 
   recognition.addEventListener("result", (event) => {
-    const transcript = Array.from(event.results).slice(event.resultIndex)
-      .map((result) => result[0]?.transcript || "")
-      .join(" ")
-      .trim();
-    if (transcript && status) status.textContent = transcript;
-
     const finalTranscript = Array.from(event.results)
       .filter((result) => result.isFinal)
       .map((result) => result[0]?.transcript || "")
@@ -2556,8 +2566,11 @@ function startVoiceNote(serviceId) {
 
     const { finalTranscript, hadError, manualStop } = activeVoiceRecognition;
     if (finalTranscript) {
-      appendMechanicNote(finalTranscript);
-      resetVoiceButton(button, status, t("voiceSaved"));
+      button?.classList.remove("listening");
+      button?.classList.add("has-transcript");
+      button?.setAttribute("aria-pressed", "false");
+      if (button) button.dataset.voiceTranscript = finalTranscript;
+      if (status) status.textContent = t("tapToAddVoice");
     } else if (!hadError && manualStop) {
       resetVoiceButton(button, status, t("voiceReady"));
     } else if (!hadError) {
@@ -2572,6 +2585,53 @@ function startVoiceNote(serviceId) {
     activeVoiceRecognition = null;
     resetVoiceButton(button, status, t("voiceUseKeyboard"));
   }
+}
+
+function renderCapturePreview(input) {
+  const card = input.closest(".capture-card");
+  const status = card?.querySelector("[data-capture-status]");
+  const preview = card?.querySelector("[data-capture-preview]");
+  const files = Array.from(input.files || []);
+  if (!card || !status || !preview) return;
+
+  status.textContent = files.length ? t("filesSelected", { count: files.length }) : status.textContent;
+  card.classList.toggle("has-files", files.length > 0);
+  preview.innerHTML = files.map((file) => capturePreviewItem(file)).join("");
+}
+
+function capturePreviewItem(file) {
+  const name = escapeHtml(file.name);
+  const size = formatFileSize(file.size);
+  if (file.type.startsWith("image/")) {
+    return `
+      <figure class="capture-preview-item media">
+        <img src="${escapeAttr(URL.createObjectURL(file))}" alt="${name}" />
+        <figcaption><strong>${name}</strong><span>${size}</span></figcaption>
+      </figure>
+    `;
+  }
+
+  if (file.type.startsWith("video/")) {
+    return `
+      <figure class="capture-preview-item media">
+        <video src="${escapeAttr(URL.createObjectURL(file))}" muted playsinline preload="metadata"></video>
+        <figcaption><strong>${name}</strong><span>${size}</span></figcaption>
+      </figure>
+    `;
+  }
+
+  return `
+    <div class="capture-preview-item file">
+      ${icons.fileText}
+      <div><strong>${name}</strong><span>${size}</span></div>
+    </div>
+  `;
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return "0 KB";
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 function render() {
@@ -2872,9 +2932,7 @@ app.addEventListener("input", (event) => {
 
 app.addEventListener("change", (event) => {
   if (!event.target.matches("[data-capture-input]")) return;
-  const status = event.target.closest(".capture-card")?.querySelector("[data-capture-status]");
-  const count = event.target.files?.length || 0;
-  if (status && count) status.textContent = t("filesSelected", { count });
+  renderCapturePreview(event.target);
 });
 
 app.addEventListener("submit", (event) => {

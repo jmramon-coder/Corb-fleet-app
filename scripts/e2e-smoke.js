@@ -228,6 +228,22 @@ async function run() {
 
     await evaluate(client, `document.querySelector('[data-complete-service]')?.click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
+    const capture = await evaluate(client, `(() => {
+      const input = document.querySelector('input[name="photos"]');
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(new File(['x'], 'e2e-photo.jpg', { type: 'image/jpeg' }));
+      input.files = dataTransfer.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return {
+        hasFiles: input.closest('.capture-card').classList.contains('has-files'),
+        preview: input.closest('.capture-card').querySelector('.capture-preview')?.innerText || '',
+        voiceBars: document.querySelectorAll('.voice-wave i').length
+      };
+    })()`);
+    assert(capture.hasFiles, "Capture card did not enter selected-file state");
+    assert(capture.preview.includes("e2e-photo.jpg"), "Capture preview did not show selected file");
+    assert(capture.voiceBars === 5, "Voice button waveform is missing");
+
     await evaluate(client, `document.querySelector('textarea[name="mechanicNote"]').value='E2E mechanic note'; document.querySelector('[data-submit-completion]')?.click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
     const completion = await evaluate(client, `(() => {
@@ -236,12 +252,14 @@ async function run() {
       return {
         completedByName: record.completedByName,
         completedByType: record.completedByType,
-        note: record.mechanicNote
+        note: record.mechanicNote,
+        attachments: record.attachmentNames
       };
     })()`);
     assert(completion.completedByName === "Marc Tremblay", "Completion should be attributed to mechanic");
     assert(completion.completedByType === "mechanic", "Completion type should be mechanic");
     assert(completion.note === "E2E mechanic note", "Completion note was not saved");
+    assert(completion.attachments.includes("e2e-photo.jpg"), "Completion attachment name was not saved");
 
     await evaluate(client, `state.route='serviceDetails'; state.activeServiceId='service-1'; state.activeCompletionId=null; render();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
