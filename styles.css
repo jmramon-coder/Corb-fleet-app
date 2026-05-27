@@ -2656,12 +2656,18 @@ button:disabled {
 }
 
 .app-tabs {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  overflow-y: hidden;
   border-bottom: 1px solid var(--divider);
   margin: 0 0 16px;
   padding: 0;
+  scrollbar-width: none;
+}
+
+.app-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .full-bleed-tabs {
@@ -2675,10 +2681,12 @@ button:disabled {
 .app-tab {
   position: relative;
   display: inline-flex;
-  min-width: 0;
+  flex: 1 0 max-content;
+  min-width: max-content;
   min-height: 44px;
   align-items: center;
   justify-content: center;
+  padding: 0 12px;
   border-radius: 0;
   background: transparent;
   color: var(--muted-blue);
@@ -2692,9 +2700,11 @@ button:disabled {
 }
 
 .app-tab span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  position: relative;
+  display: inline-flex;
+  min-width: max-content;
+  overflow: visible;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
@@ -2702,15 +2712,20 @@ button:disabled {
   color: var(--text-blue);
 }
 
-.app-tab.active::after {
+.app-tab span::after {
   content: "";
   position: absolute;
-  right: max(16px, 20%);
-  bottom: -1px;
-  left: max(16px, 20%);
+  right: 0;
+  bottom: -15px;
+  left: 0;
   height: 2px;
   border-radius: 999px;
   background: var(--blue);
+  opacity: 0;
+}
+
+.app-tab.active span::after {
+  opacity: 1;
 }
 
 .truck-tabs {
@@ -2721,12 +2736,6 @@ button:disabled {
 .truck-tabs .app-tab {
   justify-content: flex-start;
   padding-left: var(--brand-text-offset);
-}
-
-.truck-tabs .app-tab.active::after {
-  right: auto;
-  left: var(--brand-text-offset);
-  width: 46px;
 }
 
 .truck-metrics-shell {
@@ -2911,12 +2920,6 @@ button:disabled {
 .profile-tabs .app-tab {
   justify-content: flex-start;
   padding-left: calc(var(--brand-text-offset) + 10px);
-}
-
-.profile-tabs .app-tab.active::after {
-  right: auto;
-  left: calc(var(--brand-text-offset) + 10px);
-  width: 42px;
 }
 
 .profile-card {
