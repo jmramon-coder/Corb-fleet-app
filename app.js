@@ -596,6 +596,7 @@ let lastScrollY = window.scrollY;
 let scrollTicking = false;
 let touchStartY = 0;
 let activeVoiceRecognition = null;
+let hasPlayedBootAnimation = false;
 applyInitialUrlRoute();
 let shouldResetLandingScroll = !state.isAuthenticated && state.route !== "login";
 if (shouldResetLandingScroll && window.location.hash) {
@@ -638,6 +639,16 @@ function shortDate(value) {
 
 function formatKm(value) {
   return `${Number(value || 0).toLocaleString(dateLocale())} km`;
+}
+
+function countUpValue(value, { suffix = "", className = "" } = {}) {
+  const numericValue = Number(value || 0);
+  const displayValue = hasPlayedBootAnimation ? numericValue.toLocaleString(dateLocale()) : "0";
+  return `<span class="${escapeAttr(className)}" data-count-up data-count-to="${numericValue}" data-count-suffix="${escapeAttr(suffix)}">${displayValue}${escapeHtml(suffix)}</span>`;
+}
+
+function countUpKm(value, className = "") {
+  return countUpValue(value, { suffix: " km", className });
 }
 
 function t(key, replacements = {}) {
@@ -1741,7 +1752,7 @@ function filterRow() {
       ${filters.map(([key, label, tone, count]) => `
         <button class="filter-pill ${tone} ${state.serviceFilter === key ? "active" : ""}" type="button" data-filter="${key}">
           <span>${label}</span>
-          <strong>${count}</strong>
+          <strong>${countUpValue(count)}</strong>
         </button>
       `).join("")}
     </div>
@@ -1984,7 +1995,7 @@ function vehicleCard(vehicle) {
           <span class="card-header-chevron" aria-hidden="true">${icons.chevronRight}</span>
         </div>
         <div class="vehicle-stats">
-          <span class="vehicle-stat">${icons.gauge}${formatKm(vehicle.kilometers)}</span>
+          <span class="vehicle-stat">${icons.gauge}${countUpKm(vehicle.kilometers)}</span>
           <span class="vehicle-stat">${icons.wrench}${escapeHtml(t("maintenanceSchedules", { count: scheduledServices.length }))}</span>
         </div>
         <div class="vehicle-health-strip" aria-hidden="true">
@@ -2199,7 +2210,7 @@ function truckScheduleSummary(counts) {
       ${items.map(({ key, label, count }) => `
         <article class="truck-schedule-count ${key}">
           <span aria-hidden="true"></span>
-          <strong>${count}</strong>
+          <strong>${countUpValue(count)}</strong>
           <small>${escapeHtml(label)}</small>
         </article>
       `).join("")}
@@ -2920,6 +2931,7 @@ function formatFileSize(bytes) {
 function render() {
   saveState();
   const renderingLanding = !state.isAuthenticated && state.route !== "login";
+  const playBootAnimation = !hasPlayedBootAnimation;
   document.documentElement.dataset.theme = state.theme;
   document.documentElement.lang = state.language === "fr" ? "fr-CA" : "en";
   document
@@ -2928,13 +2940,17 @@ function render() {
   document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
   app.innerHTML = `
-    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"}">
+    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${playBootAnimation ? "is-booting" : ""}">
       ${routeMarkup()}
       ${completionModal()}
       ${createActionMenu()}
     </div>
   `;
   requestAnimationFrame(() => {
+    if (playBootAnimation) {
+      playInitialAppAnimation();
+      hasPlayedBootAnimation = true;
+    }
     if (!pageCanHideChrome()) setChromeHidden(false);
     if (shouldResetLandingScroll && renderingLanding) {
       resetLandingScrollPosition();
@@ -2942,6 +2958,39 @@ function render() {
       shouldResetLandingScroll = false;
     }
   });
+}
+
+function playInitialAppAnimation() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    app.querySelectorAll("[data-count-up]").forEach((element) => {
+      const target = Number(element.dataset.countTo || 0);
+      element.textContent = `${Math.round(target).toLocaleString(dateLocale())}${element.dataset.countSuffix || ""}`;
+    });
+    app.querySelector(".app-shell")?.classList.remove("is-booting");
+    return;
+  }
+
+  const countElements = [...app.querySelectorAll("[data-count-up]")];
+  const startedAt = performance.now();
+  const duration = 780;
+
+  function tick(now) {
+    const progress = Math.min((now - startedAt) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    countElements.forEach((element) => {
+      const target = Number(element.dataset.countTo || 0);
+      const suffix = element.dataset.countSuffix || "";
+      const current = Math.round(target * eased);
+      element.textContent = `${current.toLocaleString(dateLocale())}${suffix}`;
+    });
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    app.querySelector(".app-shell")?.classList.remove("is-booting");
+  }
+
+  requestAnimationFrame(tick);
 }
 
 function routeMarkup() {

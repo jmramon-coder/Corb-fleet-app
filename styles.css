@@ -4933,6 +4933,101 @@ button:disabled {
   box-shadow: 0 -1px 0 var(--divider);
 }
 
+[data-count-up] {
+  display: inline-block;
+  min-width: 1ch;
+  font-variant-numeric: tabular-nums;
+}
+
+.is-booting .brand-header,
+.is-booting .login-topbar,
+.is-booting .cockpit-hero,
+.is-booting .landing-hero,
+.is-booting .landing-section,
+.is-booting .landing-footer,
+.is-booting .search-wrap,
+.is-booting .filter-row,
+.is-booting .service-card,
+.is-booting .vehicle-card,
+.is-booting .technical-card,
+.is-booting .detail-card,
+.is-booting .profile-card,
+.is-booting .truck-schedule-count,
+.is-booting .completion-line-card,
+.is-booting .bottom-nav,
+.is-booting .action-bar {
+  animation: app-build-in 620ms cubic-bezier(0.2, 0.85, 0.24, 1) both;
+}
+
+.is-booting .search-wrap,
+.is-booting .filter-row,
+.is-booting .landing-section,
+.is-booting .truck-schedule-count {
+  animation-delay: 80ms;
+}
+
+.is-booting .service-card:nth-of-type(1),
+.is-booting .vehicle-card:nth-of-type(1),
+.is-booting .completion-line-card:nth-of-type(1),
+.is-booting .profile-card:nth-of-type(1) {
+  animation-delay: 120ms;
+}
+
+.is-booting .service-card:nth-of-type(2),
+.is-booting .vehicle-card:nth-of-type(2),
+.is-booting .completion-line-card:nth-of-type(2),
+.is-booting .profile-card:nth-of-type(2) {
+  animation-delay: 180ms;
+}
+
+.is-booting .service-card:nth-of-type(3),
+.is-booting .vehicle-card:nth-of-type(3),
+.is-booting .completion-line-card:nth-of-type(3),
+.is-booting .profile-card:nth-of-type(3) {
+  animation-delay: 240ms;
+}
+
+.is-booting .bottom-nav,
+.is-booting .action-bar,
+.is-booting .landing-footer {
+  animation-delay: 300ms;
+}
+
+@keyframes app-build-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.992);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-booting .brand-header,
+  .is-booting .login-topbar,
+  .is-booting .cockpit-hero,
+  .is-booting .landing-hero,
+  .is-booting .landing-section,
+  .is-booting .landing-footer,
+  .is-booting .search-wrap,
+  .is-booting .filter-row,
+  .is-booting .service-card,
+  .is-booting .vehicle-card,
+  .is-booting .technical-card,
+  .is-booting .detail-card,
+  .is-booting .profile-card,
+  .is-booting .truck-schedule-count,
+  .is-booting .completion-line-card,
+  .is-booting .bottom-nav,
+  .is-booting .action-bar {
+    animation: none;
+  }
+}
+
 @media (min-width: 1024px) {
   .app-shell {
     display: grid;
