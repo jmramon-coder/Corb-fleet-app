@@ -1716,6 +1716,43 @@ function header({ close = false } = {}) {
   `;
 }
 
+function brandButton({ route = "landing", className = "login-brand brand-link" } = {}) {
+  return `
+    <button class="${className}" type="button" data-route="${escapeAttr(route)}" aria-label="CORB">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
+    </button>
+  `;
+}
+
+function languageSegment() {
+  const language = state.language === "fr" ? "fr" : "en";
+  return `
+    <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
+      <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
+      <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
+    </div>
+  `;
+}
+
+function publicTopbar({ landing = false } = {}) {
+  return `
+    <div class="login-topbar ${landing ? "" : "auth-topbar"}">
+      ${brandButton()}
+      ${landing ? `
+        <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
+          <button type="button" data-scroll-target="product">${escapeHtml(t("landingNavProduct"))}</button>
+          <button type="button" data-scroll-target="pricing">${escapeHtml(t("landingNavPricing"))}</button>
+        </nav>
+      ` : ""}
+      <div class="login-preferences">
+        ${languageSegment()}
+        ${landing ? `<button class="landing-login-button" type="button" data-route="login" aria-label="${escapeAttr(t("landingLoginCta"))}">${icons.profile}</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
 function bottomNav(active) {
   if (isMechanic()) {
     return `
@@ -1818,6 +1855,17 @@ function formField({ label, name, id = name, type = "text", value = "", required
   `;
 }
 
+function actionBar({ primaryLabel, primaryAttrs = "", primaryClass = "success-btn", primaryIcon = icons.check, secondaryLabel = t("back"), secondaryAttrs = "", disabled = false, className = "" }) {
+  return `
+    <div class="action-bar ${className}">
+      <button class="${primaryClass} wide" type="${primaryAttrs.includes("form=") ? "submit" : "button"}" ${primaryAttrs} ${disabled ? "disabled" : ""}>
+        ${escapeHtml(primaryLabel)} ${primaryIcon || ""}
+      </button>
+      ${secondaryAttrs ? `<button class="outline-btn wide" type="button" ${secondaryAttrs}>${escapeHtml(secondaryLabel)}</button>` : ""}
+    </div>
+  `;
+}
+
 function emptyVehicleCard() {
   return `
     <article class="empty-card">
@@ -1899,7 +1947,6 @@ function loginAuthPanel() {
 }
 
 function renderLanding() {
-  const language = state.language === "fr" ? "fr" : "en";
   const outcomes = [
     [icons.truck, t("landingFeatureDowntime"), t("landingFeatureDowntimeCopy")],
     [icons.wrench, t("landingFeatureBreakage"), t("landingFeatureBreakageCopy")],
@@ -1914,25 +1961,7 @@ function renderLanding() {
   return `
     <main class="login-screen">
       <section class="login-panel">
-        <div class="login-topbar">
-          <button class="login-brand brand-link" type="button" data-route="landing" aria-label="CORB">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
-          </button>
-          <nav class="landing-nav" aria-label="${escapeAttr(t("mainNavigation"))}">
-            <button type="button" data-scroll-target="product">${escapeHtml(t("landingNavProduct"))}</button>
-            <button type="button" data-scroll-target="pricing">${escapeHtml(t("landingNavPricing"))}</button>
-          </nav>
-          <div class="login-preferences">
-            <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
-              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
-              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
-            </div>
-            <button class="landing-login-button" type="button" data-route="login" aria-label="${escapeAttr(t("landingLoginCta"))}">
-              ${icons.profile}
-            </button>
-          </div>
-        </div>
+        ${publicTopbar({ landing: true })}
 
         <section class="landing-hero">
           <div class="landing-hero-copy">
@@ -1993,22 +2022,10 @@ function renderLanding() {
 }
 
 function renderLogin() {
-  const language = state.language === "fr" ? "fr" : "en";
   return `
     <main class="login-screen auth-screen">
       <section class="login-panel auth-page-panel">
-        <div class="login-topbar auth-topbar">
-          <button class="login-brand brand-link" type="button" data-route="landing" aria-label="CORB">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span class="brand-name"><strong>CORB</strong><span>${escapeHtml(t("fleetManager"))}</span></span>
-          </button>
-          <div class="login-preferences">
-            <div class="login-segment compact-segment language-segment" role="group" aria-label="${escapeAttr(t("language"))}">
-              <button class="${language === "fr" ? "active" : ""}" type="button" data-language="fr" aria-label="${escapeAttr(t("french"))}">FR</button>
-              <button class="${language === "en" ? "active" : ""}" type="button" data-language="en" aria-label="${escapeAttr(t("english"))}">EN</button>
-            </div>
-          </div>
-        </div>
+        ${publicTopbar()}
         ${loginAuthPanel()}
       </section>
     </main>
@@ -2358,10 +2375,11 @@ function renderVehicleForm(mode = "create") {
           ${formField({ label: t("partsAndFilters"), name: "partsAndFilters", value: technical.partsAndFilters || technical.filterPartNumbers || "" })}
         `)}
       </form>
-      <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="${escapeAttr(formId)}">${escapeHtml(submitLabel)} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
-      </div>
+      ${actionBar({
+        primaryLabel: submitLabel,
+        primaryAttrs: `form="${escapeAttr(formId)}"`,
+        secondaryAttrs: backAttrs
+      })}
     </div>
   `;
 }
@@ -2447,10 +2465,12 @@ function renderServiceForm(mode = "create") {
           `)}
         </form>
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
-      <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="${escapeAttr(formId)}" ${vehicles.length ? "" : "disabled"}>${escapeHtml(submitLabel)} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
-      </div>
+      ${actionBar({
+        primaryLabel: submitLabel,
+        primaryAttrs: `form="${escapeAttr(formId)}"`,
+        secondaryAttrs: backAttrs,
+        disabled: !vehicles.length
+      })}
     </div>
   `;
 }
@@ -2489,10 +2509,11 @@ function renderServiceDetails() {
       </section>
       ${serviceOverviewCard(service, vehicle)}
       ${serviceCompletionHistory(service)}
-      <div class="action-bar">
-        <button class="success-btn wide" type="button" data-complete-service="${service.id}">${escapeHtml(t("logService"))} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
-      </div>
+      ${actionBar({
+        primaryLabel: t("logService"),
+        primaryAttrs: `data-complete-service="${escapeAttr(service.id)}"`,
+        secondaryAttrs: backAttrs
+      })}
     </div>
   `;
 }
@@ -2509,12 +2530,14 @@ function renderTruckDetails() {
   );
 
   const ownerActionBar = isOwner()
-    ? `<div class="action-bar single-action">
-        <button class="primary-btn wide" type="button" data-route="${state.truckTab === "schedule" ? "addService" : "services"}">
-          ${escapeHtml(state.truckTab === "schedule" ? t("addScheduledService") : t("service"))}
-          ${state.truckTab === "schedule" ? icons.plus : icons.wrench}
-        </button>
-      </div>`
+    ? actionBar({
+        primaryLabel: state.truckTab === "schedule" ? t("addScheduledService") : t("service"),
+        primaryAttrs: `data-route="${state.truckTab === "schedule" ? "addService" : "services"}"`,
+        primaryClass: "primary-btn",
+        primaryIcon: state.truckTab === "schedule" ? icons.plus : icons.wrench,
+        secondaryAttrs: "",
+        className: "single-action"
+      })
     : "";
 
   return `
@@ -2928,7 +2951,7 @@ function completionModal() {
         </form>
         <div class="modal-actions">
           <button class="outline-btn wide" type="button" data-close-modal-trigger>${escapeHtml(t("cancel"))}</button>
-          <button class="success-btn wide" type="button" data-submit-completion="${service.id}">${escapeHtml(t("logService"))} ${icons.check}</button>
+          <button class="success-btn wide" type="button" data-submit-completion="${escapeAttr(service.id)}">${escapeHtml(t("logService"))} ${icons.check}</button>
         </div>
       </section>
     </div>
