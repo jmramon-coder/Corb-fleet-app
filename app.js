@@ -1356,8 +1356,116 @@ function vehiclesForActiveFleet() {
   return state.vehicles.filter((vehicle) => vehicle.fleetId === state.activeFleetId);
 }
 
+function vehiclesForFleet(fleetId) {
+  return state.vehicles.filter((vehicle) => vehicle.fleetId === fleetId);
+}
+
 function maintenancePlanById(id) {
   return state.maintenancePlans.find((service) => service.id === id);
+}
+
+function mechanicAccessById(id) {
+  return state.mechanicAccessCodes.find((access) => access.id === id);
+}
+
+function activeMaintenancePlans() {
+  return state.maintenancePlans.filter((service) => service.fleetId === state.activeFleetId && service.status !== "archived");
+}
+
+function maintenancePlansForFleet(fleetId) {
+  return state.maintenancePlans.filter((service) => service.fleetId === fleetId && service.status !== "archived");
+}
+
+function nextVehicleNumber(existing = null) {
+  if (existing) return Math.max(state.vehicles.findIndex((vehicle) => vehicle.id === existing.id) + 1, 1);
+  return state.vehicles.length + 1;
+}
+
+function createVehicle(payload) {
+  const vehicle = normalizeVehicle(payload, state.vehicles.length, payload.fleetId || state.activeFleetId);
+  state.vehicles = [vehicle, ...state.vehicles.filter((item) => item.id !== vehicle.id)];
+  reconcileStateIntegrity(state);
+  return vehicle;
+}
+
+function updateVehicle(vehicleId, payload) {
+  const existing = vehicleById(vehicleId);
+  if (!existing) return null;
+  const vehicle = normalizeVehicle({ ...existing, ...payload, id: vehicleId }, nextVehicleNumber(existing) - 1, existing.fleetId);
+  state.vehicles = state.vehicles.map((item) => item.id === vehicleId ? vehicle : item);
+  reconcileStateIntegrity(state);
+  return vehicle;
+}
+
+function deleteVehicle(vehicleId) {
+  state.vehicles = state.vehicles.filter((vehicle) => vehicle.id !== vehicleId);
+  state.maintenancePlans = state.maintenancePlans.filter((service) => service.vehicleId !== vehicleId);
+  state.serviceRecords = state.serviceRecords.filter((completion) => completion.vehicleId !== vehicleId);
+  if (state.activeVehicleId === vehicleId) state.activeVehicleId = null;
+  reconcileStateIntegrity(state);
+}
+
+function createMaintenancePlan(payload) {
+  const plan = normalizeMaintenancePlan(payload);
+  state.maintenancePlans = [plan, ...state.maintenancePlans.filter((item) => item.id !== plan.id)];
+  reconcileStateIntegrity(state);
+  return plan;
+}
+
+function updateMaintenancePlan(planId, payload) {
+  const existing = maintenancePlanById(planId);
+  if (!existing) return null;
+  const plan = normalizeMaintenancePlan({ ...existing, ...payload, id: planId });
+  state.maintenancePlans = state.maintenancePlans.map((item) => item.id === planId ? plan : item);
+  state.serviceRecords = state.serviceRecords.map((record) => (
+    record.maintenancePlanId === planId ? normalizeServiceRecord({ ...record, vehicleId: plan.vehicleId, title: plan.title }) : record
+  ));
+  reconcileStateIntegrity(state);
+  return plan;
+}
+
+function addServiceRecord(payload) {
+  const record = normalizeServiceRecord(payload);
+  state.serviceRecords = [record, ...state.serviceRecords.filter((item) => item.id !== record.id)];
+  reconcileStateIntegrity(state);
+  return record;
+}
+
+function updateFleet(fleetId, payload) {
+  const existing = state.fleets.find((fleet) => fleet.id === fleetId);
+  if (!existing) return null;
+  const fleet = normalizeFleet({ ...existing, ...payload, id: fleetId });
+  state.fleets = state.fleets.map((item) => item.id === fleetId ? fleet : item);
+  reconcileStateIntegrity(state);
+  return fleet;
+}
+
+function createFleet(payload) {
+  const fleet = normalizeFleet({ ...payload, id: payload.id || uid("fleet") });
+  state.fleets = [fleet, ...state.fleets.filter((item) => item.id !== fleet.id)];
+  state.activeFleetId = fleet.id;
+  reconcileStateIntegrity(state);
+  return fleet;
+}
+
+function createMechanicAccess(payload) {
+  const access = normalizeMechanicAccess({ ...payload, id: payload.id || uid("access") });
+  state.mechanicAccessCodes = [access, ...state.mechanicAccessCodes.filter((item) => item.id !== access.id)];
+  reconcileStateIntegrity(state);
+  return access;
+}
+
+function patchMechanicAccess(accessId, patch) {
+  const access = mechanicAccessById(accessId);
+  if (!access) return null;
+  const updated = normalizeMechanicAccess({ ...access, ...patch, id: accessId });
+  state.mechanicAccessCodes = state.mechanicAccessCodes.map((item) => item.id === accessId ? updated : item);
+  reconcileStateIntegrity(state);
+  return updated;
+}
+
+function findActiveMechanicAccessByCode(code) {
+  return state.mechanicAccessCodes.find((item) => item.active && item.status !== "revoked" && item.code === code);
 }
 
 function latestServiceRecord(planId) {
@@ -1416,10 +1524,9 @@ function recordsForPlan(planId) {
 
 function visibleServices() {
   const query = state.serviceSearch.trim().toLowerCase();
-  return state.maintenancePlans.filter((service) => {
+  return activeMaintenancePlans().filter((service) => {
     const vehicle = vehicleById(service.vehicleId);
     const status = planStatus(service);
-    const matchesFleet = service.fleetId === state.activeFleetId && service.status !== "archived";
     const matchesFilter = state.serviceFilter === "all" || state.serviceFilter === status;
     const haystack = [
       service.title,
@@ -1433,12 +1540,12 @@ function visibleServices() {
       vehicle?.technical?.engineSerialNumber,
       vehicle?.technical?.partsAndFilters
     ].filter(Boolean).join(" ").toLowerCase();
-    return matchesFleet && matchesFilter && (!query || haystack.includes(query));
+    return matchesFilter && (!query || haystack.includes(query));
   });
 }
 
 function statusCounts() {
-  return state.maintenancePlans.filter((service) => service.fleetId === state.activeFleetId && service.status !== "archived").reduce(
+  return activeMaintenancePlans().reduce(
     (counts, service) => {
       counts[planStatus(service)] += 1;
       return counts;
@@ -1945,7 +2052,7 @@ function renderServices() {
 function filterRow() {
   const counts = statusCounts();
   const filters = [
-    ["all", t("all"), "", state.maintenancePlans.filter((service) => service.fleetId === state.activeFleetId && service.status !== "archived").length],
+    ["all", t("all"), "", activeMaintenancePlans().length],
     ["overdue", t("overdue"), "overdue", counts.overdue],
     ["upcoming", t("upcoming"), "upcoming", counts.upcoming],
     ["ok", t("ok"), "ok", counts.ok]
@@ -2164,7 +2271,7 @@ function renderVehicles() {
           eyebrow: t("garage"),
           meta: [
             { iconMarkup: icons.truck, label: t("activeFleetLabel"), value: activeFleet()?.name || "CORB" },
-            { iconMarkup: icons.wrench, label: t("serviceBay"), value: t("maintenanceQueue", { count: state.maintenancePlans.filter((service) => service.fleetId === state.activeFleetId).length }) }
+            { iconMarkup: icons.wrench, label: t("serviceBay"), value: t("maintenanceQueue", { count: activeMaintenancePlans().length }) }
           ]
         })}
         ${
@@ -2585,8 +2692,8 @@ function renderFleetPanel() {
   return `
     <div class="fleet-panel">
       ${fleets.map((fleet) => {
-        const vehicleCount = state.vehicles.filter((vehicle) => vehicle.fleetId === fleet.id).length;
-        const serviceCount = state.maintenancePlans.filter((service) => service.fleetId === fleet.id && service.status !== "archived").length;
+        const vehicleCount = vehiclesForFleet(fleet.id).length;
+        const serviceCount = maintenancePlansForFleet(fleet.id).length;
         const active = fleet.id === state.activeFleetId;
         return `
           <article class="profile-card fleet-card ${active ? "active" : ""}">
@@ -2697,9 +2804,9 @@ function mechanicInviteMailto(access) {
 }
 
 function sendMechanicInvite(accessId) {
-  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  const access = mechanicAccessById(accessId);
   if (!access || !access.active) return;
-  access.inviteSentAt = new Date().toISOString();
+  patchMechanicAccess(accessId, { inviteSentAt: new Date().toISOString() });
   navigator.clipboard?.writeText(`${access.code}\n${mechanicInviteUrl(access)}`).catch(() => {});
   if (access.email) window.location.href = mechanicInviteMailto(access);
   render();
@@ -2843,7 +2950,7 @@ function completeMaintenancePlan(serviceId, details = {}) {
   const completedByName = isMechanic() ? mechanicDisplayName() : state.user.displayName;
   const completedByAccessId = isMechanic() ? access?.id || "" : "";
 
-  state.serviceRecords.unshift(normalizeServiceRecord({
+  addServiceRecord({
     id: uid("record"),
     fleetId: service.fleetId || state.activeFleetId,
     maintenancePlanId: service.id,
@@ -2859,9 +2966,10 @@ function completeMaintenancePlan(serviceId, details = {}) {
     mechanicNote,
     partsNumbers: details.partsNumbers || "",
     attachmentNames
-  }));
+  });
 
   if (vehicle && completedKm > Number(vehicle.kilometers || 0)) vehicle.kilometers = completedKm;
+  reconcileStateIntegrity(state);
 }
 
 function completionFormValues(serviceId) {
@@ -2882,7 +2990,7 @@ function completionFormValues(serviceId) {
 
 function vehiclePayloadFromForm(form, existing = null) {
   const data = Object.fromEntries(new FormData(form).entries());
-  const nextNumber = existing ? state.vehicles.findIndex((vehicle) => vehicle.id === existing.id) + 1 : state.vehicles.length + 1;
+  const nextNumber = nextVehicleNumber(existing);
   const unitNumber = String(data.unitNumber || "").trim();
   const brandModelYear = String(data.brandModelYear || "").trim();
   return normalizeVehicle({
@@ -2906,15 +3014,15 @@ function vehiclePayloadFromForm(form, existing = null) {
 }
 
 function addVehicleFromForm(form) {
-  state.vehicles.unshift(vehiclePayloadFromForm(form));
+  createVehicle(vehiclePayloadFromForm(form));
   navigate("vehicles");
 }
 
 function updateVehicleFromForm(form) {
   const vehicleId = form.dataset.editVehicleForm;
-  const index = state.vehicles.findIndex((vehicle) => vehicle.id === vehicleId);
-  if (index < 0) return;
-  state.vehicles[index] = vehiclePayloadFromForm(form, state.vehicles[index]);
+  const existing = vehicleById(vehicleId);
+  if (!existing) return;
+  updateVehicle(vehicleId, vehiclePayloadFromForm(form, existing));
   navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: state.truckTab || "details" });
 }
 
@@ -2962,9 +3070,9 @@ function maintenancePlanPayloadFromForm(form, existing = null) {
 }
 
 function addMaintenancePlanFromForm(form) {
-  const service = maintenancePlanPayloadFromForm(form);
-  if (!service) return;
-  state.maintenancePlans.unshift(service);
+  const servicePayload = maintenancePlanPayloadFromForm(form);
+  if (!servicePayload) return;
+  const service = createMaintenancePlan(servicePayload);
   navigate("serviceDetails", {
     activeServiceId: service.id,
     returnRoute: state.returnRoute,
@@ -2975,14 +3083,10 @@ function addMaintenancePlanFromForm(form) {
 
 function updateMaintenancePlanFromForm(form) {
   const serviceId = form.dataset.editServiceForm;
-  const index = state.maintenancePlans.findIndex((service) => service.id === serviceId);
-  if (index < 0) return;
-  const updated = maintenancePlanPayloadFromForm(form, state.maintenancePlans[index]);
-  if (!updated) return;
-  state.maintenancePlans[index] = updated;
-  state.serviceRecords = state.serviceRecords.map((record) => (
-    record.maintenancePlanId === serviceId ? { ...record, vehicleId: updated.vehicleId, title: updated.title } : record
-  ));
+  const existing = maintenancePlanById(serviceId);
+  if (!existing) return;
+  const updated = maintenancePlanPayloadFromForm(form, existing);
+  if (!updated || !updateMaintenancePlan(serviceId, updated)) return;
   navigate("serviceDetails", {
     activeServiceId: serviceId,
     returnRoute: state.returnRoute,
@@ -2996,7 +3100,7 @@ function updateFleetName(form) {
   const fleet = state.fleets.find((item) => item.id === fleetId);
   if (!fleet) return;
   const data = new FormData(form);
-  fleet.name = String(data.get("name") || fleet.name).trim() || fleet.name;
+  updateFleet(fleetId, { name: String(data.get("name") || fleet.name).trim() || fleet.name });
   render();
 }
 
@@ -3005,21 +3109,17 @@ function createFleetFromForm(form) {
   const name = String(data.get("name") || "").trim();
   if (!name) return;
   const code = generateAccessCode();
-  const fleet = {
-    id: uid("fleet"),
+  const fleet = createFleet({
     name,
-    ownerUserId: "user-1",
+    ownerUserId: DEMO_FLEET.ownerUserId,
     mechanicAccessCode: code
-  };
-  state.fleets.unshift(fleet);
-  state.mechanicAccessCodes.unshift(normalizeMechanicAccess({
-    id: uid("access"),
+  });
+  createMechanicAccess({
     fleetId: fleet.id,
     name: t("mechanic"),
     code,
     role: "mechanic"
-  }));
-  state.activeFleetId = fleet.id;
+  });
   render();
 }
 
@@ -3040,40 +3140,34 @@ function createMechanicAccessFromForm(form) {
   const code = requestedCode && !state.mechanicAccessCodes.some((access) => access.active && access.code === requestedCode)
     ? requestedCode
     : generateAccessCode();
-  state.mechanicAccessCodes.unshift(normalizeMechanicAccess({
-    id: uid("access"),
+  createMechanicAccess({
     fleetId: state.activeFleetId,
     name,
     email,
     code,
     role: "mechanic",
     createdAt: new Date().toISOString()
-  }));
+  });
   render();
 }
 
 function revokeMechanicAccess(accessId) {
-  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  const access = mechanicAccessById(accessId);
   if (!access) return;
-  access.active = false;
-  access.status = "revoked";
-  access.revokedAt = new Date().toISOString();
+  patchMechanicAccess(accessId, { active: false, status: "revoked", revokedAt: new Date().toISOString() });
   if (state.activeMechanicAccessId === access.id) logout();
   else render();
 }
 
 function regenerateMechanicAccess(accessId) {
-  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  const access = mechanicAccessById(accessId);
   if (!access) return;
-  access.code = generateAccessCode();
-  access.active = true;
-  access.status = "active";
-  access.revokedAt = null;
+  patchMechanicAccess(accessId, { code: generateAccessCode(), active: true, status: "active", revokedAt: null });
   render();
 }
 
 function copyMechanicAccess(accessId) {
-  const access = state.mechanicAccessCodes.find((item) => item.id === accessId);
+  const access = mechanicAccessById(accessId);
   if (!access) return;
   navigator.clipboard?.writeText(`${access.code}\n${mechanicInviteUrl(access)}`).catch(() => {});
 }
@@ -3084,7 +3178,7 @@ function loginFromForm(form) {
 
   if (state.loginMode === "mechanic") {
     const code = String(data.get("accessCode") || "").trim();
-    const access = state.mechanicAccessCodes.find((item) => item.active && item.status !== "revoked" && item.code === code);
+    const access = findActiveMechanicAccessByCode(code);
     if (!access) {
       state.loginError = t("invalidAccessCode");
       render();
@@ -3093,7 +3187,7 @@ function loginFromForm(form) {
     state.activeFleetId = access.fleetId;
     state.activeMechanicAccessId = access.id;
     state.authMode = "mechanic";
-    access.lastUsedAt = new Date().toISOString();
+    patchMechanicAccess(access.id, { lastUsedAt: new Date().toISOString() });
     state.mechanicInviteCode = "";
   } else {
     const email = String(data.get("email") || state.user.email).trim();
@@ -3646,9 +3740,7 @@ app.addEventListener("click", (event) => {
     render();
   }
   if (deleteVehicleId && isOwner() && confirm(t("deleteVehicleConfirm"))) {
-    state.vehicles = state.vehicles.filter((vehicle) => vehicle.id !== deleteVehicleId);
-    state.maintenancePlans = state.maintenancePlans.filter((service) => service.vehicleId !== deleteVehicleId);
-    state.serviceRecords = state.serviceRecords.filter((completion) => completion.vehicleId !== deleteVehicleId);
+    deleteVehicle(deleteVehicleId);
     navigate("vehicles");
   }
 });
