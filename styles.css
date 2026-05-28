@@ -66,18 +66,6 @@ body {
   scrollbar-width: none;
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  z-index: 19;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(140px + env(safe-area-inset-bottom));
-  pointer-events: none;
-  background: var(--nav-surface);
-}
-
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .app-shell::-webkit-scrollbar,
