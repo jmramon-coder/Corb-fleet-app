@@ -3124,7 +3124,7 @@ function render() {
   document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
   app.innerHTML = `
-    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${playBootAnimation ? "is-booting" : ""}">
+    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${state.createMenuOpen ? "create-menu-open" : ""} ${playBootAnimation ? "is-booting" : ""}">
       ${routeMarkup()}
       ${completionModal()}
       ${createActionMenu()}

@@ -50,6 +50,16 @@ html[data-theme="dark"] {
   background: #17191b;
 }
 
+html:has(.create-menu-backdrop),
+html:has(.create-menu-backdrop) body {
+  background: color-mix(in srgb, var(--app-bg) 58%, #0a0c0f 42%);
+}
+
+html[data-theme="dark"]:has(.create-menu-backdrop),
+html[data-theme="dark"]:has(.create-menu-backdrop) body {
+  background: #0e0f11;
+}
+
 body {
   margin: 0;
   width: 100%;
@@ -1534,18 +1544,31 @@ button:disabled {
   inset: 0;
   display: grid;
   align-items: end;
-  background: rgba(0, 0, 0, 0.42);
-  padding: var(--page-gutter);
+  background: rgba(10, 12, 15, 0.46);
+  padding: var(--page-gutter) var(--page-gutter) calc(96px + env(safe-area-inset-bottom));
 }
 
 .create-menu {
   display: grid;
   gap: 10px;
+  width: 100%;
   border: 1px solid var(--divider);
   border-radius: 18px;
   background: var(--card);
   padding: 14px;
   box-shadow: 0 22px 70px rgba(0, 0, 0, 0.3);
+}
+
+.theme-light.create-menu-open {
+  background: color-mix(in srgb, var(--app-bg) 68%, #0a0c0f 32%);
+}
+
+.theme-dark.create-menu-open {
+  background: color-mix(in srgb, var(--app-bg) 74%, #050607 26%);
+}
+
+.theme-dark .create-menu-backdrop {
+  background: rgba(5, 6, 7, 0.56);
 }
 
 .create-menu-head {
