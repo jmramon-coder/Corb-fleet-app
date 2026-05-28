@@ -669,7 +669,7 @@ function resetLandingScrollPosition() {
 }
 
 function viewportThemeColor() {
-  return state.theme === "dark" ? "#17191b" : "#d8dde0";
+  return state.theme === "dark" ? "#17191b" : "#dfe3e5";
 }
 
 function syncViewportSurface() {
