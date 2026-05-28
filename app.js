@@ -2206,11 +2206,10 @@ function renderServiceDetails() {
     <div class="screen with-actions">
       ${header()}
       <section class="truck-overview-header service-overview-header">
-        <button class="detail-back-btn" type="button" ${backAttrs} aria-label="${escapeAttr(backText)}">
-          ${icons.back}
-          <span>${escapeHtml(backText)}</span>
-        </button>
         <div class="truck-title-row service-title-row">
+          <button class="detail-back-btn" type="button" ${backAttrs} aria-label="${escapeAttr(backText)}">
+            ${icons.back}
+          </button>
           <div class="truck-heading">
             <h1>${escapeHtml(displayServiceTitle(service))}</h1>
             <p>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
@@ -2251,11 +2250,10 @@ function renderTruckDetails() {
     <div class="screen ${isOwner() ? "with-actions" : ""}">
       ${header()}
       <section class="truck-overview-header">
-        <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">
-          ${icons.back}
-          <span>${escapeHtml(t("vehicles"))}</span>
-        </button>
         <div class="truck-title-row">
+          <button class="detail-back-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">
+            ${icons.back}
+          </button>
           <div class="truck-heading">
             <h1>${escapeHtml(displayVehicleTitle(vehicle))}</h1>
             <p>${escapeHtml(modelLine(vehicle))}</p>
