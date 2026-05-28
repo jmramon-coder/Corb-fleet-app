@@ -1835,22 +1835,46 @@ function serviceCompletionHistory(service) {
         <span>${completions.length}</span>
       </div>
       <div class="completion-line-list">
-        ${completions.length ? completions.map(completionLineCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
+        ${completions.length ? completions.map((completion) => completionLineCard(completion)).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
       </div>
     </section>
   `;
 }
 
-function completionLineCard(completion) {
+function attachmentIconForName(name) {
+  const extension = String(name || "").split(".").pop()?.toLowerCase() || "";
+  if (["jpg", "jpeg", "png", "gif", "webp", "heic", "heif"].includes(extension)) return icons.camera;
+  if (["mp4", "mov", "webm", "m4v"].includes(extension)) return icons.video;
+  return icons.fileText;
+}
+
+function completionAttachmentList(attachments) {
+  if (!attachments.length) return "";
+  return `
+    <div>
+      <span>${escapeHtml(t("photosDocuments"))}</span>
+      <ul class="completion-attachment-list">
+        ${attachments.map((name) => `
+          <li>
+            ${attachmentIconForName(name)}
+            <strong>${escapeHtml(name)}</strong>
+          </li>
+        `).join("")}
+      </ul>
+    </div>
+  `;
+}
+
+function completionLineCard(completion, { showService = false } = {}) {
   const expanded = state.activeCompletionId === completion.id;
   const attachments = completion.attachmentNames || [];
   const hasDetails = completion.mechanicNote || completion.partsNumbers || attachments.length;
+  const title = displayServiceTitle(completion);
   return `
-    <article class="completion-line-card ${expanded ? "expanded" : ""}">
+    <article class="completion-line-card ${showService ? "truck-history-line" : ""} ${expanded ? "expanded" : ""}">
       <button class="completion-line-main" type="button" data-toggle-completion="${completion.id}" aria-expanded="${expanded}">
         <div>
-          <strong>${shortDate(completion.completedDate)}</strong>
-          <span>${escapeHtml(completion.completedByName || completion.completedBy)} · ${formatKm(completion.completedKm)}</span>
+          ${showService ? `<strong>${escapeHtml(title)}</strong><span>${shortDate(completion.completedDate)} · ${escapeHtml(completion.completedByName || completion.completedBy)}</span>` : `<strong>${shortDate(completion.completedDate)}</strong><span>${escapeHtml(completion.completedByName || completion.completedBy)} · ${formatKm(completion.completedKm)}</span>`}
         </div>
         <span class="completion-line-status">${escapeHtml(t("completed"))}</span>
         ${icons.chevronRight}
@@ -1858,9 +1882,14 @@ function completionLineCard(completion) {
       ${expanded ? `
         <div class="completion-line-details">
           ${hasDetails ? "" : `<div><span>${escapeHtml(t("details"))}</span><p>${escapeHtml(t("notRecorded"))}</p></div>`}
+          ${showService ? `<div class="completion-detail-grid">
+            <div><span>${escapeHtml(t("completedOn"))}</span><p>${formatDate(completion.completedDate)}</p></div>
+            <div><span>${escapeHtml(t("atMileage"))}</span><p>${formatKm(completion.completedKm)}</p></div>
+            <div><span>${escapeHtml(t("completedBy"))}</span><p>${escapeHtml(completion.completedByName || completion.completedBy)}</p></div>
+          </div>` : ""}
           ${completion.mechanicNote ? `<div><span>${escapeHtml(t("mechanicNote"))}</span><p>${escapeHtml(completion.mechanicNote)}</p></div>` : ""}
           ${completion.partsNumbers ? `<div><span>${escapeHtml(t("partsNumbers"))}</span><p>${escapeHtml(completion.partsNumbers)}</p></div>` : ""}
-          ${attachments.length ? `<div><span>${escapeHtml(t("photosDocuments"))}</span><ul>${attachments.map((name) => `<li>${escapeHtml(name)}</li>`).join("")}</ul></div>` : ""}
+          ${completionAttachmentList(attachments)}
         </div>
       ` : ""}
     </article>
@@ -2194,7 +2223,13 @@ function truckTabContent(vehicle) {
 
   if (state.truckTab === "history") {
     const history = recordsForVehicle(vehicle.id);
-    return `<div class="list-stack">${history.length ? history.map(completionCard).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}</div>`;
+    return `
+      <section class="truck-history-section">
+        <div class="completion-line-list">
+          ${history.length ? history.map((completion) => completionLineCard(completion, { showService: true })).join("") : `<div class="ghost-note">${escapeHtml(t("noCompletedHistory"))}</div>`}
+        </div>
+      </section>
+    `;
   }
 
   return `
