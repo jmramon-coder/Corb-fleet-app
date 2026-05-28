@@ -50,16 +50,6 @@ html[data-theme="dark"] {
   background: #17191b;
 }
 
-html.create-menu-open,
-html.create-menu-open body {
-  background: color-mix(in srgb, var(--app-bg) 58%, #0a0c0f 42%);
-}
-
-html[data-theme="dark"].create-menu-open,
-html[data-theme="dark"].create-menu-open body {
-  background: #0e0f11;
-}
-
 body {
   margin: 0;
   width: 100%;
@@ -118,7 +108,7 @@ textarea:focus-visible {
   content: "";
   position: fixed;
   z-index: 68;
-  inset: -120px 0 -180px;
+  inset: 0;
   pointer-events: none;
   background: rgba(10, 12, 15, 0.46);
   opacity: 0;

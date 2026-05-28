@@ -669,7 +669,6 @@ function resetLandingScrollPosition() {
 }
 
 function viewportThemeColor() {
-  if (state.createMenuOpen) return state.theme === "dark" ? "#0e0f11" : "#82878a";
   return state.theme === "dark" ? "#17191b" : "#d8dde0";
 }
 
