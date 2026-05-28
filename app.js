@@ -133,6 +133,9 @@ const translations = {
     quickActions: "Quick actions",
     createVehicle: "Add vehicle",
     createService: "Schedule maintenance",
+    editVehicle: "Edit vehicle",
+    editService: "Edit maintenance",
+    saveChanges: "Save changes",
     serviceTitle: "Maintenance name",
     selectTruck: "Select truck",
     intervalDays: "Repeat days",
@@ -390,6 +393,9 @@ const translations = {
     quickActions: "Actions rapides",
     createVehicle: "Ajouter un véhicule",
     createService: "Planifier un entretien",
+    editVehicle: "Modifier le véhicule",
+    editService: "Modifier l'entretien",
+    saveChanges: "Enregistrer",
     serviceTitle: "Nom de l'entretien",
     selectTruck: "Choisir un camion",
     intervalDays: "Répétition en jours",
@@ -1444,7 +1450,9 @@ function applyInitialUrlRoute() {
     "vehicles",
     "profile",
     "addVehicle",
+    "editVehicle",
     "addService",
+    "editService",
     "serviceDetails",
     "truckDetails"
   ]);
@@ -2090,37 +2098,54 @@ function modelLine(vehicle) {
   return `${vehicle.brandModel}${vehicle.year ? ` - ${vehicle.year}` : ""}`;
 }
 
-function renderAddVehicle() {
+function renderVehicleForm(mode = "create") {
   if (!isOwner()) return renderVehicles();
+  const isEdit = mode === "edit";
+  const vehicle = isEdit ? vehicleById(state.activeVehicleId) : null;
+  if (isEdit && !vehicle) return renderVehicles();
+  const technical = vehicle?.technical || {};
+  const formId = isEdit ? "editVehicleForm" : "addVehicleForm";
+  const formDataAttr = isEdit ? `data-edit-vehicle-form="${escapeAttr(vehicle.id)}"` : "data-add-vehicle-form";
+  const backAttrs = isEdit ? `data-route="truckDetails"` : `data-route="vehicles"`;
+  const backTitle = isEdit ? displayVehicleTitle(vehicle) : t("backToVehicles");
+  const submitLabel = isEdit ? t("saveChanges") : t("addVehicle");
   return `
     <div class="screen with-actions">
       ${header()}
       <div class="back-row">
-        <button class="icon-btn" type="button" data-route="vehicles" aria-label="${escapeAttr(t("backToVehicles"))}">${icons.back}</button>
-        <div class="back-title">${escapeHtml(t("backToVehicles"))}</div>
+        <button class="icon-btn" type="button" ${backAttrs} aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
+        <div class="back-title">${escapeHtml(backTitle)}</div>
       </div>
       <div class="form-page-head">
-        <h1 class="form-title">${escapeHtml(t("addVehicle"))}</h1>
+        <h1 class="form-title">${escapeHtml(isEdit ? t("editVehicle") : t("addVehicle"))}</h1>
       </div>
-      <form id="addVehicleForm" class="mobile-form" data-add-vehicle-form>
+      <form id="${escapeAttr(formId)}" class="mobile-form" ${formDataAttr}>
         ${formSection(t("vehicleIdentity"), `
-          ${formField({ label: t("unitNumber"), name: "unitNumber", required: true })}
-          ${formField({ label: t("machineType"), name: "machineType", required: true })}
-          ${formField({ label: t("brandModelYear"), name: "brandModelYear", required: true })}
-          ${formField({ label: t("machineSerialNumber"), name: "machineSerialNumber" })}
-          ${formField({ label: t("kilometers"), name: "kilometers", type: "number", inputmode: "numeric", value: "0", attrs: 'min="0"' })}
+          ${formField({ label: t("unitNumber"), name: "unitNumber", value: vehicle?.unitNumber || "", required: true })}
+          ${formField({ label: t("machineType"), name: "machineType", value: vehicle?.machineType || "", required: true })}
+          ${formField({ label: t("brandModelYear"), name: "brandModelYear", value: vehicle ? vehicle.brandModelYear || modelLine(vehicle) : "", required: true })}
+          ${formField({ label: t("machineSerialNumber"), name: "machineSerialNumber", value: vehicle?.machineSerialNumber || "" })}
+          ${formField({ label: t("kilometers"), name: "kilometers", type: "number", inputmode: "numeric", value: vehicle?.kilometers ?? "0", attrs: 'min="0"' })}
         `)}
         ${formSection(t("technicalInfo"), `
-          ${formField({ label: t("engineSerial"), name: "engineSerialNumber" })}
-          ${formField({ label: t("partsAndFilters"), name: "partsAndFilters" })}
+          ${formField({ label: t("engineSerial"), name: "engineSerialNumber", value: technical.engineSerialNumber || "" })}
+          ${formField({ label: t("partsAndFilters"), name: "partsAndFilters", value: technical.partsAndFilters || technical.filterPartNumbers || "" })}
         `)}
       </form>
       <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="addVehicleForm" data-submit-add-vehicle>${escapeHtml(t("addVehicle"))} ${icons.check}</button>
-        <button class="outline-btn wide" type="button" data-route="vehicles">${escapeHtml(t("back"))}</button>
+        <button class="success-btn wide" type="submit" form="${escapeAttr(formId)}">${escapeHtml(submitLabel)} ${icons.check}</button>
+        <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
+}
+
+function renderAddVehicle() {
+  return renderVehicleForm("create");
+}
+
+function renderEditVehicle() {
+  return renderVehicleForm("edit");
 }
 
 function servicePresetBar() {
@@ -2154,45 +2179,62 @@ function servicePresetBar() {
   `;
 }
 
-function renderAddService() {
+function renderServiceForm(mode = "create") {
   if (!isOwner()) return renderServices();
+  const isEdit = mode === "edit";
+  const service = isEdit ? maintenancePlanById(state.activeServiceId) : null;
+  if (isEdit && !service) return renderServices();
   const vehicles = vehiclesForActiveFleet();
-  const backAttrs = backButtonAttributes("services");
+  const backAttrs = isEdit ? `data-route="serviceDetails"` : backButtonAttributes("services");
+  const formId = isEdit ? "editServiceForm" : "addServiceForm";
+  const formDataAttr = isEdit ? `data-edit-service-form="${escapeAttr(service.id)}"` : "data-add-service-form";
+  const selectedVehicleId = isEdit ? service.vehicleId : state.activeVehicleId;
+  const intervalDays = isEdit ? Number(service.scheduleRule?.intervalDays ?? service.intervalDays ?? 0) : 30;
+  const intervalKm = isEdit ? Number(service.scheduleRule?.intervalKm ?? service.intervalKm ?? 0) : 10000;
+  const submitLabel = isEdit ? t("saveChanges") : t("addService");
   return `
     <div class="screen with-actions">
       ${header()}
       <div class="back-row">
         <button class="icon-btn" type="button" ${backAttrs} aria-label="${escapeAttr(t("back"))}">${icons.back}</button>
-        <div class="back-title">${escapeHtml(backLabel(t("addService")))}</div>
+        <div class="back-title">${escapeHtml(isEdit ? displayServiceTitle(service) : backLabel(t("addService")))}</div>
       </div>
       <div class="form-page-head">
-        <h1 class="form-title">${escapeHtml(t("createService"))}</h1>
+        <h1 class="form-title">${escapeHtml(isEdit ? t("editService") : t("createService"))}</h1>
       </div>
       ${vehicles.length ? `
-        <form id="addServiceForm" class="mobile-form" data-add-service-form>
-          ${servicePresetBar()}
+        <form id="${escapeAttr(formId)}" class="mobile-form" ${formDataAttr}>
+          ${isEdit ? "" : servicePresetBar()}
           ${formSection(t("maintenanceSetup"), `
             ${formField({
               label: t("selectTruck"),
               name: "vehicleId",
               required: true,
-              options: vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}" ${vehicle.id === state.activeVehicleId ? "selected" : ""}>${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")
+              options: vehicles.map((vehicle) => `<option value="${escapeAttr(vehicle.id)}" ${vehicle.id === selectedVehicleId ? "selected" : ""}>${escapeHtml(displayVehicleTitle(vehicle))} - ${escapeHtml(modelLine(vehicle))}</option>`).join("")
             })}
-            ${formField({ label: t("serviceTitle"), name: "title", value: t("oilChange"), required: true })}
+            ${formField({ label: t("serviceTitle"), name: "title", value: isEdit ? displayServiceTitle(service) : t("oilChange"), required: true })}
             <div class="form-grid two">
-              ${formField({ label: t("intervalDays"), name: "intervalDays", type: "number", inputmode: "numeric", value: "30", attrs: 'min="0"' })}
-              ${formField({ label: t("intervalKm"), name: "intervalKm", type: "number", inputmode: "numeric", value: "10000", attrs: 'min="0"' })}
+              ${formField({ label: t("intervalDays"), name: "intervalDays", type: "number", inputmode: "numeric", value: intervalDays, attrs: 'min="0"' })}
+              ${formField({ label: t("intervalKm"), name: "intervalKm", type: "number", inputmode: "numeric", value: intervalKm, attrs: 'min="0"' })}
             </div>
-            ${formField({ label: t("dueDate"), name: "dueDate", type: "date", value: addDays(30), required: true })}
+            ${formField({ label: t("dueDate"), name: "dueDate", type: "date", value: isEdit ? dueSummaryForPlan(service).nextDueDate || service.dueDate || todayIso : addDays(30), required: true })}
           `)}
         </form>
       ` : `<div class="ghost-note">${escapeHtml(t("noVehicleForService"))}</div>`}
       <div class="action-bar">
-        <button class="success-btn wide" type="submit" form="addServiceForm" data-submit-add-service ${vehicles.length ? "" : "disabled"}>${escapeHtml(t("addService"))} ${icons.check}</button>
+        <button class="success-btn wide" type="submit" form="${escapeAttr(formId)}" ${vehicles.length ? "" : "disabled"}>${escapeHtml(submitLabel)} ${icons.check}</button>
         <button class="outline-btn wide" type="button" ${backAttrs}>${escapeHtml(t("back"))}</button>
       </div>
     </div>
   `;
+}
+
+function renderAddService() {
+  return renderServiceForm("create");
+}
+
+function renderEditService() {
+  return renderServiceForm("edit");
 }
 
 function renderServiceDetails() {
@@ -2214,6 +2256,9 @@ function renderServiceDetails() {
             <h1>${escapeHtml(displayServiceTitle(service))}</h1>
             <p>${icons.truck}${escapeHtml(vehicle ? displayVehicleTitle(vehicle) : t("unknownVehicle"))}</p>
           </div>
+          ${isOwner() ? `<div class="truck-header-actions">
+            <button class="plain-icon-btn" type="button" data-edit-service="${service.id}" aria-label="${escapeAttr(t("editService"))}">${icons.edit}</button>
+          </div>` : ""}
         </div>
       </section>
       ${serviceOverviewCard(service, vehicle)}
@@ -2259,7 +2304,7 @@ function renderTruckDetails() {
             <p>${escapeHtml(modelLine(vehicle))}</p>
           </div>
           ${isOwner() ? `<div class="truck-header-actions">
-            <button class="plain-icon-btn" type="button" aria-label="${escapeAttr(t("editTruck"))}">${icons.edit}</button>
+            <button class="plain-icon-btn" type="button" data-edit-vehicle="${vehicle.id}" aria-label="${escapeAttr(t("editTruck"))}">${icons.edit}</button>
             <button class="plain-icon-btn danger-icon" type="button" data-delete-vehicle="${vehicle.id}" aria-label="${escapeAttr(t("deleteTruck"))}">${icons.trash}</button>
           </div>` : ""}
         </div>
@@ -2664,14 +2709,15 @@ function completionFormValues(serviceId) {
   };
 }
 
-function addVehicleFromForm(form) {
+function vehiclePayloadFromForm(form, existing = null) {
   const data = Object.fromEntries(new FormData(form).entries());
-  const nextNumber = state.vehicles.length + 1;
+  const nextNumber = existing ? state.vehicles.findIndex((vehicle) => vehicle.id === existing.id) + 1 : state.vehicles.length + 1;
   const unitNumber = String(data.unitNumber || "").trim();
   const brandModelYear = String(data.brandModelYear || "").trim();
-  state.vehicles.unshift(normalizeVehicle({
-    id: uid("vehicle"),
-    fleetId: state.activeFleetId,
+  return normalizeVehicle({
+    ...(existing || {}),
+    id: existing?.id || uid("vehicle"),
+    fleetId: existing?.fleetId || state.activeFleetId,
     title: unitNumber || t("truckNumber", { number: nextNumber }),
     unitNumber,
     machineType: data.machineType || "",
@@ -2684,38 +2730,90 @@ function addVehicleFromForm(form) {
       filterPartNumbers: data.partsAndFilters || "",
       partsAndFilters: data.partsAndFilters || ""
     },
-    createdAt: new Date(Date.now() + nextNumber).toISOString()
-  }, nextNumber - 1, state.activeFleetId));
+    createdAt: existing?.createdAt || new Date(Date.now() + nextNumber).toISOString()
+  }, Math.max(nextNumber - 1, 0), existing?.fleetId || state.activeFleetId);
+}
+
+function addVehicleFromForm(form) {
+  state.vehicles.unshift(vehiclePayloadFromForm(form));
   navigate("vehicles");
 }
 
-function addMaintenancePlanFromForm(form) {
+function updateVehicleFromForm(form) {
+  const vehicleId = form.dataset.editVehicleForm;
+  const index = state.vehicles.findIndex((vehicle) => vehicle.id === vehicleId);
+  if (index < 0) return;
+  state.vehicles[index] = vehiclePayloadFromForm(form, state.vehicles[index]);
+  navigate("truckDetails", { activeVehicleId: vehicleId, truckTab: state.truckTab || "details" });
+}
+
+function recurrenceLabelFor(intervalDays, intervalKm, scheduleType) {
+  if (scheduleType !== "km" && intervalDays === 30) return RECURRENCE_LABELS.monthly;
+  if (scheduleType !== "km" && intervalDays === 60) return RECURRENCE_LABELS.bimonthly;
+  if (scheduleType !== "km" && intervalDays === 365) return RECURRENCE_LABELS.yearly;
+  if (intervalDays > 0) return `Every ${intervalDays} days`;
+  if (intervalKm > 0) return `Every ${intervalKm.toLocaleString(dateLocale())} km`;
+  return "";
+}
+
+function maintenancePlanPayloadFromForm(form, existing = null) {
   const data = Object.fromEntries(new FormData(form).entries());
   const vehicle = vehicleById(data.vehicleId);
-  if (!vehicle) return;
+  if (!vehicle) return null;
   const intervalDays = Number(data.intervalDays || 0);
   const intervalKm = Number(data.intervalKm || 0);
   const scheduleType = intervalDays > 0 && intervalKm > 0 ? "hybrid" : intervalKm > 0 ? "km" : "time";
   const dueKm = intervalKm > 0 ? Number(vehicle.kilometers || 0) + intervalKm : 0;
-  const service = normalizeMaintenancePlan({
-    id: uid("service"),
+  return normalizeMaintenancePlan({
+    ...(existing || {}),
+    id: existing?.id || uid("service"),
     fleetId: vehicle.fleetId || state.activeFleetId,
     vehicleId: vehicle.id,
     title: data.title || t("oilChange"),
     scheduleType,
     recurrenceType: scheduleType,
-    recurrenceLabel: intervalDays ? `Every ${intervalDays} days` : intervalKm ? `Every ${intervalKm.toLocaleString(dateLocale())} km` : "",
+    recurrenceLabel: recurrenceLabelFor(intervalDays, intervalKm, scheduleType),
+    scheduleRule: {
+      type: scheduleType,
+      intervalDays: scheduleType === "km" ? 0 : intervalDays,
+      intervalKm: scheduleType === "time" ? null : intervalKm,
+      warningDays: existing?.warningDays ?? existing?.scheduleRule?.warningDays ?? 7,
+      warningKm: scheduleType === "time" ? null : existing?.warningKm ?? existing?.scheduleRule?.warningKm ?? 1000
+    },
     intervalDays: scheduleType === "km" ? 0 : intervalDays,
     intervalKm: scheduleType === "time" ? null : intervalKm,
     dueDate: data.dueDate || todayIso,
     dueKm: scheduleType === "time" ? null : dueKm,
-    warningDays: 7,
-    warningKm: scheduleType === "time" ? null : 1000,
-    status: "active"
+    warningDays: existing?.warningDays ?? existing?.scheduleRule?.warningDays ?? 7,
+    warningKm: scheduleType === "time" ? null : existing?.warningKm ?? existing?.scheduleRule?.warningKm ?? 1000,
+    status: existing?.status || "active"
   });
+}
+
+function addMaintenancePlanFromForm(form) {
+  const service = maintenancePlanPayloadFromForm(form);
+  if (!service) return;
   state.maintenancePlans.unshift(service);
   navigate("serviceDetails", {
     activeServiceId: service.id,
+    returnRoute: state.returnRoute,
+    returnVehicleId: state.returnVehicleId,
+    returnTruckTab: state.returnTruckTab
+  });
+}
+
+function updateMaintenancePlanFromForm(form) {
+  const serviceId = form.dataset.editServiceForm;
+  const index = state.maintenancePlans.findIndex((service) => service.id === serviceId);
+  if (index < 0) return;
+  const updated = maintenancePlanPayloadFromForm(form, state.maintenancePlans[index]);
+  if (!updated) return;
+  state.maintenancePlans[index] = updated;
+  state.serviceRecords = state.serviceRecords.map((record) => (
+    record.maintenancePlanId === serviceId ? { ...record, vehicleId: updated.vehicleId, title: updated.title } : record
+  ));
+  navigate("serviceDetails", {
+    activeServiceId: serviceId,
     returnRoute: state.returnRoute,
     returnVehicleId: state.returnVehicleId,
     returnTruckTab: state.returnTruckTab
@@ -3079,14 +3177,16 @@ function routeMarkup() {
     state.route = "services";
     return renderServices();
   }
-  if (isMechanic() && ["addVehicle", "addService"].includes(state.route)) {
-    state.route = state.route === "addVehicle" ? "vehicles" : "services";
+  if (isMechanic() && ["addVehicle", "editVehicle", "addService", "editService"].includes(state.route)) {
+    state.route = state.route.includes("Vehicle") ? "vehicles" : "services";
   }
   if (state.route === "services") return renderServices();
   if (state.route === "vehicles") return renderVehicles();
   if (state.route === "profile") return renderProfile();
   if (state.route === "addVehicle") return renderAddVehicle();
+  if (state.route === "editVehicle") return renderEditVehicle();
   if (state.route === "addService") return renderAddService();
+  if (state.route === "editService") return renderEditService();
   if (state.route === "serviceDetails") return renderServiceDetails();
   if (state.route === "truckDetails") return renderTruckDetails();
   return renderServices();
@@ -3204,6 +3304,8 @@ app.addEventListener("click", (event) => {
   const filter = event.target.closest("[data-filter]")?.dataset.filter;
   const profileTab = event.target.closest("[data-profile-tab]")?.dataset.profileTab;
   const truckTab = event.target.closest("[data-truck-tab]")?.dataset.truckTab;
+  const editVehicleId = event.target.closest("[data-edit-vehicle]")?.dataset.editVehicle;
+  const editServiceId = event.target.closest("[data-edit-service]")?.dataset.editService;
   const deleteVehicleId = event.target.closest("[data-delete-vehicle]")?.dataset.deleteVehicle;
   const switchFleetId = event.target.closest("[data-switch-fleet]")?.dataset.switchFleet;
   const revokeAccessId = event.target.closest("[data-revoke-access]")?.dataset.revokeAccess;
@@ -3312,8 +3414,8 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (route) {
-    if (isMechanic() && ["addVehicle", "addService"].includes(route)) {
-      navigate(route === "addVehicle" ? "vehicles" : "services");
+    if (isMechanic() && ["addVehicle", "editVehicle", "addService", "editService"].includes(route)) {
+      navigate(route.includes("Vehicle") ? "vehicles" : "services");
       return;
     }
     state.createMenuOpen = false;
@@ -3337,6 +3439,20 @@ app.addEventListener("click", (event) => {
   if (truckTab) {
     state.truckTab = truckTab;
     render();
+    return;
+  }
+  if (editVehicleId && isOwner()) {
+    navigate("editVehicle", { activeVehicleId: editVehicleId });
+    return;
+  }
+  if (editServiceId && isOwner()) {
+    navigate("editService", {
+      activeServiceId: editServiceId,
+      returnRoute: state.returnRoute,
+      returnVehicleId: state.returnVehicleId,
+      returnTruckTab: state.returnTruckTab
+    });
+    return;
   }
   if (toggleTheme) {
     state.theme = state.theme === "dark" ? "light" : "dark";
@@ -3379,9 +3495,17 @@ app.addEventListener("submit", (event) => {
     event.preventDefault();
     if (isOwner()) addVehicleFromForm(event.target);
   }
+  if (event.target.matches("[data-edit-vehicle-form]")) {
+    event.preventDefault();
+    if (isOwner()) updateVehicleFromForm(event.target);
+  }
   if (event.target.matches("[data-add-service-form]")) {
     event.preventDefault();
     if (isOwner()) addMaintenancePlanFromForm(event.target);
+  }
+  if (event.target.matches("[data-edit-service-form]")) {
+    event.preventDefault();
+    if (isOwner()) updateMaintenancePlanFromForm(event.target);
   }
   if (event.target.matches("[data-fleet-name-form]")) {
     event.preventDefault();

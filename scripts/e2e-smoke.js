@@ -285,6 +285,89 @@ async function run() {
     assert(vehicleDetailsText.includes("ENG-900"), "Vehicle details should show engine serial number");
     assert(vehicleDetailsText.includes("P-77, F-88"), "Vehicle details should show parts and filters");
 
+    await evaluate(client, `(() => {
+      const currentState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      state.route = 'editVehicle';
+      state.activeVehicleId = currentState.vehicles[0].id;
+      render();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await evaluate(client, `(() => {
+      const form = document.querySelector('[data-edit-vehicle-form]');
+      form.elements.unitNumber.value = 'U-901';
+      form.elements.machineType.value = 'Chargeuse';
+      form.elements.brandModelYear.value = 'CAT 950M - 2023';
+      form.elements.machineSerialNumber.value = 'CAT950M-23-901';
+      form.elements.kilometers.value = '46200';
+      form.elements.engineSerialNumber.value = 'ENG-901';
+      form.elements.partsAndFilters.value = 'P-99, F-100';
+      form.requestSubmit();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const editedVehicle = await evaluate(client, `(() => {
+      const savedState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      const vehicle = savedState.vehicles[0];
+      return {
+        route: savedState.route,
+        vehicleCount: savedState.vehicles.length,
+        unitNumber: vehicle.unitNumber,
+        machineType: vehicle.machineType,
+        brandModelYear: vehicle.brandModelYear,
+        machineSerialNumber: vehicle.machineSerialNumber,
+        kilometers: vehicle.kilometers,
+        engineSerialNumber: vehicle.technical.engineSerialNumber,
+        partsAndFilters: vehicle.technical.partsAndFilters,
+        legacyFilterAlias: vehicle.technical.filterPartNumbers
+      };
+    })()`);
+    assert(editedVehicle.route === "truckDetails", "Edited vehicle should return to truck details");
+    assert(editedVehicle.vehicleCount === 4, "Editing vehicle should not create a duplicate");
+    assert(editedVehicle.unitNumber === "U-901", "Vehicle edit did not save unit number");
+    assert(editedVehicle.machineType === "Chargeuse", "Vehicle edit did not save machine type");
+    assert(editedVehicle.brandModelYear === "CAT 950M - 2023", "Vehicle edit did not save brand/model/year");
+    assert(editedVehicle.machineSerialNumber === "CAT950M-23-901", "Vehicle edit did not save machine serial number");
+    assert(editedVehicle.kilometers === 46200, "Vehicle edit did not save kilometers");
+    assert(editedVehicle.engineSerialNumber === "ENG-901", "Vehicle edit did not save engine serial number");
+    assert(editedVehicle.partsAndFilters === "P-99, F-100", "Vehicle edit did not save parts and filters");
+    assert(editedVehicle.legacyFilterAlias === "P-99, F-100", "Vehicle edit should keep legacy filter alias synchronized");
+
+    await evaluate(client, `(() => {
+      const savedState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      state.route = 'editService';
+      state.activeServiceId = savedState.maintenancePlans[0].id;
+      render();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await evaluate(client, `(() => {
+      const form = document.querySelector('[data-edit-service-form]');
+      form.elements.title.value = 'Inspection hydraulique';
+      form.elements.intervalDays.value = '45';
+      form.elements.intervalKm.value = '12000';
+      form.elements.dueDate.value = '2026-07-15';
+      form.requestSubmit();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const editedService = await evaluate(client, `(() => {
+      const savedState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      const service = savedState.maintenancePlans[0];
+      return {
+        route: savedState.route,
+        serviceCount: savedState.maintenancePlans.length,
+        title: service.title,
+        intervalDays: service.scheduleRule.intervalDays,
+        intervalKm: service.scheduleRule.intervalKm,
+        dueDate: service.dueDate,
+        scheduleType: service.scheduleType
+      };
+    })()`);
+    assert(editedService.route === "serviceDetails", "Edited maintenance should return to service details");
+    assert(editedService.serviceCount === 4, "Editing maintenance should not create a duplicate");
+    assert(editedService.title === "Inspection hydraulique", "Maintenance edit did not save title");
+    assert(editedService.intervalDays === 45, "Maintenance edit did not save interval days");
+    assert(editedService.intervalKm === 12000, "Maintenance edit did not save interval KM");
+    assert(editedService.dueDate === "2026-07-15", "Maintenance edit did not save due date");
+    assert(editedService.scheduleType === "hybrid", "Maintenance edit should derive hybrid schedule type");
+
     await evaluate(client, `document.querySelector('[data-route="profile"]').click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
     await evaluate(client, `document.querySelector('[data-profile-tab="fleet"]').click();`);
