@@ -2002,7 +2002,7 @@ button:disabled {
 .completion-line-card {
   border: 1px solid color-mix(in srgb, var(--divider) 58%, transparent);
   border-radius: 14px;
-  background: var(--card-raised);
+  background: #fff;
   overflow: hidden;
 }
 
@@ -2013,6 +2013,7 @@ button:disabled {
   align-items: center;
   width: 100%;
   padding: 12px;
+  background: #fff;
   color: inherit;
   text-align: left;
 }
@@ -2150,6 +2151,10 @@ button:disabled {
 .theme-dark .schedule-primary-item,
 .theme-dark .completion-line-card {
   border-color: rgba(255, 255, 255, 0.14);
+  background: #262a2e;
+}
+
+.theme-dark .completion-line-main {
   background: #262a2e;
 }
 
