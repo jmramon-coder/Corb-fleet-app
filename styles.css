@@ -753,7 +753,7 @@ button:disabled {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   transform: translateY(0);
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-radius: 0;
   background: var(--nav-surface);
@@ -779,7 +779,15 @@ button:disabled {
 }
 
 .bottom-nav::before {
-  display: none;
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  bottom: -42px;
+  height: 42px;
+  background: var(--nav-surface);
+  pointer-events: none;
 }
 
 .theme-dark .nav-scrim {
