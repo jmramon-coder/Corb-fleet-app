@@ -43,6 +43,21 @@ const OWNER_FORM_ROUTES = new Set([
 ]);
 const VEHICLE_FORM_ROUTES = new Set([ROUTES.addVehicle, ROUTES.editVehicle]);
 const ALLOWED_ROUTES = new Set(Object.values(ROUTES));
+const DATA_MODEL_VERSION = 1;
+const ENTITY_TYPES = {
+  user: "user",
+  fleet: "fleet",
+  vehicle: "vehicle",
+  maintenancePlan: "maintenancePlan",
+  serviceRecord: "serviceRecord",
+  mechanicAccess: "mechanicAccess"
+};
+const PROFILE_TABS = new Set(["account", "fleet", "mechanics", "settings"]);
+const TRUCK_TABS = new Set(["details", "schedule", "history"]);
+const DETAIL_ROUTES_BY_ENTITY = {
+  [ENTITY_TYPES.vehicle]: new Set([ROUTES.truckDetails, ROUTES.editVehicle]),
+  [ENTITY_TYPES.maintenancePlan]: new Set([ROUTES.serviceDetails, ROUTES.editService])
+};
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (window.location.hash === "#pricing" || window.location.hash === "#product") {
@@ -1003,6 +1018,8 @@ function loadState() {
 }
 
 function normalizeState(next) {
+  next.schemaVersion = DATA_MODEL_VERSION;
+  next.user = normalizeUser(next.user);
   if (next.theme !== "dark" && next.theme !== "light") next.theme = "dark";
   if (next.language !== "fr" && next.language !== "en") next.language = "fr";
   next.isAuthenticated = next.isAuthenticated === true;
@@ -1012,8 +1029,14 @@ function normalizeState(next) {
   next.loginError = "";
   if (next.route === "dashboard") next.route = ROUTES.services;
   if (next.previousRoute === "dashboard") next.previousRoute = ROUTES.services;
+  if (!ALLOWED_ROUTES.has(next.route)) next.route = next.isAuthenticated ? ROUTES.services : ROUTES.landing;
+  if (!ALLOWED_ROUTES.has(next.previousRoute)) next.previousRoute = ROUTES.services;
+  if (!PROFILE_TABS.has(next.profileTab)) next.profileTab = "account";
+  if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
+  next.fleets = next.fleets.map(normalizeFleet).filter((fleet) => fleet.id);
+  if (!next.fleets.length) next.fleets = defaultState().fleets.map(normalizeFleet);
   if (!next.activeFleetId) next.activeFleetId = DEMO_FLEET.id;
-  if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || DEMO_FLEET.id;
+  if (!next.fleets.some((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets[0]?.id || DEMO_FLEET.id;
   if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
   if (next.returnRoute !== "truckDetails") {
     next.returnRoute = null;
@@ -1023,16 +1046,8 @@ function normalizeState(next) {
   next.createMenuOpen = false;
   next.completionModalServiceId = null;
   if (!next.activeCompletionId) next.activeCompletionId = null;
-  if (!["details", "schedule", "history"].includes(next.truckTab)) next.truckTab = "details";
-  if (!Array.isArray(next.fleets)) next.fleets = defaultState().fleets;
+  if (!TRUCK_TABS.has(next.truckTab)) next.truckTab = "details";
   if (!Array.isArray(next.mechanicAccessCodes)) next.mechanicAccessCodes = defaultState().mechanicAccessCodes;
-  next.mechanicAccessCodes = next.mechanicAccessCodes.map(normalizeMechanicAccess);
-  if (next.authMode === "mechanic" && !next.mechanicAccessCodes.some((access) => access.id === next.activeMechanicAccessId && access.active)) {
-    next.authMode = null;
-    next.isAuthenticated = false;
-    next.activeMechanicAccessId = null;
-    next.route = "login";
-  }
   if (Array.isArray(next.services) && !Array.isArray(next.maintenancePlans)) {
     next.maintenancePlans = next.services.map(normalizeMaintenancePlan);
   }
@@ -1042,13 +1057,86 @@ function normalizeState(next) {
       .filter((schedule) => schedule.lastPerformedDate)
       .map(recordFromPlanSnapshot);
   }
+  next.vehicles = (Array.isArray(next.vehicles) ? next.vehicles : []).map((vehicle, index) => normalizeVehicle(vehicle, index, next.activeFleetId));
+  next.mechanicAccessCodes = next.mechanicAccessCodes.map(normalizeMechanicAccess);
   next.maintenancePlans = next.maintenancePlans.map(normalizeMaintenancePlan);
   next.serviceRecords = next.serviceRecords.map(normalizeServiceRecord);
-  next.vehicles = (Array.isArray(next.vehicles) ? next.vehicles : []).map((vehicle, index) => normalizeVehicle(vehicle, index, next.activeFleetId));
+  reconcileStateIntegrity(next);
   delete next.services;
   delete next.serviceSchedules;
   delete next.serviceCompletions;
   return next;
+}
+
+function normalizeUser(user = {}) {
+  return {
+    firstName: user.firstName || DEMO_OWNER.firstName,
+    displayName: user.displayName || DEMO_OWNER.displayName,
+    email: user.email || DEMO_OWNER.email,
+    role: user.role === "Mechanic" ? "Mechanic" : "Owner",
+    joinedAt: user.joinedAt || DEMO_OWNER.joinedAt
+  };
+}
+
+function normalizeFleet(fleet) {
+  return {
+    id: fleet.id || uid("fleet"),
+    name: String(fleet.name || DEMO_FLEET.name).trim() || DEMO_FLEET.name,
+    ownerUserId: fleet.ownerUserId || DEMO_FLEET.ownerUserId,
+    mechanicAccessCode: String(fleet.mechanicAccessCode || fleet.accessCode || "").trim()
+  };
+}
+
+function reconcileStateIntegrity(next) {
+  const fleetIds = new Set(next.fleets.map((fleet) => fleet.id));
+
+  next.vehicles = next.vehicles
+    .map((vehicle, index) => normalizeVehicle(vehicle, index, next.activeFleetId))
+    .filter((vehicle) => fleetIds.has(vehicle.fleetId));
+  const vehicleIds = new Set(next.vehicles.map((vehicle) => vehicle.id));
+
+  next.mechanicAccessCodes = next.mechanicAccessCodes
+    .map(normalizeMechanicAccess)
+    .filter((access) => fleetIds.has(access.fleetId));
+
+  next.maintenancePlans = next.maintenancePlans
+    .map(normalizeMaintenancePlan)
+    .filter((plan) => fleetIds.has(plan.fleetId) && vehicleIds.has(plan.vehicleId));
+  const planIds = new Set(next.maintenancePlans.map((plan) => plan.id));
+
+  next.serviceRecords = next.serviceRecords
+    .map(normalizeServiceRecord)
+    .filter((record) => fleetIds.has(record.fleetId) && vehicleIds.has(record.vehicleId) && planIds.has(record.maintenancePlanId));
+  const recordIds = new Set(next.serviceRecords.map((record) => record.id));
+
+  const hadInvalidVehicleTarget = next.activeVehicleId && !vehicleIds.has(next.activeVehicleId);
+  const hadInvalidServiceTarget = next.activeServiceId && !planIds.has(next.activeServiceId);
+  if (hadInvalidVehicleTarget) next.activeVehicleId = null;
+  if (hadInvalidServiceTarget) next.activeServiceId = null;
+  if (next.activeCompletionId && !recordIds.has(next.activeCompletionId)) next.activeCompletionId = null;
+  if (next.completionModalServiceId && !planIds.has(next.completionModalServiceId)) next.completionModalServiceId = null;
+
+  if (DETAIL_ROUTES_BY_ENTITY[ENTITY_TYPES.vehicle].has(next.route) && !next.activeVehicleId) {
+    next.route = ROUTES.vehicles;
+  }
+  if (DETAIL_ROUTES_BY_ENTITY[ENTITY_TYPES.maintenancePlan].has(next.route) && !next.activeServiceId) {
+    next.route = ROUTES.services;
+  }
+
+  if (next.returnVehicleId && !vehicleIds.has(next.returnVehicleId)) {
+    next.returnRoute = null;
+    next.returnVehicleId = null;
+    next.returnTruckTab = null;
+  }
+  if (next.returnRoute === ROUTES.truckDetails && !TRUCK_TABS.has(next.returnTruckTab)) {
+    next.returnTruckTab = "schedule";
+  }
+  if (next.authMode === "mechanic" && !next.mechanicAccessCodes.some((access) => access.id === next.activeMechanicAccessId && access.active)) {
+    next.authMode = null;
+    next.isAuthenticated = false;
+    next.activeMechanicAccessId = null;
+    next.route = ROUTES.login;
+  }
 }
 
 function migrateOldState(old) {

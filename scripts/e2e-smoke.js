@@ -240,6 +240,82 @@ async function run() {
     assert(ownerHome.hasActions, "Owner action button is missing");
     assert(!ownerHome.overflowX, "Owner home has horizontal overflow");
 
+    await evaluate(client, `(() => {
+      const brokenState = {
+        schemaVersion: 0,
+        isAuthenticated: true,
+        authMode: 'owner',
+        route: 'truckDetails',
+        previousRoute: 'not-a-route',
+        profileTab: 'unknown',
+        truckTab: 'unknown',
+        activeFleetId: 'missing-fleet',
+        activeVehicleId: 'missing-vehicle',
+        activeServiceId: 'missing-service',
+        activeCompletionId: 'missing-record',
+        returnRoute: 'truckDetails',
+        returnVehicleId: 'missing-vehicle',
+        fleets: [{ id: 'fleet-ok', name: 'Ops Fleet', ownerUserId: 'user-1' }],
+        vehicles: [
+          { id: 'vehicle-ok', fleetId: 'fleet-ok', title: 'Valid truck', unitNumber: 'V-1', kilometers: 1000 },
+          { id: 'vehicle-orphan', fleetId: 'fleet-missing', title: 'Orphan truck' }
+        ],
+        maintenancePlans: [
+          { id: 'service-ok', fleetId: 'fleet-ok', vehicleId: 'vehicle-ok', title: 'Valid service', dueDate: '2026-06-10' },
+          { id: 'service-orphan', fleetId: 'fleet-ok', vehicleId: 'vehicle-missing', title: 'Orphan service' }
+        ],
+        serviceRecords: [
+          { id: 'record-ok', fleetId: 'fleet-ok', maintenancePlanId: 'service-ok', vehicleId: 'vehicle-ok', completedDate: '2026-05-20' },
+          { id: 'record-orphan', fleetId: 'fleet-ok', maintenancePlanId: 'service-orphan', vehicleId: 'vehicle-missing', completedDate: '2026-05-21' }
+        ],
+        mechanicAccessCodes: [
+          { id: 'access-ok', fleetId: 'fleet-ok', name: 'Valid Mechanic', code: '1111' },
+          { id: 'access-orphan', fleetId: 'fleet-missing', name: 'Orphan Mechanic', code: '2222' }
+        ]
+      };
+      localStorage.setItem('corb-fleet-manager-state-v2', JSON.stringify(brokenState));
+      location.href = '${baseUrl}/';
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const repairedState = await evaluate(client, `(() => {
+      const savedState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      return {
+        schemaVersion: savedState.schemaVersion,
+        route: savedState.route,
+        previousRoute: savedState.previousRoute,
+        profileTab: savedState.profileTab,
+        truckTab: savedState.truckTab,
+        activeFleetId: savedState.activeFleetId,
+        activeVehicleId: savedState.activeVehicleId,
+        activeServiceId: savedState.activeServiceId,
+        activeCompletionId: savedState.activeCompletionId,
+        returnRoute: savedState.returnRoute,
+        vehicleIds: savedState.vehicles.map((vehicle) => vehicle.id),
+        serviceIds: savedState.maintenancePlans.map((service) => service.id),
+        recordIds: savedState.serviceRecords.map((record) => record.id),
+        accessIds: savedState.mechanicAccessCodes.map((access) => access.id)
+      };
+    })()`);
+    assert(repairedState.schemaVersion === 1, "State schema version was not stamped");
+    assert(repairedState.route === "vehicles", "Invalid vehicle detail route should fall back to vehicle list");
+    assert(repairedState.previousRoute === "services", "Invalid previous route should normalize");
+    assert(repairedState.profileTab === "account", "Invalid profile tab should normalize");
+    assert(repairedState.truckTab === "details", "Invalid truck tab should normalize");
+    assert(repairedState.activeFleetId === "fleet-ok", "Active fleet should resolve to a valid fleet");
+    assert(repairedState.activeVehicleId === null, "Invalid active vehicle should be cleared");
+    assert(repairedState.activeServiceId === null, "Invalid active service should be cleared");
+    assert(repairedState.activeCompletionId === null, "Invalid active completion should be cleared");
+    assert(repairedState.returnRoute === null, "Invalid return context should be cleared");
+    assert(repairedState.vehicleIds.length === 1 && repairedState.vehicleIds[0] === "vehicle-ok", "Orphan vehicles should be removed");
+    assert(repairedState.serviceIds.length === 1 && repairedState.serviceIds[0] === "service-ok", "Orphan maintenance plans should be removed");
+    assert(repairedState.recordIds.length === 1 && repairedState.recordIds[0] === "record-ok", "Orphan service logs should be removed");
+    assert(repairedState.accessIds.length === 1 && repairedState.accessIds[0] === "access-ok", "Orphan mechanic access codes should be removed");
+
+    await evaluate(client, `localStorage.removeItem('corb-fleet-manager-state-v2'); location.href='${baseUrl}/?route=login&language=fr&theme=dark&loginMode=owner';`);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await evaluate(client, `document.querySelector('[data-login-form]').requestSubmit();`);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
     await evaluate(client, `state.route='addVehicle'; render();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
     await evaluate(client, `(() => {
