@@ -22,6 +22,27 @@ const RECURRENCE_LABELS = {
   bimonthly: "Every 60 days",
   yearly: "Every 12 months"
 };
+const ROUTES = {
+  landing: "landing",
+  login: "login",
+  services: "services",
+  vehicles: "vehicles",
+  profile: "profile",
+  addVehicle: "addVehicle",
+  editVehicle: "editVehicle",
+  addService: "addService",
+  editService: "editService",
+  serviceDetails: "serviceDetails",
+  truckDetails: "truckDetails"
+};
+const OWNER_FORM_ROUTES = new Set([
+  ROUTES.addVehicle,
+  ROUTES.editVehicle,
+  ROUTES.addService,
+  ROUTES.editService
+]);
+const VEHICLE_FORM_ROUTES = new Set([ROUTES.addVehicle, ROUTES.editVehicle]);
+const ALLOWED_ROUTES = new Set(Object.values(ROUTES));
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (window.location.hash === "#pricing" || window.location.hash === "#product") {
@@ -971,8 +992,8 @@ function normalizeState(next) {
   if (next.authMode === "owner" && next.user?.role === "Mechanic") next.user.role = "Owner";
   if (next.loginMode !== "owner" && next.loginMode !== "mechanic") next.loginMode = "owner";
   next.loginError = "";
-  if (next.route === "dashboard") next.route = "services";
-  if (next.previousRoute === "dashboard") next.previousRoute = "services";
+  if (next.route === "dashboard") next.route = ROUTES.services;
+  if (next.previousRoute === "dashboard") next.previousRoute = ROUTES.services;
   if (!next.activeFleetId) next.activeFleetId = DEMO_FLEET.id;
   if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || DEMO_FLEET.id;
   if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
@@ -1443,22 +1464,8 @@ function navigateBack(defaultRoute = "services") {
 function applyInitialUrlRoute() {
   const params = new URLSearchParams(window.location.search);
   const route = params.get("route");
-  const allowedRoutes = new Set([
-    "landing",
-    "login",
-    "services",
-    "vehicles",
-    "profile",
-    "addVehicle",
-    "editVehicle",
-    "addService",
-    "editService",
-    "serviceDetails",
-    "truckDetails"
-  ]);
-
-  if (route === "dashboard") state.route = "services";
-  else if (allowedRoutes.has(route)) state.route = route;
+  if (route === "dashboard") state.route = ROUTES.services;
+  else if (ALLOWED_ROUTES.has(route)) state.route = route;
   if (params.get("vehicle")) state.activeVehicleId = params.get("vehicle");
   if (params.get("service")) state.activeServiceId = params.get("service");
   if (params.get("profileTab")) state.profileTab = params.get("profileTab");
@@ -3172,23 +3179,23 @@ function playInitialAppAnimation() {
 }
 
 function routeMarkup() {
-  if (!state.isAuthenticated) return state.route === "login" ? renderLogin() : renderLanding();
-  if (state.route === "login" || state.route === "landing") {
-    state.route = "services";
+  if (!state.isAuthenticated) return state.route === ROUTES.login ? renderLogin() : renderLanding();
+  if (state.route === ROUTES.login || state.route === ROUTES.landing) {
+    state.route = ROUTES.services;
     return renderServices();
   }
-  if (isMechanic() && ["addVehicle", "editVehicle", "addService", "editService"].includes(state.route)) {
-    state.route = state.route.includes("Vehicle") ? "vehicles" : "services";
+  if (isMechanic() && OWNER_FORM_ROUTES.has(state.route)) {
+    state.route = VEHICLE_FORM_ROUTES.has(state.route) ? ROUTES.vehicles : ROUTES.services;
   }
-  if (state.route === "services") return renderServices();
-  if (state.route === "vehicles") return renderVehicles();
-  if (state.route === "profile") return renderProfile();
-  if (state.route === "addVehicle") return renderAddVehicle();
-  if (state.route === "editVehicle") return renderEditVehicle();
-  if (state.route === "addService") return renderAddService();
-  if (state.route === "editService") return renderEditService();
-  if (state.route === "serviceDetails") return renderServiceDetails();
-  if (state.route === "truckDetails") return renderTruckDetails();
+  if (state.route === ROUTES.services) return renderServices();
+  if (state.route === ROUTES.vehicles) return renderVehicles();
+  if (state.route === ROUTES.profile) return renderProfile();
+  if (state.route === ROUTES.addVehicle) return renderAddVehicle();
+  if (state.route === ROUTES.editVehicle) return renderEditVehicle();
+  if (state.route === ROUTES.addService) return renderAddService();
+  if (state.route === ROUTES.editService) return renderEditService();
+  if (state.route === ROUTES.serviceDetails) return renderServiceDetails();
+  if (state.route === ROUTES.truckDetails) return renderTruckDetails();
   return renderServices();
 }
 
@@ -3414,12 +3421,12 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (route) {
-    if (isMechanic() && ["addVehicle", "editVehicle", "addService", "editService"].includes(route)) {
-      navigate(route.includes("Vehicle") ? "vehicles" : "services");
+    if (isMechanic() && OWNER_FORM_ROUTES.has(route)) {
+      navigate(VEHICLE_FORM_ROUTES.has(route) ? ROUTES.vehicles : ROUTES.services);
       return;
     }
     state.createMenuOpen = false;
-    navigate(route, route === "addService" ? truckReturnContext("schedule") : {});
+    navigate(route, route === ROUTES.addService ? truckReturnContext("schedule") : {});
     return;
   }
   if (switchFleetId) {
@@ -3442,11 +3449,11 @@ app.addEventListener("click", (event) => {
     return;
   }
   if (editVehicleId && isOwner()) {
-    navigate("editVehicle", { activeVehicleId: editVehicleId });
+    navigate(ROUTES.editVehicle, { activeVehicleId: editVehicleId });
     return;
   }
   if (editServiceId && isOwner()) {
-    navigate("editService", {
+    navigate(ROUTES.editService, {
       activeServiceId: editServiceId,
       returnRoute: state.returnRoute,
       returnVehicleId: state.returnVehicleId,
