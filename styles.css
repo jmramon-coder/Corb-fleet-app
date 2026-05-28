@@ -2000,9 +2000,9 @@ button:disabled {
 }
 
 .completion-line-card {
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--divider) 58%, transparent);
   border-radius: 14px;
-  background: color-mix(in srgb, var(--card) 82%, transparent);
+  background: var(--card-raised);
   overflow: hidden;
 }
 
@@ -2088,7 +2088,7 @@ button:disabled {
 .completion-detail-grid div {
   border: 1px solid var(--divider);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--app-bg) 38%, transparent);
+  background: #fff;
   padding: 10px;
 }
 
@@ -2110,7 +2110,7 @@ button:disabled {
   align-items: center;
   border: 1px solid var(--divider);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--app-bg) 38%, transparent);
+  background: #fff;
   padding: 9px 10px;
 }
 
@@ -2150,7 +2150,7 @@ button:disabled {
 .theme-dark .schedule-primary-item,
 .theme-dark .completion-line-card {
   border-color: rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.055);
+  background: #262a2e;
 }
 
 .theme-dark .schedule-meta-list,
@@ -2158,6 +2158,11 @@ button:disabled {
 .theme-dark .completion-detail-grid div,
 .theme-dark .completion-attachment-list li {
   border-color: rgba(255, 255, 255, 0.13);
+}
+
+.theme-dark .completion-detail-grid div,
+.theme-dark .completion-attachment-list li {
+  background: #202327;
 }
 
 .theme-dark .schedule-meta-list div {
