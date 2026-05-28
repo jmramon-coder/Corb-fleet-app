@@ -668,18 +668,6 @@ function resetLandingScrollPosition() {
   window.scrollTo(0, 0);
 }
 
-function viewportThemeColor() {
-  return state.theme === "dark" ? "#17191b" : "#dfe3e5";
-}
-
-function syncViewportSurface() {
-  document.documentElement.dataset.theme = state.theme;
-  document.documentElement.classList.toggle("create-menu-open", state.createMenuOpen);
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", viewportThemeColor());
-}
-
 window.addEventListener("load", () => {
   if (!state.isAuthenticated && state.route !== "login") setTimeout(resetLandingScrollPosition, 0);
 });
@@ -3128,12 +3116,15 @@ function render() {
   saveState();
   const renderingLanding = !state.isAuthenticated && state.route !== "login";
   const playBootAnimation = !hasPlayedBootAnimation;
+  document.documentElement.dataset.theme = state.theme;
   document.documentElement.lang = state.language === "fr" ? "fr-CA" : "en";
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", state.theme === "dark" ? "#17191b" : "#d8dde0");
   document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
-  syncViewportSurface();
   app.innerHTML = `
-    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${state.createMenuOpen ? "create-menu-open" : ""} ${playBootAnimation ? "is-booting" : ""}">
+    <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${playBootAnimation ? "is-booting" : ""}">
       ${routeMarkup()}
       ${completionModal()}
       ${createActionMenu()}
@@ -3405,13 +3396,11 @@ app.addEventListener("click", (event) => {
   }
   if (toggleCreateMenu) {
     state.createMenuOpen = !state.createMenuOpen;
-    syncViewportSurface();
     render();
     return;
   }
   if (closeCreateMenuTrigger || closeCreateMenuBackdrop) {
     state.createMenuOpen = false;
-    syncViewportSurface();
     render();
     return;
   }
@@ -3474,12 +3463,10 @@ app.addEventListener("click", (event) => {
   }
   if (toggleTheme) {
     state.theme = state.theme === "dark" ? "light" : "dark";
-    syncViewportSurface();
     render();
   }
   if (themeChoice === "dark" || themeChoice === "light") {
     state.theme = themeChoice;
-    syncViewportSurface();
     render();
   }
   if (language === "en" || language === "fr") {
