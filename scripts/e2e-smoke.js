@@ -144,6 +144,14 @@ async function openPage(client, url) {
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+async function waitForCondition(client, expression, message, retries = 20) {
+  for (let index = 0; index < retries; index += 1) {
+    if (await evaluate(client, expression)) return;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error(message);
+}
+
 async function run() {
   const chromePath = findChrome();
   assert(chromePath, "Chrome or Chromium was not found. Set CHROME_PATH to run E2E tests.");
@@ -174,6 +182,44 @@ async function run() {
       deviceScaleFactor: 3,
       mobile: true
     });
+
+    await openPage(client, baseUrl);
+    await evaluate(client, `localStorage.removeItem('corb-fleet-manager-state-v2');`);
+    await openPage(client, `${baseUrl}/?route=landing&language=fr&theme=dark&e2e=landing#pricing`);
+    await waitForCondition(client, `!document.querySelector('.is-booting')`, "Boot animation class did not clear");
+    const landing = await evaluate(client, `(() => ({
+      hash: location.hash,
+      scrollY: Math.round(window.scrollY),
+      hasLoginForm: !!document.querySelector('[data-login-form]'),
+      hasPhonePreview: !!document.querySelector('.phone-preview'),
+      outcomeCards: document.querySelectorAll('.landing-feature-grid article').length,
+      pricingCards: document.querySelectorAll('.landing-pricing-grid article').length,
+      footer: !!document.querySelector('.landing-footer'),
+      booting: !!document.querySelector('.is-booting'),
+      overflowX: document.documentElement.scrollWidth > window.innerWidth
+    }))()`);
+    assert(landing.hash === "", "Landing should clear stale section hash");
+    assert(landing.scrollY === 0, "Landing should refresh at the top");
+    assert(!landing.hasLoginForm, "Landing should not embed login form");
+    assert(!landing.hasPhonePreview, "Landing should not show old app preview mockup");
+    assert(landing.outcomeCards === 4, "Landing should show four outcome cards");
+    assert(landing.pricingCards === 3, "Landing pricing should show three plans");
+    assert(landing.footer, "Landing footer is missing");
+    assert(!landing.booting, "Boot animation class did not clear");
+    assert(!landing.overflowX, "Landing has horizontal overflow");
+
+    await evaluate(client, `document.querySelector('.landing-login-button')?.click();`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const loginRoute = await evaluate(client, `(() => ({
+      hasLoginForm: !!document.querySelector('[data-login-form]'),
+      hasLandingHero: !!document.querySelector('.landing-hero'),
+      route: JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2')).route,
+      overflowX: document.documentElement.scrollWidth > window.innerWidth
+    }))()`);
+    assert(loginRoute.route === "login", "Landing login button did not navigate to login route");
+    assert(loginRoute.hasLoginForm, "Dedicated login page form is missing");
+    assert(!loginRoute.hasLandingHero, "Login route should not include landing hero");
+    assert(!loginRoute.overflowX, "Login page has horizontal overflow");
 
     await openPage(client, `${baseUrl}/?route=login&language=fr&theme=dark`);
     await evaluate(client, `localStorage.removeItem('corb-fleet-manager-state-v2'); location.href='${baseUrl}/?route=login&language=fr&theme=dark&loginMode=owner';`);
@@ -312,6 +358,38 @@ async function run() {
     await new Promise((resolve) => setTimeout(resolve, 150));
     const expanded = await evaluate(client, `document.querySelector('.completion-line-details')?.innerText || ''`);
     assert(expanded.includes("Note") || expanded.includes("Détails"), "Completion row did not expand details");
+
+    await evaluate(client, `state.route='truckDetails'; state.activeVehicleId='vehicle-1'; state.truckTab='history'; state.activeCompletionId=null; render();`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const truckHistory = await evaluate(client, `(() => ({
+      cards: document.querySelectorAll('.truck-history-line').length,
+      firstTitle: document.querySelector('.truck-history-line strong')?.textContent.trim() || '',
+      firstBackground: getComputedStyle(document.querySelector('.truck-history-line')).backgroundColor,
+      overflowX: document.documentElement.scrollWidth > window.innerWidth
+    }))()`);
+    assert(truckHistory.cards >= 1, "Truck history should show compact completion rows");
+    assert(truckHistory.firstTitle.length > 0, "Truck history collapsed row should show service title");
+    assert(truckHistory.firstBackground !== "rgba(0, 0, 0, 0)", "Truck history cards need an explicit surface");
+    assert(!truckHistory.overflowX, "Truck history has horizontal overflow");
+
+    await evaluate(client, `document.querySelector('.truck-history-line .completion-line-main')?.click();`);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    const truckHistoryExpanded = await evaluate(client, `(() => ({
+      detailLabels: [...document.querySelectorAll('.completion-line-details span')].map((item) => item.textContent.trim()),
+      attachments: [...document.querySelectorAll('.completion-attachment-list li strong')].map((item) => item.textContent.trim()),
+      attachmentIcons: document.querySelectorAll('.completion-attachment-list .icon').length
+    }))()`);
+    assert(truckHistoryExpanded.detailLabels.some((label) => label.includes("Note")), "Truck history expansion should include mechanic note");
+    assert(truckHistoryExpanded.attachments.length >= 1, "Truck history expansion should include attachments");
+    assert(truckHistoryExpanded.attachmentIcons >= 1, "Truck history attachments should include file-type icons");
+
+    const truckHistoryAllDetails = await evaluate(client, `(() => {
+      document.querySelectorAll('.truck-history-line .completion-line-main').forEach((button) => {
+        if (button.getAttribute('aria-expanded') === 'false') button.click();
+      });
+      return [...document.querySelectorAll('.completion-line-details span')].map((item) => item.textContent.trim());
+    })()`);
+    assert(truckHistoryAllDetails.some((label) => label.toLowerCase().includes("pièces") || label.toLowerCase().includes("parts")), "Truck history should support parts details when present");
 
     console.log("E2E smoke tests passed");
   } finally {

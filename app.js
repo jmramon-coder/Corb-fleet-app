@@ -1,5 +1,27 @@
 const STORAGE_KEY = "corb-fleet-manager-state-v2";
 const OLD_STORAGE_KEY = "fleetops-manager-state";
+const DEMO_OWNER = {
+  firstName: "Anthony",
+  displayName: "Anthony.Corbin",
+  email: "Anthony_1997@gmail.com",
+  role: "Owner",
+  joinedAt: "2025-10-10"
+};
+const DEMO_FLEET = {
+  id: "fleet-1",
+  name: "CORB Fleet",
+  ownerUserId: "user-1"
+};
+const DEMO_MECHANIC_ACCESS = {
+  id: "access-1",
+  name: "Marc Tremblay",
+  code: "2468"
+};
+const RECURRENCE_LABELS = {
+  monthly: "Every 30 days",
+  bimonthly: "Every 60 days",
+  yearly: "Every 12 months"
+};
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (window.location.hash === "#pricing" || window.location.hash === "#product") {
@@ -681,7 +703,7 @@ function defaultState() {
     authMode: null,
     loginMode: "owner",
     loginError: "",
-    activeFleetId: "fleet-1",
+    activeFleetId: DEMO_FLEET.id,
     activeMechanicAccessId: null,
     activeServiceId: null,
     activeVehicleId: null,
@@ -697,27 +719,19 @@ function defaultState() {
     truckTab: "details",
     theme: "dark",
     language: "fr",
-    user: {
-      firstName: "Anthony",
-      displayName: "Anthony.Corbin",
-      email: "Anthony_1997@gmail.com",
-      role: "Owner",
-      joinedAt: "2025-10-10"
-    },
+    user: { ...DEMO_OWNER },
     fleets: [
       {
-        id: "fleet-1",
-        name: "CORB Fleet",
-        ownerUserId: "user-1",
-        mechanicAccessCode: "2468"
+        ...DEMO_FLEET,
+        mechanicAccessCode: DEMO_MECHANIC_ACCESS.code
       }
     ],
     mechanicAccessCodes: [
       {
-        id: "access-1",
-        fleetId: "fleet-1",
-        name: "Marc Tremblay",
-        code: "2468",
+        id: DEMO_MECHANIC_ACCESS.id,
+        fleetId: DEMO_FLEET.id,
+        name: DEMO_MECHANIC_ACCESS.name,
+        code: DEMO_MECHANIC_ACCESS.code,
         role: "mechanic",
         status: "active",
         active: true,
@@ -729,7 +743,7 @@ function defaultState() {
     vehicles: [
       {
         id: "vehicle-1",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         title: "Truck #1",
         unitNumber: "M12",
         brandModel: "Mercedes - B40",
@@ -744,7 +758,7 @@ function defaultState() {
       },
       {
         id: "vehicle-2",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         title: "Truck #2",
         unitNumber: "M13",
         brandModel: "Mercedes - B40",
@@ -759,7 +773,7 @@ function defaultState() {
       },
       {
         id: "vehicle-3",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         title: "Truck #3",
         unitNumber: "M14",
         brandModel: "Mercedes - B40",
@@ -776,12 +790,12 @@ function defaultState() {
     maintenancePlans: [
       {
         id: "service-1",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         vehicleId: "vehicle-1",
         title: "Changement d’huile",
         scheduleType: "hybrid",
         recurrenceType: "hybrid",
-        recurrenceLabel: "Every 30 days",
+        recurrenceLabel: RECURRENCE_LABELS.monthly,
         intervalDays: 30,
         intervalKm: 10000,
         dueDate: addDays(1),
@@ -792,12 +806,12 @@ function defaultState() {
       },
       {
         id: "service-2",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         vehicleId: "vehicle-1",
         title: "Brake inspection",
         scheduleType: "time",
         recurrenceType: "time",
-        recurrenceLabel: "Every 60 days",
+        recurrenceLabel: RECURRENCE_LABELS.bimonthly,
         intervalDays: 60,
         intervalKm: null,
         dueDate: addDays(18),
@@ -808,12 +822,12 @@ function defaultState() {
       },
       {
         id: "service-3",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         vehicleId: "vehicle-2",
         title: "Changement d’huile",
         scheduleType: "hybrid",
         recurrenceType: "hybrid",
-        recurrenceLabel: "Every 30 days",
+        recurrenceLabel: RECURRENCE_LABELS.monthly,
         intervalDays: 30,
         intervalKm: 10000,
         dueDate: addDays(-2),
@@ -824,12 +838,12 @@ function defaultState() {
       },
       {
         id: "service-4",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         vehicleId: "vehicle-2",
         title: "Annual inspection",
         scheduleType: "time",
         recurrenceType: "time",
-        recurrenceLabel: "Every 12 months",
+        recurrenceLabel: RECURRENCE_LABELS.yearly,
         intervalDays: 365,
         intervalKm: null,
         dueDate: addDays(30),
@@ -842,16 +856,16 @@ function defaultState() {
     serviceRecords: [
       {
         id: "completion-1",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         maintenancePlanId: "service-1",
         vehicleId: "vehicle-1",
         title: "Changement d’huile",
         completedAt: "2025-10-29T14:30:00.000Z",
         completedDate: "2025-10-29",
         completedKm: 99920,
-        completedBy: "Anthony.Corbin",
+        completedBy: DEMO_OWNER.displayName,
         completedByType: "owner",
-        completedByName: "Anthony.Corbin",
+        completedByName: DEMO_OWNER.displayName,
         completedByAccessId: "",
         mechanicNote: "Oil and filter changed. No leak found.",
         partsNumbers: "F42141",
@@ -859,16 +873,16 @@ function defaultState() {
       },
       {
         id: "completion-2",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         maintenancePlanId: "service-2",
         vehicleId: "vehicle-1",
         title: "Brake inspection",
         completedAt: "2025-10-10T10:15:00.000Z",
         completedDate: "2025-10-10",
         completedKm: 98200,
-        completedBy: "Anthony.Corbin",
+        completedBy: DEMO_OWNER.displayName,
         completedByType: "owner",
-        completedByName: "Anthony.Corbin",
+        completedByName: DEMO_OWNER.displayName,
         completedByAccessId: "",
         mechanicNote: "Pads inspected and cleared for service.",
         partsNumbers: "",
@@ -876,16 +890,16 @@ function defaultState() {
       },
       {
         id: "completion-3",
-        fleetId: "fleet-1",
+        fleetId: DEMO_FLEET.id,
         maintenancePlanId: "service-3",
         vehicleId: "vehicle-2",
         title: "Changement d’huile",
         completedAt: "2025-10-29T13:00:00.000Z",
         completedDate: "2025-10-29",
         completedKm: 1251100,
-        completedBy: "Anthony.Corbin",
+        completedBy: DEMO_OWNER.displayName,
         completedByType: "owner",
-        completedByName: "Anthony.Corbin",
+        completedByName: DEMO_OWNER.displayName,
         completedByAccessId: "",
         mechanicNote: "Oil service completed.",
         partsNumbers: "F42141",
@@ -933,8 +947,8 @@ function normalizeState(next) {
   next.loginError = "";
   if (next.route === "dashboard") next.route = "services";
   if (next.previousRoute === "dashboard") next.previousRoute = "services";
-  if (!next.activeFleetId) next.activeFleetId = "fleet-1";
-  if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || "fleet-1";
+  if (!next.activeFleetId) next.activeFleetId = DEMO_FLEET.id;
+  if (!next.fleets?.some?.((fleet) => fleet.id === next.activeFleetId)) next.activeFleetId = next.fleets?.[0]?.id || DEMO_FLEET.id;
   if (!next.activeMechanicAccessId) next.activeMechanicAccessId = null;
   if (next.returnRoute !== "truckDetails") {
     next.returnRoute = null;
@@ -982,7 +996,7 @@ function migrateOldState(old) {
 
   next.vehicles = vehicles.map((vehicle, index) => ({
     id: vehicle.id || uid("vehicle"),
-    fleetId: "fleet-1",
+    fleetId: DEMO_FLEET.id,
     title: vehicle.unit || `Truck #${index + 1}`,
     unitNumber: vehicle.unit || `M${index + 1}`,
     brandModel: vehicle.brand || "Mercedes - B40",
@@ -1001,7 +1015,7 @@ function migrateOldState(old) {
     vehicleId: service.vehicleId,
     title: service.type || "Changement d’huile",
     recurrenceType: "time",
-    recurrenceLabel: "Every 30 days",
+    recurrenceLabel: RECURRENCE_LABELS.monthly,
     dueDate: service.dueDate || todayIso,
     lastPerformedDate: service.completedAt ? isoDate(new Date(service.completedAt)) : "",
     lastPerformedKm: Number(service.completedKilometers || service.dueKilometers || 0),
@@ -1018,9 +1032,9 @@ function migrateOldState(old) {
 
 function normalizeMaintenancePlan(plan) {
   const rule = plan.scheduleRule || {};
-  const recurrenceLabel = plan.recurrenceLabel || "Every 30 days";
+  const recurrenceLabel = plan.recurrenceLabel || RECURRENCE_LABELS.monthly;
   const scheduleType = rule.type || plan.scheduleType || plan.recurrenceType || (plan.intervalKm || rule.intervalKm ? "hybrid" : "time");
-  const intervalDays = Number(rule.intervalDays ?? plan.intervalDays ?? (recurrenceLabel === "Every 60 days" ? 60 : recurrenceLabel === "Every 12 months" ? 365 : 30));
+  const intervalDays = Number(rule.intervalDays ?? plan.intervalDays ?? (recurrenceLabel === RECURRENCE_LABELS.bimonthly ? 60 : recurrenceLabel === RECURRENCE_LABELS.yearly ? 365 : 30));
   const intervalKm = rule.intervalKm === null || plan.intervalKm === null
     ? null
     : rule.intervalKm !== undefined
@@ -1039,7 +1053,7 @@ function normalizeMaintenancePlan(plan) {
 
   return {
     id: plan.id || uid("service"),
-    fleetId: plan.fleetId || "fleet-1",
+    fleetId: plan.fleetId || DEMO_FLEET.id,
     vehicleId: plan.vehicleId,
     title: plan.title || t("oilChange"),
     category: plan.category || "maintenance",
@@ -1069,9 +1083,9 @@ function normalizeMechanicAccess(access) {
   const active = access.active !== false && access.status !== "revoked";
   return {
     id: access.id || uid("access"),
-    fleetId: access.fleetId || "fleet-1",
+    fleetId: access.fleetId || DEMO_FLEET.id,
     name: access.name || access.mechanicName || "Mechanic",
-    code: String(access.code || access.accessCode || access.mechanicAccessCode || "2468"),
+    code: String(access.code || access.accessCode || access.mechanicAccessCode || DEMO_MECHANIC_ACCESS.code),
     role: access.role || "mechanic",
     status: active ? "active" : "revoked",
     active,
@@ -1083,12 +1097,12 @@ function normalizeMechanicAccess(access) {
 
 function normalizeServiceRecord(record) {
   const maintenancePlanId = record.maintenancePlanId || record.scheduleId;
-  const completedByName = record.completedByName || record.completedBy || "Anthony.Corbin";
+  const completedByName = record.completedByName || record.completedBy || DEMO_OWNER.displayName;
   const completedByAccessId = record.completedByAccessId || "";
   const completedByType = record.completedByType || (completedByAccessId ? "mechanic" : "owner");
   return {
     id: record.id || uid("record"),
-    fleetId: record.fleetId || "fleet-1",
+    fleetId: record.fleetId || DEMO_FLEET.id,
     maintenancePlanId,
     vehicleId: record.vehicleId,
     title: record.title || "",
@@ -1108,14 +1122,14 @@ function normalizeServiceRecord(record) {
 function recordFromPlanSnapshot(schedule) {
   return normalizeServiceRecord({
     id: `completion-${schedule.id}`,
-    fleetId: schedule.fleetId || "fleet-1",
+    fleetId: schedule.fleetId || DEMO_FLEET.id,
     maintenancePlanId: schedule.id,
     vehicleId: schedule.vehicleId,
     title: schedule.title,
     completedAt: schedule.completedAt || `${schedule.lastPerformedDate || todayIso}T12:00:00.000Z`,
     completedDate: schedule.lastPerformedDate || todayIso,
     completedKm: Number(schedule.lastPerformedKm || 0),
-    completedBy: "Anthony.Corbin",
+    completedBy: DEMO_OWNER.displayName,
     mechanicNote: schedule.completionNotes || "",
     partsNumbers: "",
     attachmentNames: []
@@ -1295,9 +1309,9 @@ function displayServiceTitle(service) {
 
 function displayRecurrenceLabel(value) {
   const labels = {
-    "Every 30 days": "every30Days",
-    "Every 60 days": "every60Days",
-    "Every 12 months": "every12Months"
+    [RECURRENCE_LABELS.monthly]: "every30Days",
+    [RECURRENCE_LABELS.bimonthly]: "every60Days",
+    [RECURRENCE_LABELS.yearly]: "every12Months"
   };
   return t(labels[value] || "", {}) || value;
 }
@@ -1387,6 +1401,9 @@ function applyInitialUrlRoute() {
   if (params.get("loginMode") === "mechanic" || params.get("loginMode") === "owner") state.loginMode = params.get("loginMode");
   if (params.get("completionModal")) state.completionModalServiceId = params.get("completionModal");
   if (params.get("createMenu") === "1") state.createMenuOpen = true;
+  if ((!state.isAuthenticated || state.route === "landing") && ["#pricing", "#product"].includes(window.location.hash)) {
+    history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+  }
 }
 
 function header({ close = false } = {}) {
@@ -1576,7 +1593,7 @@ function loginAuthPanel() {
         ` : `
           <div class="form-field">
             <label for="mechanicCode">${escapeHtml(t("accessCode"))}</label>
-            <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="2468" required />
+            <input id="mechanicCode" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="${escapeAttr(DEMO_MECHANIC_ACCESS.code)}" required />
             <small>${escapeHtml(t("accessCodeHint"))}</small>
           </div>
         `}
@@ -2751,9 +2768,9 @@ function loginFromForm(form) {
     state.user = {
       ...state.user,
       email,
-      firstName: "Anthony",
-      displayName: email === "Anthony_1997@gmail.com" ? "Anthony.Corbin" : email.split("@")[0] || "Anthony.Corbin",
-      role: "Owner"
+      firstName: DEMO_OWNER.firstName,
+      displayName: email === DEMO_OWNER.email ? DEMO_OWNER.displayName : email.split("@")[0] || DEMO_OWNER.displayName,
+      role: DEMO_OWNER.role
     };
   }
 
@@ -2949,6 +2966,7 @@ function render() {
   requestAnimationFrame(() => {
     if (playBootAnimation) {
       playInitialAppAnimation();
+      setTimeout(() => app.querySelector(".app-shell")?.classList.remove("is-booting"), 1200);
       hasPlayedBootAnimation = true;
     }
     if (!pageCanHideChrome()) setChromeHidden(false);
