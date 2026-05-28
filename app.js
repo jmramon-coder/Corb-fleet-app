@@ -2483,6 +2483,7 @@ function profileContent() {
         <div><span class="detail-label">${escapeHtml(t("role"))}</span><strong>${escapeHtml(displayRole(state.user.role))}</strong></div>
       </div>
     </article>
+    ${renderPreferencesCard()}
     <article class="profile-card security-card">
       <h2 class="security-title">${icons.lock} ${escapeHtml(t("security"))}</h2>
       <button class="outline-btn wide" type="button">${escapeHtml(t("changePassword"))}</button>
@@ -2617,6 +2618,10 @@ function sendMechanicInvite(accessId) {
 }
 
 function renderSettingsPanel() {
+  return renderPreferencesCard();
+}
+
+function renderPreferencesCard() {
   const darkMode = state.theme === "dark";
   const language = state.language === "fr" ? "fr" : "en";
   return `
