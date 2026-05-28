@@ -72,8 +72,8 @@ body::after {
   z-index: 19;
   left: 0;
   right: 0;
-  bottom: -80px;
-  height: calc(96px + env(safe-area-inset-bottom));
+  bottom: 0;
+  height: calc(140px + env(safe-area-inset-bottom));
   pointer-events: none;
   background: var(--nav-surface);
 }
