@@ -3123,6 +3123,7 @@ function render() {
     ?.setAttribute("content", state.theme === "dark" ? "#17191b" : "#d8dde0");
   document.title = `CORB ${t("fleetManager")}`;
   document.documentElement.classList.toggle("chrome-hidden", chromeHidden);
+  document.documentElement.classList.toggle("create-menu-open", state.createMenuOpen);
   app.innerHTML = `
     <div class="app-shell ${state.theme === "dark" ? "theme-dark" : "theme-light"} ${state.createMenuOpen ? "create-menu-open" : ""} ${playBootAnimation ? "is-booting" : ""}">
       ${routeMarkup()}

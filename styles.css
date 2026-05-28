@@ -50,13 +50,13 @@ html[data-theme="dark"] {
   background: #17191b;
 }
 
-html:has(.create-menu-backdrop),
-html:has(.create-menu-backdrop) body {
+html.create-menu-open,
+html.create-menu-open body {
   background: color-mix(in srgb, var(--app-bg) 58%, #0a0c0f 42%);
 }
 
-html[data-theme="dark"]:has(.create-menu-backdrop),
-html[data-theme="dark"]:has(.create-menu-backdrop) body {
+html[data-theme="dark"].create-menu-open,
+html[data-theme="dark"].create-menu-open body {
   background: #0e0f11;
 }
 
