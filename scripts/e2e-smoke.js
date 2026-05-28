@@ -240,6 +240,51 @@ async function run() {
     assert(ownerHome.hasActions, "Owner action button is missing");
     assert(!ownerHome.overflowX, "Owner home has horizontal overflow");
 
+    await evaluate(client, `state.route='addVehicle'; render();`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await evaluate(client, `(() => {
+      const form = document.querySelector('[data-add-vehicle-form]');
+      form.elements.unitNumber.value = 'U-900';
+      form.elements.machineType.value = 'Niveleuse';
+      form.elements.brandModelYear.value = 'CAT 140M - 2022';
+      form.elements.machineSerialNumber.value = 'CAT140M-22-900';
+      form.elements.kilometers.value = '45500';
+      form.elements.engineSerialNumber.value = 'ENG-900';
+      form.elements.partsAndFilters.value = 'P-77, F-88';
+      form.requestSubmit();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const createdVehicle = await evaluate(client, `(() => {
+      const state = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      const vehicle = state.vehicles[0];
+      return {
+        unitNumber: vehicle.unitNumber,
+        machineType: vehicle.machineType,
+        brandModelYear: vehicle.brandModelYear,
+        machineSerialNumber: vehicle.machineSerialNumber,
+        engineSerialNumber: vehicle.technical.engineSerialNumber,
+        partsAndFilters: vehicle.technical.partsAndFilters,
+        legacyFilterAlias: vehicle.technical.filterPartNumbers
+      };
+    })()`);
+    assert(createdVehicle.unitNumber === "U-900", "Vehicle unit number was not saved");
+    assert(createdVehicle.machineType === "Niveleuse", "Vehicle machine type was not saved");
+    assert(createdVehicle.brandModelYear === "CAT 140M - 2022", "Vehicle brand/model/year was not saved");
+    assert(createdVehicle.machineSerialNumber === "CAT140M-22-900", "Vehicle machine serial was not saved");
+    assert(createdVehicle.engineSerialNumber === "ENG-900", "Vehicle engine serial was not saved");
+    assert(createdVehicle.partsAndFilters === "P-77, F-88", "Vehicle parts and filters were not saved");
+    assert(createdVehicle.legacyFilterAlias === "P-77, F-88", "Vehicle legacy filter alias should stay synchronized");
+
+    await evaluate(client, `state.route='truckDetails'; state.activeVehicleId=JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2')).vehicles[0].id; state.truckTab='details'; render();`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const vehicleDetailsText = await evaluate(client, `document.querySelector('.technical-card')?.innerText || ''`);
+    assert(vehicleDetailsText.includes("U-900"), "Vehicle details should show unit number");
+    assert(vehicleDetailsText.includes("Niveleuse"), "Vehicle details should show machine type");
+    assert(vehicleDetailsText.includes("CAT 140M - 2022"), "Vehicle details should show brand/model/year");
+    assert(vehicleDetailsText.includes("CAT140M-22-900"), "Vehicle details should show machine serial number");
+    assert(vehicleDetailsText.includes("ENG-900"), "Vehicle details should show engine serial number");
+    assert(vehicleDetailsText.includes("P-77, F-88"), "Vehicle details should show parts and filters");
+
     await evaluate(client, `document.querySelector('[data-route="profile"]').click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
     await evaluate(client, `document.querySelector('[data-profile-tab="fleet"]').click();`);

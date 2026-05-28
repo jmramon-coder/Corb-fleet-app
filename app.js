@@ -142,6 +142,10 @@ const translations = {
     kilometers: "Kilometers",
     year: "Year",
     engineSerial: "Engine serial",
+    machineType: "Machine type",
+    brandModelYear: "Brand / model / year",
+    machineSerialNumber: "Machine serial #",
+    partsAndFilters: "Parts and filter numbers",
     filters: "Filters",
     noVehicleForService: "Create a vehicle before adding maintenance.",
     vehicleIdentity: "Vehicle identity",
@@ -395,6 +399,10 @@ const translations = {
     kilometers: "Kilométrage",
     year: "Année",
     engineSerial: "Série moteur",
+    machineType: "Type machine",
+    brandModelYear: "Marque / modèle / année",
+    machineSerialNumber: "# série machine",
+    partsAndFilters: "# pièces et # filtreur",
     filters: "Filtres",
     noVehicleForService: "Créez un véhicule avant d'ajouter un entretien.",
     vehicleIdentity: "Identité du véhicule",
@@ -746,13 +754,17 @@ function defaultState() {
         fleetId: DEMO_FLEET.id,
         title: "Truck #1",
         unitNumber: "M12",
+        machineType: "Camion porteur",
         brandModel: "Mercedes - B40",
+        brandModelYear: "Mercedes - B40 - 2025",
         year: "2025",
+        machineSerialNumber: "MB-B40-2025-001",
         kilometers: 99997,
         technical: {
           engineBrandModel: "TX-500",
           engineSerialNumber: "E241242",
-          filterPartNumbers: "F42141"
+          filterPartNumbers: "F42141",
+          partsAndFilters: "F42141"
         },
         createdAt: new Date().toISOString()
       },
@@ -761,13 +773,17 @@ function defaultState() {
         fleetId: DEMO_FLEET.id,
         title: "Truck #2",
         unitNumber: "M13",
+        machineType: "Camion porteur",
         brandModel: "Mercedes - B40",
+        brandModelYear: "Mercedes - B40 - 2014",
         year: "2014",
+        machineSerialNumber: "MB-B40-2014-013",
         kilometers: 1255969,
         technical: {
           engineBrandModel: "TX-540",
           engineSerialNumber: "E991420",
-          filterPartNumbers: "F42141, A140"
+          filterPartNumbers: "F42141, A140",
+          partsAndFilters: "F42141, A140"
         },
         createdAt: new Date(Date.now() - 86400000).toISOString()
       },
@@ -776,13 +792,17 @@ function defaultState() {
         fleetId: DEMO_FLEET.id,
         title: "Truck #3",
         unitNumber: "M14",
+        machineType: "Camion porteur",
         brandModel: "Mercedes - B40",
+        brandModelYear: "Mercedes - B40 - 2014",
         year: "2014",
+        machineSerialNumber: "MB-B40-2014-014",
         kilometers: 875430,
         technical: {
           engineBrandModel: "TX-540",
           engineSerialNumber: "E775302",
-          filterPartNumbers: "F42141"
+          filterPartNumbers: "F42141",
+          partsAndFilters: "F42141"
         },
         createdAt: new Date(Date.now() - 172800000).toISOString()
       }
@@ -979,10 +999,7 @@ function normalizeState(next) {
   }
   next.maintenancePlans = next.maintenancePlans.map(normalizeMaintenancePlan);
   next.serviceRecords = next.serviceRecords.map(normalizeServiceRecord);
-  next.vehicles = (Array.isArray(next.vehicles) ? next.vehicles : []).map((vehicle) => ({
-    ...vehicle,
-    fleetId: vehicle.fleetId || next.activeFleetId
-  }));
+  next.vehicles = (Array.isArray(next.vehicles) ? next.vehicles : []).map((vehicle, index) => normalizeVehicle(vehicle, index, next.activeFleetId));
   delete next.services;
   delete next.serviceSchedules;
   delete next.serviceCompletions;
@@ -994,21 +1011,25 @@ function migrateOldState(old) {
   const vehicles = Array.isArray(old.vehicles) ? old.vehicles : [];
   const services = Array.isArray(old.services) ? old.services : [];
 
-  next.vehicles = vehicles.map((vehicle, index) => ({
+  next.vehicles = vehicles.map((vehicle, index) => normalizeVehicle({
     id: vehicle.id || uid("vehicle"),
     fleetId: DEMO_FLEET.id,
     title: vehicle.unit || `Truck #${index + 1}`,
     unitNumber: vehicle.unit || `M${index + 1}`,
+    machineType: vehicle.machineType || "",
     brandModel: vehicle.brand || "Mercedes - B40",
+    brandModelYear: vehicle.brandModelYear || `${vehicle.brand || "Mercedes - B40"}`,
     year: "",
+    machineSerialNumber: vehicle.machineSerialNumber || "",
     kilometers: Number(vehicle.kilometers || 0),
     technical: {
       engineBrandModel: "TX-500",
       engineSerialNumber: "",
-      filterPartNumbers: ""
+      filterPartNumbers: "",
+      partsAndFilters: ""
     },
     createdAt: vehicle.createdAt || new Date().toISOString()
-  }));
+  }, index));
 
   next.maintenancePlans = services.map((service) => normalizeMaintenancePlan({
     id: service.id || uid("service"),
@@ -1028,6 +1049,34 @@ function migrateOldState(old) {
     .map(recordFromPlanSnapshot);
 
   return next;
+}
+
+function normalizeVehicle(vehicle, index = 0, fallbackFleetId = DEMO_FLEET.id) {
+  const brandModel = vehicle.brandModel || vehicle.brand || "";
+  const year = String(vehicle.year || "").trim();
+  const brandModelYear = vehicle.brandModelYear || [brandModel, year].filter(Boolean).join(" - ");
+  const technical = vehicle.technical || {};
+  const partsAndFilters = technical.partsAndFilters || vehicle.partsAndFilters || technical.filterPartNumbers || vehicle.filterPartNumbers || "";
+
+  return {
+    id: vehicle.id || uid("vehicle"),
+    fleetId: vehicle.fleetId || fallbackFleetId,
+    title: vehicle.title || vehicle.unit || `Truck #${index + 1}`,
+    unitNumber: vehicle.unitNumber || vehicle.unit || `M${index + 1}`,
+    machineType: vehicle.machineType || "",
+    brandModel,
+    brandModelYear,
+    year,
+    machineSerialNumber: vehicle.machineSerialNumber || vehicle.serialNumber || "",
+    kilometers: Number(vehicle.kilometers || 0),
+    technical: {
+      engineBrandModel: technical.engineBrandModel || vehicle.engineBrandModel || "",
+      engineSerialNumber: technical.engineSerialNumber || vehicle.engineSerialNumber || "",
+      filterPartNumbers: partsAndFilters,
+      partsAndFilters
+    },
+    createdAt: vehicle.createdAt || new Date().toISOString()
+  };
 }
 
 function normalizeMaintenancePlan(plan) {
@@ -1237,7 +1286,18 @@ function visibleServices() {
     const status = planStatus(service);
     const matchesFleet = service.fleetId === state.activeFleetId && service.status !== "archived";
     const matchesFilter = state.serviceFilter === "all" || state.serviceFilter === status;
-    const haystack = `${service.title} ${displayServiceTitle(service)} ${vehicle?.title || ""} ${vehicle ? displayVehicleTitle(vehicle) : ""} ${vehicle?.brandModel || ""}`.toLowerCase();
+    const haystack = [
+      service.title,
+      displayServiceTitle(service),
+      vehicle?.title,
+      vehicle ? displayVehicleTitle(vehicle) : "",
+      vehicle?.unitNumber,
+      vehicle?.machineType,
+      vehicle?.brandModelYear,
+      vehicle?.machineSerialNumber,
+      vehicle?.technical?.engineSerialNumber,
+      vehicle?.technical?.partsAndFilters
+    ].filter(Boolean).join(" ").toLowerCase();
     return matchesFleet && matchesFilter && (!query || haystack.includes(query));
   });
 }
@@ -2026,6 +2086,7 @@ function vehicleCard(vehicle) {
 }
 
 function modelLine(vehicle) {
+  if (vehicle.brandModelYear) return vehicle.brandModelYear;
   return `${vehicle.brandModel}${vehicle.year ? ` - ${vehicle.year}` : ""}`;
 }
 
@@ -2043,18 +2104,15 @@ function renderAddVehicle() {
       </div>
       <form id="addVehicleForm" class="mobile-form" data-add-vehicle-form>
         ${formSection(t("vehicleIdentity"), `
-          ${formField({ label: t("title"), name: "title", required: true })}
           ${formField({ label: t("unitNumber"), name: "unitNumber", required: true })}
-          ${formField({ label: t("brandModel"), name: "brandModel", required: true })}
-          <div class="form-grid two">
-            ${formField({ label: t("year"), name: "year", inputmode: "numeric" })}
-            ${formField({ label: t("kilometers"), name: "kilometers", type: "number", inputmode: "numeric", value: "0", attrs: 'min="0"' })}
-          </div>
+          ${formField({ label: t("machineType"), name: "machineType", required: true })}
+          ${formField({ label: t("brandModelYear"), name: "brandModelYear", required: true })}
+          ${formField({ label: t("machineSerialNumber"), name: "machineSerialNumber" })}
+          ${formField({ label: t("kilometers"), name: "kilometers", type: "number", inputmode: "numeric", value: "0", attrs: 'min="0"' })}
         `)}
         ${formSection(t("technicalInfo"), `
-          ${formField({ label: t("engineBrandModel"), name: "engineBrandModel" })}
           ${formField({ label: t("engineSerial"), name: "engineSerialNumber" })}
-          ${formField({ label: t("filters"), name: "filterPartNumbers" })}
+          ${formField({ label: t("partsAndFilters"), name: "partsAndFilters" })}
         `)}
       </form>
       <div class="action-bar">
@@ -2272,9 +2330,11 @@ function truckTabContent(vehicle) {
       </div>
       <div class="technical-list">
         <div><span class="detail-label">${escapeHtml(t("unitNumber"))}</span><strong>${escapeHtml(vehicle.unitNumber)}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("engineBrandModel"))}</span><strong>${escapeHtml(vehicle.technical.engineBrandModel)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("machineType"))}</span><strong>${escapeHtml(vehicle.machineType || t("notRecorded"))}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("brandModelYear"))}</span><strong>${escapeHtml(vehicle.brandModelYear || modelLine(vehicle))}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("machineSerialNumber"))}</span><strong>${escapeHtml(vehicle.machineSerialNumber || t("notRecorded"))}</strong></div>
         <div><span class="detail-label">${escapeHtml(t("engineSerialNumber"))}</span><strong>${escapeHtml(vehicle.technical.engineSerialNumber)}</strong></div>
-        <div><span class="detail-label">${escapeHtml(t("filterPartNumbers"))}</span><strong>${escapeHtml(vehicle.technical.filterPartNumbers)}</strong></div>
+        <div><span class="detail-label">${escapeHtml(t("partsAndFilters"))}</span><strong>${escapeHtml(vehicle.technical.partsAndFilters || vehicle.technical.filterPartNumbers || t("notRecorded"))}</strong></div>
       </div>
     </article>
   `;
@@ -2609,21 +2669,25 @@ function completionFormValues(serviceId) {
 function addVehicleFromForm(form) {
   const data = Object.fromEntries(new FormData(form).entries());
   const nextNumber = state.vehicles.length + 1;
-  state.vehicles.unshift({
+  const unitNumber = String(data.unitNumber || "").trim();
+  const brandModelYear = String(data.brandModelYear || "").trim();
+  state.vehicles.unshift(normalizeVehicle({
     id: uid("vehicle"),
     fleetId: state.activeFleetId,
-    title: data.title,
-    unitNumber: data.unitNumber,
-    brandModel: data.brandModel,
-    year: data.year || "",
+    title: unitNumber || t("truckNumber", { number: nextNumber }),
+    unitNumber,
+    machineType: data.machineType || "",
+    brandModel: brandModelYear,
+    brandModelYear,
+    machineSerialNumber: data.machineSerialNumber || "",
     kilometers: Number(data.kilometers || 0),
     technical: {
-      engineBrandModel: data.engineBrandModel || "",
       engineSerialNumber: data.engineSerialNumber || "",
-      filterPartNumbers: data.filterPartNumbers || ""
+      filterPartNumbers: data.partsAndFilters || "",
+      partsAndFilters: data.partsAndFilters || ""
     },
     createdAt: new Date(Date.now() + nextNumber).toISOString()
-  });
+  }, nextNumber - 1, state.activeFleetId));
   navigate("vehicles");
 }
 
