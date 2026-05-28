@@ -370,14 +370,43 @@ async function run() {
 
     await evaluate(client, `document.querySelector('[data-route="profile"]').click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
-    await evaluate(client, `document.querySelector('[data-profile-tab="fleet"]').click();`);
+    await evaluate(client, `document.querySelector('[data-profile-tab="mechanics"]').click();`);
     await new Promise((resolve) => setTimeout(resolve, 200));
-    const fleetPanel = await evaluate(client, `(() => ({
+    const mechanicAccessPanel = await evaluate(client, `(() => ({
       hasAccessForm: !!document.querySelector('[data-create-mechanic-access-form]'),
-      accessRows: document.querySelectorAll('.access-row').length
+      accessRows: document.querySelectorAll('.access-row').length,
+      sendButtons: document.querySelectorAll('[data-send-access]').length,
+      hasEmailField: !!document.querySelector('#mechanicAccessEmail')
     }))()`);
-    assert(fleetPanel.hasAccessForm, "Owner fleet panel is missing mechanic access form");
-    assert(fleetPanel.accessRows >= 1, "Owner fleet panel should list mechanic codes");
+    assert(mechanicAccessPanel.hasAccessForm, "Owner mechanic access tab is missing access form");
+    assert(mechanicAccessPanel.accessRows >= 1, "Owner mechanic access tab should list mechanic codes");
+    assert(mechanicAccessPanel.sendButtons >= 1, "Owner mechanic access tab should expose send invite actions");
+    assert(mechanicAccessPanel.hasEmailField, "Owner mechanic access form should collect mechanic email");
+
+    await evaluate(client, `(() => {
+      const form = document.querySelector('[data-create-mechanic-access-form]');
+      form.elements.name.value = 'Sarah Garage';
+      form.elements.email.value = 'sarah@example.com';
+      form.elements.code.value = '135790';
+      form.requestSubmit();
+    })()`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const createdAccess = await evaluate(client, `(() => {
+      const savedState = JSON.parse(localStorage.getItem('corb-fleet-manager-state-v2'));
+      const access = savedState.mechanicAccessCodes[0];
+      return {
+        name: access.name,
+        email: access.email,
+        code: access.code,
+        active: access.active,
+        rowText: document.querySelector('.access-row')?.innerText || ''
+      };
+    })()`);
+    assert(createdAccess.name === "Sarah Garage", "Mechanic access creation did not save mechanic name");
+    assert(createdAccess.email === "sarah@example.com", "Mechanic access creation did not save mechanic email");
+    assert(createdAccess.code === "135790", "Mechanic access creation did not save requested access code");
+    assert(createdAccess.active === true, "Mechanic access creation should create an active access");
+    assert(createdAccess.rowText.includes("sarah@example.com"), "Mechanic access row should show mechanic email");
 
     await openPage(client, `${baseUrl}/?route=login&language=fr&theme=dark&loginMode=mechanic`);
     await evaluate(client, `localStorage.removeItem('corb-fleet-manager-state-v2'); location.href='${baseUrl}/?route=login&language=fr&theme=dark&loginMode=mechanic';`);
