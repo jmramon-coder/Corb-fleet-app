@@ -1240,6 +1240,11 @@ function relativeDue(value) {
   return t(days === 1 ? "day" : "days", { count: days });
 }
 
+function compactRelativeDue(value) {
+  const days = Math.abs(daysUntil(value));
+  return state.language === "fr" ? `${days} j` : `${days}d`;
+}
+
 function kmUntil(service) {
   return dueSummaryForPlan(service).kmRemaining;
 }
@@ -1747,7 +1752,7 @@ function serviceCard(service) {
   const vehicle = vehicleById(service.vehicleId);
   const summary = dueSummaryForPlan(service);
   const status = planStatus(service);
-  const dueChipLabel = status === "ok" ? t("ok") : relativeDue(summary.nextDueDate);
+  const dueChipLabel = status === "ok" ? t("ok") : compactRelativeDue(summary.nextDueDate);
   return `
     <article class="service-card click-card status-${status}" data-open-service="${service.id}">
       <div class="service-card-body">
